@@ -1,5 +1,6 @@
 import requests
-from readJson import get_address_data
+
+from scraper.readJson import get_address_data
 
 
 def ticket_api(ids):

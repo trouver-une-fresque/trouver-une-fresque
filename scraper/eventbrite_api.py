@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time
 
-from eventbrite import ticket_api
+from scraper.eventbrite import ticket_api
 
 
 def get_eventbrite_data(dr):
@@ -65,6 +65,8 @@ def get_eventbrite_data(dr):
                 print(f'added event : {ids}')
             except:
                 print(f'there was an error with event nr: {ids}')
+
+    driver.quit()
 
     return records
     # df = pd.DataFrame(records)
