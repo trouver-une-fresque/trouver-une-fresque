@@ -1,4 +1,13 @@
 import requests
+import numpy as np
+import pandas as pd
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 from scraper.readJson import get_address_data
 
@@ -110,3 +119,64 @@ def ticket_api(ids):
     }
 
     return res
+
+
+def get_eventbrite_data(dr):
+
+    print('\n\nThe script is extracting info from www.eventbrite.fr \n\n')
+
+    options = Options()
+    options.headless = True
+
+    driver = webdriver.Chrome(options=options, executable_path=dr)
+
+    webSites = [
+        {
+            'url': 'https://www.eventbrite.fr/o/la-fresque-du-climat-18716137245',
+            'id': 6
+        },
+        {
+            'url': 'https://www.eventbrite.fr/o/2-tonnes-29470123869',
+            'id': 7
+        }
+    ]
+
+    records = []
+
+    for page in webSites:
+        driver.get(page['url'])
+        time.sleep(5)
+        while True:
+            try:
+                element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+                    (By.CSS_SELECTOR, '#events > section > div > div:nth-child(2) > div > div.organizer-profile__show-more.eds-l-pad-top-4.eds-align--center > button')))
+                driver.execute_script("arguments[0].click();", element)
+                driver.execute_script(
+                    "window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+            except:
+                break
+            # ef = driver.find_elements(by=By.CSS_SELECTOR, value= '#events > section > div > div:nth-child(2) > div > div.organizer-profile__show-more.eds-l-pad-top-4.eds-align--center > button')
+
+        ele = driver.find_elements('xpath', '//a[@href]')
+        links = [e.get_attribute("href") for e in ele]
+
+        events_link = list(
+            filter(lambda n: 'https://www.eventbrite.fr/e/' in n, links))
+        events_ids = list(map(lambda n: n.split(
+            '-')[-1].split('?')[0], events_link))
+        unique_ids = np.unique(events_ids)
+        id_chunks = [unique_ids[x:x+20] for x in range(0, len(unique_ids), 20)]
+        id_text = [','.join(chank) for chank in id_chunks]
+        for ids in unique_ids:
+            try:
+                ticket_dic = ticket_api(ids)
+                ticket_dic['page_id'] = page['id']
+                records.append(ticket_dic)
+                print(f'added event : {ids}')
+            except:
+                print(f'there was an error with event nr: {ids}')
+
+    driver.quit()
+
+    return records

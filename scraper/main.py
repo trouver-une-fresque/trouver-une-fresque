@@ -1,14 +1,15 @@
 import json
 
 from scraper.billetweb import get_billetweb_data
-from scraper.eventbrite_api import get_eventbrite_data
+from scraper.eventbrite import get_eventbrite_data
+from scraper.etl_proccess import etl
 
 def main():  # pragma: no cover
     file = open('etl_config.json', 'r')
     file = json.loads(file.read())
     credentials = dict(file)
 
-    billetweb_records = get_billetweb_data(dr=credentials["chromedriver"])
+    #billetweb_records = get_billetweb_data(dr=credentials["chromedriver"])
     eventbrite_records = get_eventbrite_data(dr=credentials["chromedriver"])
     
     tot = billetweb_records + eventbrite_records

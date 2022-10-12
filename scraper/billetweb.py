@@ -6,18 +6,21 @@ import json
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
 
 from scraper.readJson import get_address_data
-from scraper.etl_proccess import etl
 
 def get_billetweb_data(dr):
 
     print('\n\nThe script is extracting info from www.billetweb.fr \n\n')
 
-    driver = webdriver.Chrome(executable_path=dr)
+    options = Options()
+    options.headless = True
+
+    driver = webdriver.Chrome(options=options, executable_path=dr)
 
     """
     {
