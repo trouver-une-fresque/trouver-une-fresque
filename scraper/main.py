@@ -18,19 +18,20 @@ from etl_proccess import etl
 print('\n\nThe script is extracting info from www.billetweb.fr \n\n')
 
 file = open('etl_config.json', 'r')
-
 file = json.loads(file.read())
-
 credentials = dict(file)
 
 records = []
 
+"""
+{
+    "url": "https://www.billetweb.fr/pro/fdnr",
+    "iframe": 'event21569',
+    "id": 4
+}
+"""
+
 webSites = [
-    {
-        "url": "https://www.billetweb.fr/pro/fdnr",
-        "iframe": 'event21569',
-        "id": 4
-    },
     {
         "url": "https://www.billetweb.fr/pro/billetteriefo",
         "iframe": 'event15247',
@@ -228,7 +229,7 @@ for page in webSites:
 
             # print(event_start_time)
 
-            records.append({
+            record = {
                 'page_id': page["id"],
                 'title': title,
                 'start_date': start_date,
@@ -248,14 +249,15 @@ for page in webSites:
                 'original_source_link': link,
                 'ticketing_platform_link': link,
                 'event_desc': event_desc
-            })
+            }
+            records.append(record)
+
+            print(f"\nJust scraped {link}\n\t{record}")
 
 driver.quit()
 
-eventTribe_records = get_eventbrite_data(dr=credentials["chromedriver"])
-
-tot = records + eventTribe_records
-
+eventbrite_records = get_eventbrite_data(dr=credentials["chromedriver"])
+tot = records + eventbrite_records
 
 df = pd.DataFrame(tot)
 
@@ -277,5 +279,5 @@ etl(df)
 dt = datetime.datetime.now()
 insert_time = dt.strftime("%Y%m%d_%H%M%S ")
 
-with open(f'envets{insert_time}.json', 'w', encoding="UTF-8") as file:
+with open(f'events_{insert_time}.json', 'w', encoding="UTF-8") as file:
     df.to_json(file, orient='records', force_ascii=False)
