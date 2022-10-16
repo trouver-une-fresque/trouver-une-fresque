@@ -9,7 +9,7 @@ def main():  # pragma: no cover
     file = json.loads(file.read())
     credentials = dict(file)
 
-    #billetweb_records = get_billetweb_data(dr=credentials["chromedriver"])
+    billetweb_records = get_billetweb_data(dr=credentials["chromedriver"])
     eventbrite_records = get_eventbrite_data(dr=credentials["chromedriver"])
     
     tot = billetweb_records + eventbrite_records
@@ -25,9 +25,9 @@ def main():  # pragma: no cover
 
     df['flag_week'] = np.where(df['flag_week'] < '7 days',
                             'Less than 1 week', 'More than 1 week')
-    df['scape_time'] = pd.to_datetime("now").strftime('%Y-%m-%d %H:%M:%S')
+    df['scrape_time'] = pd.to_datetime("now").strftime('%Y-%m-%d %H:%M:%S')
 
-    etl(df)
+    #etl(df)
 
 
     dt = datetime.datetime.now()

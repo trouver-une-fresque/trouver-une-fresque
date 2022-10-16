@@ -38,11 +38,11 @@ def etl(df):
     conn1.autocommit = True
     cursor = conn1.cursor()
 
-    sql = f'''truncate table {table_schema}event_data;
+    truncate_sql = f'''truncate table {table_schema}event_data;
 			truncate table {table_schema}event_data_main;
 	'''
 
-    cursor.execute(sql)
+    cursor.execute(truncate_sql)
 
     conn1.commit()
     conn1.close()
@@ -79,17 +79,18 @@ def etl(df):
     conn2.autocommit = True
     cursor = conn2.cursor()
     try:
-        inesert_sql = f'''
+        insert_sql = f'''
 
 	Insert into {table_schema}event_data_main
 		SELECT
 				online       :: boolean 
 				,training    :: boolean 
+                ,full        :: boolean 
 				,(case when start_date='' then null else start_date end)   :: date as start_date 
 				,(case when start_time='' then null else start_time end)   :: time as start_time
 				,(case when end_date  ='' then null else end_date end)     :: date as end_date 
 				,(case when end_time  ='' then null else end_time end)	   :: time as end_time
-				,scape_time  :: timestamp 
+				,scrape_time :: timestamp 
 				,postal_code
 				,latitude
 				,longitude
@@ -111,11 +112,12 @@ def etl(df):
 		SELECT
 			online       :: boolean 
 			,training    :: boolean 
+            ,full        :: boolean 
 			,(case when start_date='' then null else start_date end)   :: date as start_date 
 			,(case when start_time='' then null else start_time end)   :: time as start_time
 			,(case when end_date  ='' then null else end_date end)     :: date as end_date 
 			,(case when end_time  ='' then null else end_time end)	   :: time as end_time
-			,scape_time  :: timestamp 
+			,scrape_time :: timestamp 
 			,postal_code
 			,latitude
 			,longitude
@@ -134,7 +136,7 @@ def etl(df):
 
 		'''
 
-        cursor.execute(inesert_sql)
+        cursor.execute(insert_sql)
 
         conn2.commit()
     except (Exception, psycopg2.DatabaseError) as error:

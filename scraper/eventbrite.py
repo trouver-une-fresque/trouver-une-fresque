@@ -55,6 +55,11 @@ def ticket_api(ids):
     else:
         training = 'False'
 
+    if 'complet' in title.lower():
+        full = 'True'
+    else:
+        full = 'False'
+
     if online == 'False':
         venue_id = data['primary_venue_id']
         venue_url = f"https://www.eventbriteapi.com/v3/venues/{venue_id}"
@@ -113,6 +118,7 @@ def ticket_api(ids):
         'longitude': longitude,
         "online": online,
         'training': training,
+        'full': full,
         'original_source_link': tickets_url,
         'ticketing_platform_link': tickets_url,
         'event_desc': event_desc
@@ -132,12 +138,14 @@ def get_eventbrite_data(dr):
 
     webSites = [
         {
+            # Fresque du Climat
             'url': 'https://www.eventbrite.fr/o/la-fresque-du-climat-18716137245',
-            'id': 6
+            'id': 100
         },
         {
+            # 2tonnes
             'url': 'https://www.eventbrite.fr/o/2-tonnes-29470123869',
-            'id': 7
+            'id': 101
         }
     ]
 

@@ -22,39 +22,60 @@ def get_billetweb_data(dr):
 
     driver = webdriver.Chrome(options=options, executable_path=dr)
 
-    """
-    {
-        "url": "https://www.billetweb.fr/pro/fdnr",
-        "iframe": 'event21569',
-        "id": 4
-    }
-    """
     webSites = [
         {
+            # Fresque des Nouveaux Récits
+            "url": "https://www.billetweb.fr/pro/fdnr",
+            "iframe": 'event21569',
+            "id": 0
+        },
+        {
+            # Fresque Océane
             "url": "https://www.billetweb.fr/pro/billetteriefo",
             "iframe": 'event15247',
             "id": 1
         },
         {
+            # Fresque de la Biodiversité
             "url": "https://www.billetweb.fr/multi_event.php?user=82762",
             "iframe": 'event17309',
             "id": 2
         },
         {
+            # Fresque du Numérique
             "url": "https://www.billetweb.fr/multi_event.php?user=84999",
             "iframe": 'eventu84999',
             "id": 3
         },
         {
+            # Fresque Agri'Alim
             "url": "https://www.billetweb.fr/pro/fresqueagrialim",
             "iframe": 'event11421',
-            "id": 3
+            "id": 4
         },
-
         {
+            # Fresque de l'Alimentation
             "url": "https://www.billetweb.fr/pro/fresquealimentation",
             "iframe": 'event11155',
             "id": 5
+        },
+        {
+            # Fresque de la Construction
+            "url": "https://www.billetweb.fr/pro/fresquedelaconstruction",
+            "iframe": 'event11574',
+            "id": 6
+        },
+        {
+            # Fresque de la Mobilité
+            "url": "https://www.billetweb.fr/pro/fresquedelamobilite",
+            "iframe": 'event11698',
+            "id": 7
+        },
+        {
+            # Atelier OGRE
+            "url": "https://www.billetweb.fr/pro/atelierogre",
+            "iframe": 'event13026',
+            "id": 8
         }
     ]
 
@@ -167,9 +188,9 @@ def get_billetweb_data(dr):
                             by=By.CSS_SELECTOR, value='#description_block > div.ckeditor_block')
 
                 event_desc = even_el.text
-                trainning_list = ["formation", "briefing", "animateur"]
+                training_list = ["formation", "briefing", "animateur"]
                 check_tr = 0
-                for w in trainning_list:
+                for w in training_list:
                     if w in title.lower():
                         check_tr = + 1
                 if check_tr > 0:
@@ -181,6 +202,12 @@ def get_billetweb_data(dr):
                     online = 'True'
                 else:
                     online = 'False'
+                
+                if 'complet' in title.lower():
+                    full = 'True'
+                else:
+                    full = 'False'
+
                 if ',' in location_text:
                     loc_arr = location_text.split(',')
                     if len(loc_arr) >= 3:
@@ -243,6 +270,7 @@ def get_billetweb_data(dr):
                     'longitude': longitude,
                     'online': online,
                     'training': training,
+                    'full': full,
                     'original_source_link': link,
                     'ticketing_platform_link': link,
                     'event_desc': event_desc
