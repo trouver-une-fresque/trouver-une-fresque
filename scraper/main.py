@@ -3,7 +3,7 @@ import argparse
 
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
-from scraper.etl_proccess import etl
+from db.etl import etl
 
 def main():
     parser = argparse.ArgumentParser()

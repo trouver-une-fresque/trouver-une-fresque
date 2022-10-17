@@ -11,11 +11,10 @@ from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
 
-from scraper.readJson import get_address_data
+from utils.readJson import get_address_data
 
 def get_billetweb_data(dr, headless=False):
-
-    print('\n\nThe script is extracting info from www.billetweb.fr \n\n')
+    print('Scraping data from www.billetweb.fr\n\n')
 
     options = Options()
     options.headless = headless

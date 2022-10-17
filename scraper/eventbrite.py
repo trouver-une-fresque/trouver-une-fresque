@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-from scraper.readJson import get_address_data
+from utils.readJson import get_address_data
 
 
 def ticket_api(ids):
@@ -128,8 +128,7 @@ def ticket_api(ids):
 
 
 def get_eventbrite_data(dr, headless=False):
-
-    print('\n\nThe script is extracting info from www.eventbrite.fr \n\n')
+    print('Scraping data from www.eventbrite.fr\n\n')
 
     options = Options()
     options.headless = headless
