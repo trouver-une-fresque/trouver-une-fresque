@@ -2,6 +2,12 @@
 
 Trouver une Fresque est un outil open source permettant de détecter les ateliers disponibles dans votre département.
 
+## Lancer le scraping
+
+```
+make scrape
+```
+
 ## Signaler un problème, une idée de modification
 
 Ouvrez une [issue Github](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) si vous souhaitez signaler un problème.
