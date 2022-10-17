@@ -1,16 +1,26 @@
 import json
+import argparse
 
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from scraper.etl_proccess import etl
 
-def main():  # pragma: no cover
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        default=False,
+        help="run scraping in headless mode"
+    )
+    args = parser.parse_args()
+
     file = open('etl_config.json', 'r')
     file = json.loads(file.read())
     credentials = dict(file)
 
-    billetweb_records = get_billetweb_data(dr=credentials["chromedriver"])
-    eventbrite_records = get_eventbrite_data(dr=credentials["chromedriver"])
+    billetweb_records = get_billetweb_data(dr=credentials["chromedriver"], headless=args.headless)
+    eventbrite_records = get_eventbrite_data(dr=credentials["chromedriver"], headless=args.headless)
     
     tot = billetweb_records + eventbrite_records
     df = pd.DataFrame(tot)
