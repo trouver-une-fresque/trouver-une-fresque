@@ -13,12 +13,12 @@ from dateutil.parser import *
 
 from scraper.readJson import get_address_data
 
-def get_billetweb_data(dr):
+def get_billetweb_data(dr, headless=False):
 
     print('\n\nThe script is extracting info from www.billetweb.fr \n\n')
 
     options = Options()
-    options.headless = True
+    options.headless = headless
 
     driver = webdriver.Chrome(options=options, executable_path=dr)
 
@@ -80,7 +80,6 @@ def get_billetweb_data(dr):
     ]
 
     records = []
-    count = 0
 
     for page in webSites:
         driver.get(page["url"])
@@ -211,7 +210,7 @@ def get_billetweb_data(dr):
                 if ',' in location_text:
                     loc_arr = location_text.split(',')
                     if len(loc_arr) >= 3:
-                        if loc_arr[2] == 'France':
+                        if loc_arr[2].strip().lower() == 'france':
                             location_name = ''
                             location_address = loc_arr[0]
                             location_city = loc_arr[1]
@@ -219,19 +218,22 @@ def get_billetweb_data(dr):
                             location_name = loc_arr[0]
                             location_address = loc_arr[1]
                             location_city = loc_arr[2]
-
-                    elif len(loc_arr) >= 2:
-                        location_name = ''
-                        location_address = loc_arr[0]
-                        location_city = loc_arr[1]
+                    elif len(loc_arr) == 2:
+                        if loc_arr[1].strip().lower() == 'france':
+                            location_name = ''
+                            location_address = ''
+                            location_city = loc_arr[0]
+                        else:
+                            location_name = ''
+                            location_address = loc_arr[0]
+                            location_city = loc_arr[1]
                 else:
                     location_name = ''
                     location_address = ''
                     location_city = ''
-
-                    count += 1
-                    # print(f"The are {count} events ok with criteria")
-                    # print(f"location_name: {location_name}, location_address:{location_address},location_city: {location_city}")
+                location_name = location_name.strip()
+                location_address = location_address.strip()
+                location_city = location_city.strip().title()
 
                 try:
                     start_datetime = parse(event_start_time)
@@ -261,6 +263,7 @@ def get_billetweb_data(dr):
                     'end_date': end_date,
                     'end_time': end_time,
                     'location': location,
+                    'location_text': location_text,
                     'location_name': location_name,
                     'location_address': location_address,
                     'location_city': location_city,

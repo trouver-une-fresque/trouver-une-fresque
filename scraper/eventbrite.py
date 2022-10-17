@@ -108,7 +108,7 @@ def ticket_api(ids):
         'start_time': start_time,
         'end_date': end_date,
         'end_time': end_time,
-        'location': location_text,
+        'location_text': location_text,
         'location_name': location_name,
         'location_address': location_address,
         'location_city': location_city,
@@ -127,12 +127,12 @@ def ticket_api(ids):
     return res
 
 
-def get_eventbrite_data(dr):
+def get_eventbrite_data(dr, headless=False):
 
     print('\n\nThe script is extracting info from www.eventbrite.fr \n\n')
 
     options = Options()
-    options.headless = True
+    options.headless = headless
 
     driver = webdriver.Chrome(options=options, executable_path=dr)
 
