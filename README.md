@@ -31,8 +31,5 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | | Pas prévu pour le moment |
 | Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | | Pas prévu pour le moment |
-
-## TODO
-
-headless options
-log eventbrite
+| Fresque des Déchets | https://greendonut.org/dechets/ | | Pas prévu pour le moment |
+| Fresque du Textile | https://greendonut.org/textile/ | | Pas prévu pour le moment |
