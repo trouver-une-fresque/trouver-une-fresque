@@ -92,6 +92,7 @@ def get_billetweb_data(dr, headless=False):
 
         for link in links:
             if 'https://www.billetweb.fr/multi_event.php?&multi' not in link:
+                print(link)
 
                 driver.get(link)
                 time.sleep(3)
@@ -236,10 +237,12 @@ def get_billetweb_data(dr, headless=False):
 
                 try:
                     start_datetime = parse(event_start_time)
-                except:
-                    start_datetime = parse(event_time)
-
-                # print(start_datetime)
+                except ParserError:
+                    try :
+                        start_datetime = parse(event_time)
+                    except ParserError as e:
+                        print(e)
+                        break
 
                 start_date = start_datetime.strftime('%Y-%m-%d')
                 start_time = start_datetime.strftime('%H:%M:%S')
@@ -251,8 +254,6 @@ def get_billetweb_data(dr, headless=False):
                 except:
                     end_date = ''
                     end_time = ''
-
-                # print(event_start_time)
 
                 record = {
                     'page_id': page["id"],
