@@ -5,6 +5,7 @@ Trouver une Fresque est un outil open source permettant de détecter les atelier
 ## Lancer le scraping
 
 ```
+make install
 make scrape
 ```
 
