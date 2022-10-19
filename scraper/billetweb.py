@@ -87,7 +87,7 @@ def get_billetweb_data(dr, headless=False):
 
         driver.switch_to.frame(page["iframe"])
         ele = driver.find_elements('xpath', '//a[@href]')
-
+        ele = driver.find_elements(By.CSS_SELECTOR, 'a.naviguate')
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
