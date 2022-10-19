@@ -104,7 +104,7 @@ def get_billetweb_data(dr, headless=False):
                 title = title_el.text
                 if 'cadeau' in title.lower():
                     print("Rejecting record: gift card")
-                    break
+                    continue
 
                 time_el = driver.find_element(
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > span > a > div')
@@ -148,7 +148,7 @@ def get_billetweb_data(dr, headless=False):
                         location_text = page_link.text
                     except:
                         location_text = 'Online'
-                    if 'en linge' in title.lower():
+                    if 'en ligne' in title.lower():
                         location_text = 'Online'
                     depart = ''
                     postal_code = ''
@@ -238,7 +238,7 @@ def get_billetweb_data(dr, headless=False):
 
                 if online == 'False' and location_address == '':
                     print("Rejecting record: empty address")
-                    break
+                    continue
 
                 # Parse start and end dates
                 try:
@@ -248,7 +248,7 @@ def get_billetweb_data(dr, headless=False):
                         start_datetime = parse(event_time)
                     except ParserError as e:
                         print(f"Rejecting record: {e}")
-                        break
+                        continue
 
                 start_date = start_datetime.strftime('%Y-%m-%d')
                 start_time = start_datetime.strftime('%H:%M:%S')
