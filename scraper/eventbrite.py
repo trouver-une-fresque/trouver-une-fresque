@@ -47,7 +47,7 @@ def ticket_api(ids):
     end_date = data['end_date']
     end_time = data['end_time']
     title = data['name']
-    event_desc = data['summary']
+    description = data['summary']
     tickets_url = data['tickets_url']
     online = str(data['is_online_event'])
     if field_training[0] in title.lower() or field_training[1] in title.lower():
@@ -121,7 +121,7 @@ def ticket_api(ids):
         'full': full,
         'original_source_link': tickets_url,
         'ticketing_platform_link': tickets_url,
-        'event_desc': event_desc
+        'description': description
     }
 
     return res

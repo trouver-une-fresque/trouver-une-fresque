@@ -96,7 +96,7 @@ def etl(df):
 				,longitude
 				,original_source_link
 				,ticketing_platform_link
-				,event_desc
+				,description
 				,flag_week
 				,depart
 				,title
@@ -123,7 +123,7 @@ def etl(df):
 			,longitude
 			,original_source_link
 			,ticketing_platform_link
-			,event_desc
+			,description
 			,flag_week
 			,depart
 			,title

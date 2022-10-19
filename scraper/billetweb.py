@@ -81,18 +81,18 @@ def get_billetweb_data(dr, headless=False):
     records = []
 
     for page in webSites:
+        print(f"\n==================\nProcessing page {page}")
         driver.get(page["url"])
         time.sleep(2)
 
         driver.switch_to.frame(page["iframe"])
-
         ele = driver.find_elements('xpath', '//a[@href]')
 
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
             if 'https://www.billetweb.fr/multi_event.php?&multi' not in link:
-                print(link)
+                print(f"-> Processing {link}... {links}")
 
                 driver.get(link)
                 time.sleep(3)
@@ -103,6 +103,7 @@ def get_billetweb_data(dr, headless=False):
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > div.event_name.custom_font')
                 title = title_el.text
                 if 'cadeau' in title.lower():
+                    print("Rejecting record: gift card")
                     break
 
                 time_el = driver.find_element(
@@ -146,9 +147,9 @@ def get_billetweb_data(dr, headless=False):
                         location = page_link.text
                         location_text = page_link.text
                     except:
-                        location_text = 'Online Event'
-                    if 'EN LIGNE' in title.upper():
-                        location_text = 'Online Event'
+                        location_text = 'Online'
+                    if 'en linge' in title.lower():
+                        location_text = 'Online'
                     depart = ''
                     postal_code = ''
                     longitude = ''
@@ -186,27 +187,25 @@ def get_billetweb_data(dr, headless=False):
                         even_el = driver.find_element(
                             by=By.CSS_SELECTOR, value='#description_block > div.ckeditor_block')
 
-                event_desc = even_el.text
+                #TODO get the full description
+                description = even_el.text
+
+                # Is it a training event?
                 training_list = ["formation", "briefing", "animateur"]
                 check_tr = 0
                 for w in training_list:
                     if w in title.lower():
-                        check_tr = + 1
-                if check_tr > 0:
-                    training = 'True'
-                else:
-                    training = 'False'
+                        check_tr = +1
+                training = (check_tr > 0)
 
-                if 'online' in title.lower() or 'en ligne' in title.lower():
-                    online = 'True'
-                else:
-                    online = 'False'
+                # Is it an online event?
+                online = ('online' in title.lower() or 'en ligne' in title.lower())
                 
-                if 'complet' in title.lower():
-                    full = 'True'
-                else:
-                    full = 'False'
+                # Is the event full?
+                #TODO scrape middle div
+                full = ('complet' in title.lower())
 
+                # Parse location fields
                 if ',' in location_text:
                     loc_arr = location_text.split(',')
                     if len(loc_arr) >= 3:
@@ -235,13 +234,20 @@ def get_billetweb_data(dr, headless=False):
                 location_address = location_address.strip()
                 location_city = location_city.strip().title()
 
+                #TODO strip postal code from address
+
+                if online == 'False' and location_address == '':
+                    print("Rejecting record: empty address")
+                    break
+
+                # Parse start and end dates
                 try:
                     start_datetime = parse(event_start_time)
                 except ParserError:
                     try :
                         start_datetime = parse(event_time)
                     except ParserError as e:
-                        print(e)
+                        print(f"Rejecting record: {e}")
                         break
 
                 start_date = start_datetime.strftime('%Y-%m-%d')
@@ -276,11 +282,11 @@ def get_billetweb_data(dr, headless=False):
                     'full': full,
                     'original_source_link': link,
                     'ticketing_platform_link': link,
-                    'event_desc': event_desc
+                    'description': description
                 }
                 records.append(record)
 
-                print(f"\nJust scraped {link}\n\t{record}")
+                print(f"Successfully scraped {link}\n{record}")
     
     driver.quit()
 
