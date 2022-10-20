@@ -1,5 +1,7 @@
 import json
 import argparse
+import pandas as pd
+import numpy as np
 
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data

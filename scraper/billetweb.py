@@ -113,33 +113,29 @@ def get_billetweb_data(dr, headless=False):
                 time_el = driver.find_element(
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > span > a > div')
                 event_time = time_el.text
-                event_arr = event_time.lower().split('from')
+                event_arr = event_time.lower().split(' from ')
                 if len(event_arr) > 1:
                     date_event = event_arr[0]
                     try:
-                        time_split = event_arr[1].split('to')
+                        time_split = event_arr[1].split(' to ')
                         start_time = time_split[0]
                         end_time = time_split[1]
                     except:
-                        time_split = event_arr[1].split("at ", '')
-                        start_time = time_split[0]
-                        end_time = ''
+                        print(f"Rejecting record: invalid dates")
+                        continue
 
                     event_start_time = f'{date_event}, {start_time}'
                     event_end_time = f'{date_event}, {end_time}'
                 else:
+                    event_arr = event_time.lower().split(' at ')
+                    print(event_arr)
                     try:
-                        event_arr = event_time.lower().split('to')
-                        start_time = event_arr[0]
-                        end_time = event_arr[1]
-                    except:
-                        event_arr = event_time.lower().split('at')
                         date_event = event_arr[0]
-                        try:
-                            start_time = event_arr[1]
-                        except:
-                            start_time = ''
-                        end_time = ''
+                        start_time = event_arr[1]
+                        end_time = start_time
+                    except:
+                        print(f"Rejecting record: invalid dates")
+                        continue
 
                     event_start_time = f'{start_time}'
                     event_end_time = f'{end_time}'
@@ -205,7 +201,7 @@ def get_billetweb_data(dr, headless=False):
                 full = ('complet' in title.lower())
 
                 # Is it an event for kids?
-                kids = ('kids' in title.lower())
+                kids = ('kids' in title.lower() or 'junior' in title.lower())
 
                 # Parse location fields
                 if ',' in location_text:
@@ -259,6 +255,12 @@ def get_billetweb_data(dr, headless=False):
                     end_datetime = parse(event_end_time)
                     end_date = end_datetime.strftime('%Y-%m-%d')
                     end_time = end_datetime.strftime('%H:%M:%S')
+
+                    duration = end_datetime - start_datetime
+                    hours = divmod(duration.total_seconds(), 3600)[0]
+                    if hours > 48:
+                        print(f"Rejecting record: event is too long {end_datetime}")
+                        continue
                 except:
                     end_date = ''
                     end_time = ''
