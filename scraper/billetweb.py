@@ -83,19 +83,23 @@ def get_billetweb_data(dr, headless=False):
     for page in webSites:
         print(f"\n==================\nProcessing page {page}")
         driver.get(page["url"])
-        time.sleep(2)
+        driver.implicitly_wait(2)
 
         driver.switch_to.frame(page["iframe"])
-        ele = driver.find_elements('xpath', '//a[@href]')
         ele = driver.find_elements(By.CSS_SELECTOR, 'a.naviguate')
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
             if 'https://www.billetweb.fr/multi_event.php?&multi' not in link:
-                print(f"-> Processing {link}... {links}")
+                print(f"-> Processing {link}...")
 
                 driver.get(link)
-                time.sleep(3)
+                driver.implicitly_wait(3)
+
+                try:
+                    driver.find_element(By.ID, 'more_info').click()
+                except:
+                    pass
 
                 page_link = driver.find_element(
                     by=By.CSS_SELECTOR, value='#page_block_location > div > div.location_info > div.address > a')
@@ -178,14 +182,9 @@ def get_billetweb_data(dr, headless=False):
 
                 try:
                     even_el = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#description > div:nth-child(3)')
+                            by=By.CSS_SELECTOR, value='#description')
                 except:
-                    try:
-                        even_el = driver.find_element(
-                            by=By.CSS_SELECTOR, value='#description > div > div > div')
-                    except:
-                        even_el = driver.find_element(
-                            by=By.CSS_SELECTOR, value='#description_block > div.ckeditor_block')
+                    continue
 
                 #TODO get the full description
                 description = even_el.text
