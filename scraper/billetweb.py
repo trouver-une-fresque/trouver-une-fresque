@@ -180,13 +180,13 @@ def get_billetweb_data(dr, headless=False):
                     except:
                         postal_code = ''
 
+                # Get the description
                 try:
                     even_el = driver.find_element(
                             by=By.CSS_SELECTOR, value='#description')
                 except:
+                    print(f"Rejecting record: no description")
                     continue
-
-                #TODO get the full description
                 description = even_el.text
 
                 # Is it a training event?
@@ -203,6 +203,9 @@ def get_billetweb_data(dr, headless=False):
                 # Is the event full?
                 #TODO scrape middle div
                 full = ('complet' in title.lower())
+
+                # Is it an event for kids?
+                kids = ('kids' in title.lower())
 
                 # Parse location fields
                 if ',' in location_text:
@@ -279,6 +282,7 @@ def get_billetweb_data(dr, headless=False):
                     'online': online,
                     'training': training,
                     'full': full,
+                    'kids': kids,
                     'original_source_link': link,
                     'ticketing_platform_link': link,
                     'description': description
