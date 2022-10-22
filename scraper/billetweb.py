@@ -128,7 +128,6 @@ def get_billetweb_data(dr, headless=False):
                     event_end_time = f'{date_event}, {end_time}'
                 else:
                     event_arr = event_time.lower().split(' at ')
-                    print(event_arr)
                     try:
                         date_event = event_arr[0]
                         start_time = event_arr[1]
@@ -234,7 +233,7 @@ def get_billetweb_data(dr, headless=False):
 
                 #TODO strip postal code from address
 
-                if online == 'False' and location_address == '':
+                if not online and location_address == '':
                     print("Rejecting record: empty address")
                     continue
 
@@ -290,8 +289,7 @@ def get_billetweb_data(dr, headless=False):
                     'description': description
                 }
                 records.append(record)
-
-                print(f"Successfully scraped {link}\n{record}")
+                print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
     
     driver.quit()
 
