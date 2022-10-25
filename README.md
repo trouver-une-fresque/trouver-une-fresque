@@ -35,7 +35,9 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de la Mobilité | https://www.billetweb.fr/pro/fresquedelamobilite | Scraping Billetweb | OK |
 | Fresque de l'Alimentation | https://www.billetweb.fr/pro/fresquealimentation | Scraping Billetweb | OK |
 | Fresque de la Construction | https://www.billetweb.fr/pro/fresquedelaconstruction | Scraping Billetweb | OK |
+| Fresque du Sexisme | https://www.billetweb.fr/pro/fresquedusexisme | Scraping Billetweb | OK |
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
+| Fresque Nos Vies Bas Carbone | https://www.nosviesbascarbone.org/participer-a-un-atelier | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | | Pas prévu pour le moment |
 | Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | | Pas prévu pour le moment |
 | Fresque des Déchets | https://greendonut.org/dechets/ | | Pas prévu pour le moment |

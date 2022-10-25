@@ -71,10 +71,22 @@ def get_billetweb_data(dr, headless=False):
             "id": 7
         },
         {
+            # Fresque du Sexisme
+            "url": "https://www.billetweb.fr/pro/fresquedusexisme",
+            "iframe": 'event21743',
+            "id": 8
+        },
+        {
             # Atelier OGRE
             "url": "https://www.billetweb.fr/pro/atelierogre",
             "iframe": 'event13026',
-            "id": 8
+            "id": 9
+        },
+        {
+            # Atelier Nos vies bas carbone
+            "url": "https://www.billetweb.fr/multi_event.php?user=132897",
+            "iframe": 'event22230',
+            "id": 10
         }
     ]
 
@@ -86,6 +98,7 @@ def get_billetweb_data(dr, headless=False):
         driver.implicitly_wait(2)
 
         driver.switch_to.frame(page["iframe"])
+
         ele = driver.find_elements(By.CSS_SELECTOR, 'a.naviguate')
         links = [e.get_attribute("href") for e in ele]
 
@@ -101,8 +114,13 @@ def get_billetweb_data(dr, headless=False):
                 except:
                     pass
 
-                page_link = driver.find_element(
-                    by=By.CSS_SELECTOR, value='#page_block_location > div > div.location_info > div.address > a')
+                try:
+                    page_link = driver.find_element(
+                        by=By.CSS_SELECTOR, value='#page_block_location > div > div.location_info > div.address > a')
+                except Exception as e:
+                    print(f"Rejecting record: {e}")
+                    continue
+
                 title_el = driver.find_element(
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > div.event_name.custom_font')
                 title = title_el.text
