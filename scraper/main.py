@@ -3,6 +3,8 @@ import argparse
 import pandas as pd
 import numpy as np
 
+from datetime import datetime
+
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from db.etl import etl
@@ -37,13 +39,12 @@ def main():
 
     df['flag_week'] = np.where(df['flag_week'] < '7 days',
                             'Less than 1 week', 'More than 1 week')
-    df['scrape_time'] = pd.to_datetime("now").strftime('%Y-%m-%d %H:%M:%S')
+    df['scrape_time'] = pd.to_datetime("now", utc=True).strftime('%Y-%m-%d %H:%M:%S')
 
     #etl(df)
 
-
-    dt = datetime.datetime.now()
-    insert_time = dt.strftime("%Y%m%d_%H%M%S ")
+    dt = datetime.now()
+    insert_time = dt.strftime("%Y%m%d_%H%M%S")
 
     with open(f'events_{insert_time}.json', 'w', encoding="UTF-8") as file:
         df.to_json(file, orient='records', force_ascii=False)
