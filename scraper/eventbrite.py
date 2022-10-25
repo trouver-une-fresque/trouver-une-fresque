@@ -95,12 +95,14 @@ def ticket_api(ids):
             location_name = ''
             location_address = ''
             location_city = ''
-
     else:
         latitude = ''
         longitude = ''
         postal_code = ''
         location_text = ''
+        location_name = ''
+        location_address = ''
+        location_city = ''
         depart = ''
 
     res = {
