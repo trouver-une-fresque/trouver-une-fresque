@@ -2,6 +2,7 @@ import requests
 import numpy as np
 import pandas as pd
 import time
+import json
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -152,7 +153,7 @@ def get_eventbrite_data(dr, headless=False):
 
     for page in webSites:
         driver.get(page['url'])
-        time.sleep(5)
+        driver.implicitly_wait(5)
         while True:
             try:
                 element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
@@ -160,7 +161,7 @@ def get_eventbrite_data(dr, headless=False):
                 driver.execute_script("arguments[0].click();", element)
                 driver.execute_script(
                     "window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(2)
+                driver.implicitly_wait(2)
             except:
                 break
             # ef = driver.find_elements(by=By.CSS_SELECTOR, value= '#events > section > div > div:nth-child(2) > div > div.organizer-profile__show-more.eds-l-pad-top-4.eds-align--center > button')
@@ -174,15 +175,16 @@ def get_eventbrite_data(dr, headless=False):
             '-')[-1].split('?')[0], events_link))
         unique_ids = np.unique(events_ids)
         id_chunks = [unique_ids[x:x+20] for x in range(0, len(unique_ids), 20)]
-        id_text = [','.join(chank) for chank in id_chunks]
+        id_text = [','.join(chunk) for chunk in id_chunks]
         for ids in unique_ids:
             try:
+                print(f"-> Processing {ids}...")
                 ticket_dic = ticket_api(ids)
                 ticket_dic['page_id'] = page['id']
                 records.append(ticket_dic)
-                print(f'added event : {ids}')
-            except:
-                print(f'there was an error with event nr: {ids}')
+                print(f'Successfully scraped {ids}\n{json.dumps(ticket_dic, indent=4)}')
+            except Exception as e:
+                print(f'Rejecting record {ids}: {e}')
 
     driver.quit()
 
