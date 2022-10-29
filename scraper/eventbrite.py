@@ -60,9 +60,13 @@ def ticket_api(page_id, eventbrite_id, link):
         full = 'False'
 
     if online == 'False':
+        file = open('config.json', 'r')
+        file = json.loads(file.read())
+        credentials = dict(file)
+        headers['Authorization'] = credentials["eventbrite_auth"]
+
         venue_id = data['primary_venue_id']
         venue_url = f"https://www.eventbriteapi.com/v3/venues/{venue_id}"
-        headers['Authorization'] = 'Bearer FLTI22VGKT2FHC4B7ZA4'
         venue_response = requests.request(
             "GET", url=venue_url, headers=headers)
         venue_data = venue_response.json()

@@ -19,7 +19,7 @@ def main():
     )
     args = parser.parse_args()
 
-    file = open('etl_config.json', 'r')
+    file = open('config.json', 'r')
     file = json.loads(file.read())
     credentials = dict(file)
 

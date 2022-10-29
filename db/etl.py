@@ -7,10 +7,8 @@ import json
 
 
 def etl(df):
-    file = open('etl_config.json', 'r')
-
+    file = open('config.json', 'r')
     file = json.loads(file.read())
-
     credentials = dict(file)
 
     df = df.astype(str)
