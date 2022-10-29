@@ -288,7 +288,7 @@ def get_billetweb_data(dr, headless=False):
                     end_date, end_time, location_text, location_name,
                     location_address, location_city, depart, postal_code,
                     latitude, longitude, online, training, full, kids, link,
-                    description)
+                    link, description)
 
                 records.append(record)
                 print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")

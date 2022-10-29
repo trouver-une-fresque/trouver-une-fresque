@@ -2,8 +2,8 @@
 def get_record_dict(ids, title, start_date, start_time, end_date,
                     end_time, location_text, location_name,
                     location_address, location_city, depart, postal_code,
-                    latitude, longitude, online, training, full, kids, link,
-                    description):
+                    latitude, longitude, online, training, full, kids,
+                    event_link, tickets_link, description):
     return {
         'page_id': ids,
         'title': title,
@@ -24,7 +24,7 @@ def get_record_dict(ids, title, start_date, start_time, end_date,
         'training': training,
         'full': full,
         'kids': kids,
-        'original_source_link': link,
-        'ticketing_platform_link': link,
+        'original_source_link': event_link,
+        'ticketing_platform_link': tickets_link,
         'description': description
     }

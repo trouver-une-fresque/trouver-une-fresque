@@ -109,7 +109,7 @@ def ticket_api(page_id, eventbrite_id, link):
     res = get_record_dict(page_id, title, start_date, start_time,
         end_date, end_time, location_text, location_name,
         location_address, location_city, depart, postal_code,
-        latitude, longitude, online, training, full, False, link, description)
+        latitude, longitude, online, training, full, False, link, tickets_url, description)
 
     return res
 
