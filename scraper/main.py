@@ -32,7 +32,7 @@ def main():
     df['flag_week'] = pd.to_datetime(
         df['end_date']) - pd.to_datetime(df['start_date'])
 
-    df['location'] = df['location'].str.strip()
+    #df['location'] = df['location'].str.strip()
     df['location_name'] = df['location_name'].str.strip()
     df['location_address'] = df['location_address'].str.strip()
     df['location_city'] = df['location_city'].str.strip()

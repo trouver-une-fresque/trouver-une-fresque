@@ -10,28 +10,26 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
+from scraper.records import get_record_dict
 from utils.readJson import get_address_data
 
 
-def ticket_api(ids):
+def ticket_api(page_id, eventbrite_id, link):
     url = "https://www.eventbrite.fr/api/v3/destination/events/viewEvent"
 
-    querystring = {"event_id": ids, "page_size": "1000",
+    querystring = {"event_id": eventbrite_id, "page_size": "1000",
                    "include_parent_events": "true"}
 
     payload = ""
     headers = {
-        "cookie": "SS=AE3DLHSfQDO1YjBhawTa9YoWbFFw1nSGZQ; AS=fbc0e2ff-a732-45db-b007-9cae03360a78; SP=AGQgbbnSw8F--uDo-bLWSlW9ZTk1nEUfcmzZSTN6IwXtaOHA3m14Ajx39XrKzOSLlOy8dQJH0-HUB6oEXUJek0C8KCUbIrcum7cZUyz-yup9BUfGoFabzmqiozDziCDyBe-0rTGsYqwu_Ul8oXTQWzSFTG23_JTC3QWM6cAzpgX33A80tUnxaP_-NNeJvIUbuzLdHlCL_agzNJnh6xixZQhUi0OUAJTr8nPZizGGHYf7zHDUkgUCkUU; G=v%253D2%2526i%253Da3344c52-8935-49a1-b0a2-37ea4cbbbf78%2526a%253D1001%2526s%253D991368c96eed8f52ada6e8422c9eb77d883512d5",
         "Accept": "*/*",
         "Accept-Language": "en-US,en;q=0.9,sq;q=0.8,el;q=0.7,es;q=0.6",
         "Connection": "keep-alive",
-        "Cookie": "G=v^%^3D2^%^26i^%^3De55de1db-f41a-4635-809c-238005512c0a^%^26a^%^3Dfd6^%^26s^%^3D2cdc32731cecf43e6a5aba2ebebdde1979191c1a; mgref=typeins; csrftoken=6807c3eae5d111ecaf04b30c0420ce5d; eblang=lo^%^3Dfr_FR^%^26la^%^3Dfr-fr; _ga=GA1.2.1270604210.1654544814; _gcl_au=1.1.379094521.1654544814; ebGAClientId=1270604210.1654544814; _scid=7b62bf4c-79bc-4bfc-a90f-c6508febfa36; _pin_unauth=dWlkPU16UmtaR1V3TVdRdFpHSm1OQzAwTmpZM0xUZzBabVF0WXpRMk9HRXlaR1ZsTUdabQ; _fbp=fb.1.1654544816226.1624514991; _sctr=1^|1654466400000; _gid=GA1.2.1114969091.1658262344; SS=AE3DLHSfQDO1YjBhawTa9YoWbFFw1nSGZQ; AS=fbc0e2ff-a732-45db-b007-9cae03360a78; SERVERID=djc76; _hp2_id.1404198904=^%^7B^%^22userId^%^22^%^3A^%^221243301556615404^%^22^%^2C^%^22pageviewId^%^22^%^3A^%^223283643756834549^%^22^%^2C^%^22sessionId^%^22^%^3A^%^221884191116488815^%^22^%^2C^%^22identity^%^22^%^3Anull^%^2C^%^22trackerVersion^%^22^%^3A^%^224.0^%^22^%^7D; _hp2_ses_props.1404198904=^%^7B^%^22ts^%^22^%^3A1658262346321^%^2C^%^22d^%^22^%^3A^%^22www.eventbrite.fr^%^22^%^2C^%^22h^%^22^%^3A^%^22^%^2Fo^%^2Fla-fresque-du-climat-18716137245^%^22^%^7D; _dd_s=rum=0&expire=1658263463901; SP=AGQgbbm690tGzlyrDyCpwnOatD-BJAlYNx3U6KJxTuwtiqFEPKWNuP6zcs47SwmWbutb6AzgkCZzRF_F91wKoXcsOllPAKidEz7b5MgwYXg63HW9qzTdlWlXdiBorsaXbo-UXIh6dYfc7JbGQRKPRqz3ZVradAqhhiP8qOFMdrWiLTgzQsIlKWnjGZGJqWZYC-LwscRipwO6EVksU6jGFYlZUjHibMZwjKGbHx4xcGyXSddART_umYY; _gat=1",
         "Referer": "https://www.eventbrite.fr/o/la-fresque-du-climat-18716137245",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
-        "X-CSRFToken": "6807c3eae5d111ecaf04b30c0420ce5d",
         "X-Requested-With": "XMLHttpRequest",
         "sec-ch-ua": "^\^.Not/A",
         "sec-ch-ua-mobile": "?0",
@@ -104,28 +102,14 @@ def ticket_api(ids):
         location_address = ''
         location_city = ''
         depart = ''
+    location_name = location_name.strip()
+    location_address = location_address.strip()
+    location_city = location_city.strip().title()
 
-    res = {
-        'title': title,
-        'start_date': start_date,
-        'start_time': start_time,
-        'end_date': end_date,
-        'end_time': end_time,
-        'location_text': location_text,
-        'location_name': location_name,
-        'location_address': location_address,
-        'location_city': location_city,
-        'depart': depart,
-        'postal_code': postal_code,
-        'latitude': latitude,
-        'longitude': longitude,
-        "online": online,
-        'training': training,
-        'full': full,
-        'original_source_link': tickets_url,
-        'ticketing_platform_link': tickets_url,
-        'description': description
-    }
+    res = get_record_dict(page_id, title, start_date, start_time,
+        end_date, end_time, location_text, location_name,
+        location_address, location_city, depart, postal_code,
+        latitude, longitude, online, training, full, False, link, description)
 
     return res
 
@@ -154,6 +138,7 @@ def get_eventbrite_data(dr, headless=False):
     records = []
 
     for page in webSites:
+        print(f"\n==================\nProcessing page {page}")
         driver.get(page['url'])
         driver.implicitly_wait(5)
         while True:
@@ -172,21 +157,22 @@ def get_eventbrite_data(dr, headless=False):
         links = [e.get_attribute("href") for e in ele]
 
         events_link = list(
-            filter(lambda n: 'https://www.eventbrite.fr/e/' in n, links))
-        events_ids = list(map(lambda n: n.split(
-            '-')[-1].split('?')[0], events_link))
-        unique_ids = np.unique(events_ids)
-        id_chunks = [unique_ids[x:x+20] for x in range(0, len(unique_ids), 20)]
-        id_text = [','.join(chunk) for chunk in id_chunks]
-        for ids in unique_ids:
+            filter(lambda n: 'https://www.eventbrite.fr/e/' in n, links)
+        )
+        events_ids = list(
+            map(lambda n: int(n.split('-')[-1].split('?')[0]), events_link)
+        )
+        unique_ids, unique_index = np.unique(events_ids, return_index=True)
+        unique_links = np.array(events_link)[unique_index]
+
+        for eventbrite_id, link in zip(unique_ids, unique_links):
             try:
-                print(f"-> Processing {ids}...")
-                ticket_dic = ticket_api(ids)
-                ticket_dic['page_id'] = page['id']
+                print(f"-> Processing {link}...")
+                ticket_dic = ticket_api(page["id"], eventbrite_id, link )
                 records.append(ticket_dic)
-                print(f'Successfully scraped {ids}\n{json.dumps(ticket_dic, indent=4)}')
+                print(f'Successfully scraped {link}\n{json.dumps(ticket_dic, indent=4)}')
             except Exception as e:
-                print(f'Rejecting record {ids}: {e}')
+                print(f'Rejecting record id={eventbrite_id}: {e}')
 
     driver.quit()
 

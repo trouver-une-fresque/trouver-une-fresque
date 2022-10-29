@@ -11,6 +11,7 @@ from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
 
+from scraper.records import get_record_dict
 from utils.readJson import get_address_data
 
 def get_billetweb_data(dr, headless=False):
@@ -127,6 +128,7 @@ def get_billetweb_data(dr, headless=False):
                 if 'cadeau' in title.lower():
                     print("Rejecting record: gift card")
                     continue
+                #TODO title contains online event
 
                 time_el = driver.find_element(
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > span > a > div')
@@ -170,7 +172,7 @@ def get_billetweb_data(dr, headless=False):
                     depart = ''
                     postal_code = ''
                     longitude = ''
-                    lattitude = ''
+                    latitude = ''
                 else:
                     location = page_link.get_attribute("href")
                     location_text = page_link.text
@@ -185,9 +187,9 @@ def get_billetweb_data(dr, headless=False):
                     except:
                         longitude = ''
                     try:
-                        lattitude = address_dict['lattitude']
+                        latitude = address_dict['latitude']
                     except:
-                        lattitude = ''
+                        latitude = ''
                     try:
                         postal_code = address_dict['postcode']
                     except:
@@ -218,7 +220,7 @@ def get_billetweb_data(dr, headless=False):
                 full = ('complet' in title.lower())
 
                 # Is it an event for kids?
-                kids = ('kids' in title.lower() or 'junior' in title.lower())
+                kids = ('kids' in title.lower() or 'junior' in title.lower() or 'jeunes' in title.lower())
 
                 # Parse location fields
                 if ',' in location_text:
@@ -282,30 +284,12 @@ def get_billetweb_data(dr, headless=False):
                     end_date = ''
                     end_time = ''
 
-                record = {
-                    'page_id': page["id"],
-                    'title': title,
-                    'start_date': start_date,
-                    'start_time': start_time,
-                    'end_date': end_date,
-                    'end_time': end_time,
-                    'location': location,
-                    'location_text': location_text,
-                    'location_name': location_name,
-                    'location_address': location_address,
-                    'location_city': location_city,
-                    'depart': depart,
-                    'postal_code': postal_code,
-                    'latitude': lattitude,
-                    'longitude': longitude,
-                    'online': online,
-                    'training': training,
-                    'full': full,
-                    'kids': kids,
-                    'original_source_link': link,
-                    'ticketing_platform_link': link,
-                    'description': description
-                }
+                record = get_record_dict(page["id"], title, start_date, start_time,
+                    end_date, end_time, location_text, location_name,
+                    location_address, location_city, depart, postal_code,
+                    latitude, longitude, online, training, full, kids, link,
+                    description)
+
                 records.append(record)
                 print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
     
