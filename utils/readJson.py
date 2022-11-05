@@ -1,40 +1,25 @@
+import re
 import requests
 
-# postcode =  "75015"
-
-
 def departement_code(postcode):
-
     try:
-
         re = requests.get(
             url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/codepostal_to_insee.json")
 
         data_from_link = dict(re.json())
-
         insee = data_from_link[postcode]
-
         insee_code = insee['insee']
 
         re2 = requests.get(
             url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/insee_to_codepostal_and_code_departement.json")
 
         dep_data_from_link = dict(re2.json())
-
         dep_dict = dep_data_from_link[insee_code]
-
         departement_code = dep_dict['departement']
 
         return departement_code
     except:
         return ''
-
-# lis = [item for item in data_from_link.values() if item['nom'] != None]
-# list = [item["departement"] for item in lis if item['code postal'] == postcode ]
-# if len(list) >0:
-#     # return list[0]
-# else :
-#     # return ''
 
 
 def get_address_data(text_address):
@@ -74,9 +59,9 @@ def get_address_data(text_address):
     except:
         longitude = ''
     try:
-        lattitude = data['features'][0]['geometry']['coordinates'][1]
+        latitude = data['features'][0]['geometry']['coordinates'][1]
     except:
-        lattitude = ''
+        latitude = ''
     cod_dep = departement_code(postcode)
 
     results = {
@@ -84,8 +69,16 @@ def get_address_data(text_address):
         'housenumber': housenumber,
         'postcode': postcode,
         'longitude': longitude,
-        'lattitude': lattitude,
+        'latitude': latitude,
         'cod_dep': cod_dep
     }
 
     return results
+
+
+def strip_postal_code(text_address):
+    zip_re = r'\b((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B)) *([0-9]{3})?\b'
+    zip_code = re.search(zip_re, text_address)
+    if zip_code:
+        text_address = text_address.replace(zip_code.group(0), "")
+    return text_address.strip().title()

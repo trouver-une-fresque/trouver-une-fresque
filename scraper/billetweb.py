@@ -12,7 +12,7 @@ from geopy import geocoders
 from dateutil.parser import *
 
 from scraper.records import get_record_dict
-from utils.readJson import get_address_data
+from utils.readJson import get_address_data, strip_postal_code
 
 def get_billetweb_data(dr, headless=False):
     print('Scraping data from www.billetweb.fr\n\n')
@@ -249,9 +249,7 @@ def get_billetweb_data(dr, headless=False):
                     location_city = ''
                 location_name = location_name.strip()
                 location_address = location_address.strip()
-                location_city = location_city.strip().title()
-
-                #TODO strip postal code from address
+                location_city = strip_postal_code(location_city)
 
                 if not online and location_address == '':
                     print("Rejecting record: empty address")

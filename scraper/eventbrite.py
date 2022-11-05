@@ -11,7 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 from scraper.records import get_record_dict
-from utils.readJson import get_address_data
+from utils.readJson import get_address_data, strip_postal_code
+
 
 
 def ticket_api(page_id, eventbrite_id, link):
@@ -108,7 +109,7 @@ def ticket_api(page_id, eventbrite_id, link):
         depart = ''
     location_name = location_name.strip()
     location_address = location_address.strip()
-    location_city = location_city.strip().title()
+    location_city = strip_postal_code(location_city)
 
     res = get_record_dict(page_id, title, start_date, start_time,
         end_date, end_time, location_text, location_name,
