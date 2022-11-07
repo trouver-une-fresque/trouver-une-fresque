@@ -128,7 +128,6 @@ def get_billetweb_data(dr, headless=False):
                 if 'cadeau' in title.lower():
                     print("Rejecting record: gift card")
                     continue
-                #TODO title contains online event
 
                 time_el = driver.find_element(
                     by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > span > a > div')
@@ -214,7 +213,8 @@ def get_billetweb_data(dr, headless=False):
 
                 # Is it an online event?
                 online = ('online' in title.lower() or 'en ligne' in title.lower())
-                
+                title = title.replace(" Online event", "")
+
                 # Is the event full?
                 #TODO scrape middle div
                 full = ('complet' in title.lower())
