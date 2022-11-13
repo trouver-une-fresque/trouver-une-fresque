@@ -49,18 +49,12 @@ def ticket_api(page_id, eventbrite_id, link):
     title = data['name']
     description = data['summary']
     tickets_url = data['tickets_url']
-    online = str(data['is_online_event'])
-    if field_training[0] in title.lower() or field_training[1] in title.lower():
-        training = 'True'
-    else:
-        training = 'False'
+    online = data['is_online_event']
+    training = (field_training[0] in title.lower() or field_training[1] in title.lower())
 
-    if 'complet' in title.lower():
-        full = 'True'
-    else:
-        full = 'False'
+    full = ('complet' in title.lower())
 
-    if online == 'False':
+    if not online:
         file = open('config.json', 'r')
         file = json.loads(file.read())
         credentials = dict(file)
