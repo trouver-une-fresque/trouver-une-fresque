@@ -6,6 +6,25 @@ from time import sleep
 import json
 
 
+def execute_values(conn, df, table):
+    tuples = [tuple(x) for x in df.to_numpy()]
+    cols = ','.join(list(df.columns))
+
+    # SQL query to execute
+    query = "INSERT INTO %s(%s) VALUES %%s" % (table, cols)
+    cursor = conn.cursor()
+    try:
+        extras.execute_values(cursor, query, tuples)
+        conn.commit()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error: %s" % error)
+        conn.rollback()
+        cursor.close()
+        return 1
+    print("the dataframe is inserted")
+    cursor.close()
+
+
 def etl(df):
     file = open('config.json', 'r')
     file = json.loads(file.read())
@@ -45,35 +64,14 @@ def etl(df):
     conn1.commit()
     conn1.close()
 
-    def execute_values(conn, df, table):
-
-        tuples = [tuple(x) for x in df.to_numpy()]
-
-        cols = ','.join(list(df.columns))
-        # SQL query to execute
-        query = "INSERT INTO %s(%s) VALUES %%s" % (table, cols)
-        cursor = conn.cursor()
-        try:
-            extras.execute_values(cursor, query, tuples)
-            conn.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print("Error: %s" % error)
-            conn.rollback()
-            cursor.close()
-            return 1
-        print("the dataframe is inserted")
-        cursor.close()
-
     conn = psycopg2.connect(
         database=database, user=user, password=psw, host=host, port=port
     )
-
     execute_values(conn, df, table_schema+'event_data')
 
     conn2 = psycopg2.connect(
         database=database, user=user, password=psw, host=host, port=port
     )
-
     conn2.autocommit = True
     cursor = conn2.cursor()
     try:
@@ -83,26 +81,25 @@ def etl(df):
 		SELECT
 				online       :: boolean 
 				,training    :: boolean 
-                ,full        :: boolean 
+                ,sold_out        :: boolean 
 				,(case when start_date='' then null else start_date end)   :: date as start_date 
 				,(case when start_time='' then null else start_time end)   :: time as start_time
 				,(case when end_date  ='' then null else end_date end)     :: date as end_date 
 				,(case when end_time  ='' then null else end_time end)	   :: time as end_time
-				,scrape_time :: timestamp 
-				,postal_code
+				,scrape_date :: timestamp 
+				,zip_code
 				,latitude
 				,longitude
-				,original_source_link
-				,ticketing_platform_link
+				,source_link
+				,tickets_link
 				,description
-				,flag_week
-				,depart
+				,department
 				,title
 				,location
 				,location_name
-				,location_address
-				,location_city
-				,page_id	
+				,address
+				,city
+				,workshop_type	
 		FROM {table_schema}event_data;
 
 
@@ -110,26 +107,25 @@ def etl(df):
 		SELECT
 			online       :: boolean 
 			,training    :: boolean 
-            ,full        :: boolean 
+            ,sold_out        :: boolean 
 			,(case when start_date='' then null else start_date end)   :: date as start_date 
 			,(case when start_time='' then null else start_time end)   :: time as start_time
 			,(case when end_date  ='' then null else end_date end)     :: date as end_date 
 			,(case when end_time  ='' then null else end_time end)	   :: time as end_time
-			,scrape_time :: timestamp 
-			,postal_code
+			,scrape_date :: timestamp 
+			,zip_code
 			,latitude
 			,longitude
-			,original_source_link
-			,ticketing_platform_link
+			,source_link
+			,tickets_link
 			,description
-			,flag_week
-			,depart
+			,department
 			,title
 			,location
 			,location_name
-			,location_address
-			,location_city
-			,page_id	
+			,address
+			,city
+			,workshop_type	
 		FROM {table_schema}event_data;
 
 		'''

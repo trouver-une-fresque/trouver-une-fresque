@@ -12,7 +12,7 @@ from geopy import geocoders
 from dateutil.parser import *
 
 from scraper.records import get_record_dict
-from utils.readJson import get_address_data, strip_postal_code
+from utils.readJson import get_address_data, strip_zip_code
 
 def get_billetweb_data(dr, headless=False):
     print('Scraping data from www.billetweb.fr\n\n')
@@ -163,24 +163,24 @@ def get_billetweb_data(dr, headless=False):
                         page_link = driver.find_element(
                             by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > div.event_name.custom_font > a.action_button.secondary.virtual.active')
                         location = page_link.text
-                        location_text = page_link.text
+                        full_location = page_link.text
                     except:
-                        location_text = 'Online'
+                        full_location = ''
                     if 'en ligne' in title.lower():
-                        location_text = 'Online'
-                    depart = ''
-                    postal_code = ''
+                        full_location = ''
+                    department = ''
+                    zip_code = ''
                     longitude = ''
                     latitude = ''
                 else:
                     location = page_link.get_attribute("href")
-                    location_text = page_link.text
-                    address_dict = get_address_data(location_text)
+                    full_location = page_link.text
+                    address_dict = get_address_data(full_location)
 
                     try:
-                        depart = address_dict['cod_dep']
+                        department = address_dict['cod_dep']
                     except:
-                        depart = ''
+                        department = ''
                     try:
                         longitude = address_dict['longitude']
                     except:
@@ -190,9 +190,9 @@ def get_billetweb_data(dr, headless=False):
                     except:
                         latitude = ''
                     try:
-                        postal_code = address_dict['postcode']
+                        zip_code = address_dict['postcode']
                     except:
-                        postal_code = ''
+                        zip_code = ''
 
                 # Get the description
                 try:
@@ -223,35 +223,35 @@ def get_billetweb_data(dr, headless=False):
                 kids = ('kids' in title.lower() or 'junior' in title.lower() or 'jeunes' in title.lower())
 
                 # Parse location fields
-                if ',' in location_text:
-                    loc_arr = location_text.split(',')
+                if ',' in full_location:
+                    loc_arr = full_location.split(',')
                     if len(loc_arr) >= 3:
                         if loc_arr[2].strip().lower() == 'france':
                             location_name = ''
-                            location_address = loc_arr[0]
-                            location_city = loc_arr[1]
+                            address = loc_arr[0]
+                            city = loc_arr[1]
                         else:
                             location_name = loc_arr[0]
-                            location_address = loc_arr[1]
-                            location_city = loc_arr[2]
+                            address = loc_arr[1]
+                            city = loc_arr[2]
                     elif len(loc_arr) == 2:
                         if loc_arr[1].strip().lower() == 'france':
                             location_name = ''
-                            location_address = ''
-                            location_city = loc_arr[0]
+                            address = ''
+                            city = loc_arr[0]
                         else:
                             location_name = ''
-                            location_address = loc_arr[0]
-                            location_city = loc_arr[1]
+                            address = loc_arr[0]
+                            city = loc_arr[1]
                 else:
                     location_name = ''
-                    location_address = ''
-                    location_city = ''
+                    address = ''
+                    city = ''
                 location_name = location_name.strip()
-                location_address = location_address.strip()
-                location_city = strip_postal_code(location_city)
+                address = address.strip()
+                city = strip_zip_code(city)
 
-                if not online and location_address == '':
+                if not online and address == '':
                     print("Rejecting record: empty address")
                     continue
 
@@ -279,12 +279,12 @@ def get_billetweb_data(dr, headless=False):
                         print(f"Rejecting record: event is too long {end_datetime}")
                         continue
                 except:
-                    end_date = ''
-                    end_time = ''
+                    end_date = None
+                    end_time = None
 
                 record = get_record_dict(page["id"], title, start_date, start_time,
-                    end_date, end_time, location_text, location_name,
-                    location_address, location_city, depart, postal_code,
+                    end_date, end_time, full_location, location_name,
+                    address, city, department, zip_code,
                     latitude, longitude, online, training, full, kids, link,
                     link, description)
 

@@ -25,7 +25,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 
 | Atelier       | Lien           | Source | Supporté  |
 | ------------- |:-------------:| :-----:| :-----:|
-| Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping Eventbrite | OK |
+| Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | Non supporté pour le moment |
 | 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
 | Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |

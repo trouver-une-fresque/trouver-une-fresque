@@ -29,24 +29,18 @@ def main():
     tot = billetweb_records + eventbrite_records
     df = pd.DataFrame(tot)
 
-    df['flag_week'] = pd.to_datetime(
-        df['end_date']) - pd.to_datetime(df['start_date'])
-
     #df['location'] = df['location'].str.strip()
     df['location_name'] = df['location_name'].str.strip()
-    df['location_address'] = df['location_address'].str.strip()
-    df['location_city'] = df['location_city'].str.strip()
-
-    df['flag_week'] = np.where(df['flag_week'] < '7 days',
-                            'Less than 1 week', 'More than 1 week')
-    df['scrape_time'] = pd.to_datetime("now", utc=True).strftime('%Y-%m-%d %H:%M:%S')
+    df['address'] = df['address'].str.strip()
+    df['city'] = df['city'].str.strip()
+    df['scrape_date'] = pd.to_datetime("now", utc=True).strftime('%Y-%m-%d %H:%M:%S')
 
     #etl(df)
 
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
 
-    with open(f'events_{insert_time}.json', 'w', encoding="UTF-8") as file:
+    with open(f'results/events_{insert_time}.json', 'w', encoding="UTF-8") as file:
         df.to_json(file, orient='records', force_ascii=False)
 
 

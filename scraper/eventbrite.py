@@ -11,11 +11,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 from scraper.records import get_record_dict
-from utils.readJson import get_address_data, strip_postal_code
+from utils.readJson import get_address_data, strip_zip_code
 
 
 
-def ticket_api(page_id, eventbrite_id, link):
+def ticket_api(workshop_type, eventbrite_id, link):
     url = "https://www.eventbrite.fr/api/v3/destination/events/viewEvent"
 
     querystring = {"event_id": eventbrite_id, "page_size": "1000",
@@ -67,47 +67,47 @@ def ticket_api(page_id, eventbrite_id, link):
         venue_data = venue_response.json()
         latitude = venue_data['latitude']
         longitude = venue_data['longitude']
-        postal_code = venue_data['address']['postal_code']
-        location_text = venue_data['address']['localized_address_display']
-        address_dict = get_address_data(location_text)
+        zip_code = venue_data['address']['zip_code']
+        full_location = venue_data['address']['localized_address_display']
+        address_dict = get_address_data(full_location)
         try:
-            depart = address_dict['cod_dep']
+            department = address_dict['cod_dep']
         except:
-            depart = ''
-        if ',' in location_text:
-            loc_arr = location_text.split(',')
+            department = ''
+        if ',' in full_location:
+            loc_arr = full_location.split(',')
             if len(loc_arr) == 2:
                 location_name = ''
-                location_address = loc_arr[0]
-                location_city = loc_arr[1]
+                address = loc_arr[0]
+                city = loc_arr[1]
             elif len(loc_arr) == 3:
                 location_name = loc_arr[0]
-                location_address = ''
-                location_city = loc_arr[1]
+                address = ''
+                city = loc_arr[1]
             elif len(loc_arr) > 3:
                 location_name = loc_arr[0]
-                location_address = loc_arr[1]
-                location_city = loc_arr[-2]
+                address = loc_arr[1]
+                city = loc_arr[-2]
         else:
             location_name = ''
-            location_address = ''
-            location_city = ''
+            address = ''
+            city = ''
     else:
         latitude = ''
         longitude = ''
-        postal_code = ''
-        location_text = ''
+        zip_code = ''
+        full_location = ''
         location_name = ''
-        location_address = ''
-        location_city = ''
-        depart = ''
+        address = ''
+        city = ''
+        department = ''
     location_name = location_name.strip()
-    location_address = location_address.strip()
-    location_city = strip_postal_code(location_city)
+    address = address.strip()
+    city = strip_zip_code(city)
 
-    res = get_record_dict(page_id, title, start_date, start_time,
-        end_date, end_time, location_text, location_name,
-        location_address, location_city, depart, postal_code,
+    res = get_record_dict(workshop_type, title, start_date, start_time,
+        end_date, end_time, full_location, location_name,
+        address, city, department, zip_code,
         latitude, longitude, online, training, full, False, link, tickets_url, description)
 
     return res
