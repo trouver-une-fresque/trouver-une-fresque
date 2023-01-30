@@ -42,3 +42,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | | Pas prévu pour le moment |
 | Fresque des Déchets | https://greendonut.org/dechets/ | | Pas prévu pour le moment |
 | Fresque du Textile | https://greendonut.org/textile/ | | Pas prévu pour le moment |
+
+## Dev
+
+https://supabase.com/docs/guides/cli/local-development

@@ -1,7 +1,7 @@
 import re
 import requests
 
-def departmentement_code(postcode):
+def department_code(postcode):
     try:
         re = requests.get(
             url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/codepostal_to_insee.json")
@@ -11,13 +11,13 @@ def departmentement_code(postcode):
         insee_code = insee['insee']
 
         re2 = requests.get(
-            url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/insee_to_codepostal_and_code_departmentement.json")
+            url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/insee_to_codepostal_and_code_departement.json")
 
         dep_data_from_link = dict(re2.json())
         dep_dict = dep_data_from_link[insee_code]
-        departmentement_code = dep_dict['departmentement']
+        department_code = dep_dict['department']
 
-        return departmentement_code
+        return department_code
     except:
         return ''
 
@@ -62,7 +62,7 @@ def get_address_data(text_address):
         latitude = data['features'][0]['geometry']['coordinates'][1]
     except:
         latitude = ''
-    cod_dep = departmentement_code(postcode)
+    cod_dep = department_code(postcode)
 
     results = {
 

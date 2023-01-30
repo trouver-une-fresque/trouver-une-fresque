@@ -3,10 +3,16 @@ import argparse
 import pandas as pd
 import psycopg2
 
-from db.etl import execute_values
+from db.etl import execute_values, truncate
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--truncate-first",
+        action="store_true",
+        default=False,
+        help="truncate db before inserting again"
+    )
     parser.add_argument(
         "--input",
         type=str,
@@ -23,7 +29,7 @@ def main():
     psw = credentials['psw']
     database = credentials['database']
 
-    conn1 = psycopg2.connect(
+    conn = psycopg2.connect(
         database=database, user=user, password=psw, host=host, port=port
     )
 
@@ -32,4 +38,7 @@ def main():
     df = pd.DataFrame.from_dict(pd.json_normalize(input_records), orient='columns')
     print(df)
 
-    execute_values(conn1, df, "events")
+    if args.truncate_first:
+        truncate(conn, 'auth.events_future')
+
+    execute_values(conn, df, "auth.events_future")
