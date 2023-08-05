@@ -16,8 +16,9 @@ from dateutil.parser import *
 from scraper.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
+
 def get_billetweb_data(dr, headless=False):
-    print('Scraping data from www.billetweb.fr\n\n')
+    print("Scraping data from www.billetweb.fr\n\n")
 
     options = FirefoxOptions()
     options.headless = headless
@@ -28,69 +29,69 @@ def get_billetweb_data(dr, headless=False):
         {
             # Fresque des Nouveaux Récits
             "url": "https://www.billetweb.fr/pro/fdnr",
-            "iframe": 'event21569',
-            "id": 0
+            "iframe": "event21569",
+            "id": 0,
         },
         {
             # Fresque Océane
             "url": "https://www.billetweb.fr/pro/billetteriefo",
-            "iframe": 'event15247',
-            "id": 1
+            "iframe": "event15247",
+            "id": 1,
         },
         {
             # Fresque de la Biodiversité
             "url": "https://www.billetweb.fr/multi_event.php?user=82762",
-            "iframe": 'event17309',
-            "id": 2
+            "iframe": "event17309",
+            "id": 2,
         },
         {
             # Fresque du Numérique
             "url": "https://www.billetweb.fr/multi_event.php?user=84999",
-            "iframe": 'eventu84999',
-            "id": 3
+            "iframe": "eventu84999",
+            "id": 3,
         },
         {
             # Fresque Agri'Alim
             "url": "https://www.billetweb.fr/pro/fresqueagrialim",
-            "iframe": 'event11421',
-            "id": 4
+            "iframe": "event11421",
+            "id": 4,
         },
         {
             # Fresque de l'Alimentation
             "url": "https://www.billetweb.fr/pro/fresquealimentation",
-            "iframe": 'event11155',
-            "id": 5
+            "iframe": "event11155",
+            "id": 5,
         },
         {
             # Fresque de la Construction
             "url": "https://www.billetweb.fr/pro/fresquedelaconstruction",
-            "iframe": 'event11574',
-            "id": 6
+            "iframe": "event11574",
+            "id": 6,
         },
         {
             # Fresque de la Mobilité
             "url": "https://www.billetweb.fr/pro/fresquedelamobilite",
-            "iframe": 'event11698',
-            "id": 7
+            "iframe": "event11698",
+            "id": 7,
         },
         {
             # Fresque du Sexisme
             "url": "https://www.billetweb.fr/pro/fresque-du-sexisme",
-            "iframe": 'event27112',
-            "id": 8
+            "iframe": "event27112",
+            "id": 8,
         },
         {
             # Atelier OGRE
             "url": "https://www.billetweb.fr/pro/atelierogre",
-            "iframe": 'event13026',
-            "id": 9
+            "iframe": "event13026",
+            "id": 9,
         },
         {
             # Atelier Nos vies bas carbone
             "url": "https://www.billetweb.fr/multi_event.php?user=132897",
-            "iframe": 'event22230',
-            "id": 10
-        }
+            "iframe": "event22230",
+            "id": 10,
+        },
     ]
 
     records = []
@@ -102,11 +103,11 @@ def get_billetweb_data(dr, headless=False):
 
         driver.switch_to.frame(page["iframe"])
 
-        ele = driver.find_elements(By.CSS_SELECTOR, 'a.naviguate')
+        ele = driver.find_elements(By.CSS_SELECTOR, "a.naviguate")
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
-            if 'https://www.billetweb.fr/multi_event.php?&multi' not in link:
+            if "https://www.billetweb.fr/multi_event.php?&multi" not in link:
                 print(f"\n-> Processing {link} ...")
                 driver.get(link)
                 driver.implicitly_wait(3)
@@ -121,13 +122,15 @@ def get_billetweb_data(dr, headless=False):
                 new_ui = False
                 try:
                     driver.find_element(
-                        By.CSS_SELECTOR, '#description_block > div.event_title > div.event_name')
+                        By.CSS_SELECTOR,
+                        "#description_block > div.event_title > div.event_name",
+                    )
                 except NoSuchElementException:
                     new_ui = True
                     pass
 
                 try:
-                    driver.find_element(By.ID, 'more_info').click()
+                    driver.find_element(By.ID, "more_info").click()
                 except:
                     pass
 
@@ -138,13 +141,16 @@ def get_billetweb_data(dr, headless=False):
 
                 if new_ui:
                     title_el = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#event_title > div.event_name')
+                        by=By.CSS_SELECTOR, value="#event_title > div.event_name"
+                    )
                 else:
                     title_el = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#description_block > div.event_title > div.event_name')
+                        by=By.CSS_SELECTOR,
+                        value="#description_block > div.event_title > div.event_name",
+                    )
                 title = title_el.text
 
-                if 'cadeau' in title.lower() or 'don' in title.lower():
+                if "cadeau" in title.lower() or "don" in title.lower():
                     print("Rejecting record: gift card")
                     continue
 
@@ -155,14 +161,18 @@ def get_billetweb_data(dr, headless=False):
 
                 if new_ui:
                     time_el = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#event_title > div.event_start_time > span.text')
+                        by=By.CSS_SELECTOR,
+                        value="#event_title > div.event_start_time > span.text",
+                    )
                     event_time = time_el.text.lower()
                 else:
                     time_el = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#description_block > div.event_title > span > a > div.event_start_time')
+                        by=By.CSS_SELECTOR,
+                        value="#description_block > div.event_title > span > a > div.event_start_time",
+                    )
                     event_time = time_el.text.lower()
 
-                if ' from ' in event_time and ' to ' in event_time:
+                if " from " in event_time and " to " in event_time:
                     """Thu Oct 19, 2023 from 01:00 PM to 02:00 PM"""
                     try:
                         date_and_times = event_time.split(" from ")
@@ -171,10 +181,12 @@ def get_billetweb_data(dr, headless=False):
                         start_time_string = time_range[0]
                         end_time_string = time_range[1]
                     except:
-                        print(f"Rejecting record: invalid dates: start_date_string={start_date_string}, start_time_string={start_time_string}, end_time_string={end_time_string}")
+                        print(
+                            f"Rejecting record: invalid dates: start_date_string={start_date_string}, start_time_string={start_time_string}, end_time_string={end_time_string}"
+                        )
                         continue
 
-                elif ' to ' in event_time:
+                elif " to " in event_time:
                     """Sat Apr 22, 2023 to Sat Sep 02, 2023"""
                     try:
                         dates = event_time.split(" to ")
@@ -183,24 +195,28 @@ def get_billetweb_data(dr, headless=False):
                         start_time_string = ""
                         end_time_string = ""
                     except:
-                        print(f"Rejecting record: invalid dates: start_date_string={start_date_string}, end_date_string={end_date_string}")
+                        print(
+                            f"Rejecting record: invalid dates: start_date_string={start_date_string}, end_date_string={end_date_string}"
+                        )
                         continue
 
-                elif ' at ' in event_time:
-                    event_arr = event_time.split(' at ')
+                elif " at " in event_time:
+                    event_arr = event_time.split(" at ")
                     try:
                         start_date_string = event_arr[0]
                         start_time_string = event_arr[1]
                         end_time_string = ""
                     except:
-                        print(f"Rejecting record: invalid dates: {start_time} (start_time) and {end_time} (end_time)")
+                        print(
+                            f"Rejecting record: invalid dates: {start_time} (start_time) and {end_time} (end_time)"
+                        )
                         continue
 
                 else:
                     """Sat Sep 02, 2023"""
-                    #title_el = driver.find_element(
+                    # title_el = driver.find_element(
                     #    by=By.CSS_SELECTOR, value='#shop_block > #context_title')
-                    #title = title_el.text
+                    # title = title_el.text
 
                     start_date_string = event_time
                     start_time_string = ""
@@ -216,37 +232,42 @@ def get_billetweb_data(dr, headless=False):
                 if not end_time_string == "":
                     end_time = datetime.strptime(end_time_string, "%I:%M %p")
                     duration = end_time - start_time
-                    
+
                     if duration > timedelta(hours=48):
-                        print(f"Rejecting record: event is too long duration={duration}")
+                        print(
+                            f"Rejecting record: event is too long duration={duration}"
+                        )
                         continue
 
                 ################################################################
                 # Is it an online event?
                 ################################################################
-                online = ('online' in title.lower() or 'en ligne' in title.lower())
+                online = "online" in title.lower() or "en ligne" in title.lower()
                 title = title.replace(" Online event", "")
 
                 ################################################################
                 # Location data
                 ################################################################
-                full_location = ''
-                location_name = ''
-                address = ''
-                city = ''
-                department = ''
-                longitude = ''
-                latitude = ''
-                zip_code = ''
+                full_location = ""
+                location_name = ""
+                address = ""
+                city = ""
+                department = ""
+                longitude = ""
+                latitude = ""
+                zip_code = ""
 
                 if not online:
                     try:
                         if new_ui:
                             address_el = driver.find_element(
-                                by=By.CSS_SELECTOR, value='div.location_summary')
+                                by=By.CSS_SELECTOR, value="div.location_summary"
+                            )
                         else:
                             address_el = driver.find_element(
-                                by=By.CSS_SELECTOR, value='#page_block_location > div.location > div.location_info > div.address > a')
+                                by=By.CSS_SELECTOR,
+                                value="#page_block_location > div.location > div.location_info > div.address > a",
+                            )
                     except:
                         print(f"Rejecting record: empty address")
                         continue
@@ -256,27 +277,27 @@ def get_billetweb_data(dr, headless=False):
                     address_dict = get_address_data(full_location)
 
                     try:
-                        department = address_dict['cod_dep']
+                        department = address_dict["cod_dep"]
                     except:
-                        department = ''
+                        department = ""
                     try:
-                        longitude = address_dict['longitude']
+                        longitude = address_dict["longitude"]
                     except:
-                        longitude = ''
+                        longitude = ""
                     try:
-                        latitude = address_dict['latitude']
+                        latitude = address_dict["latitude"]
                     except:
-                        latitude = ''
+                        latitude = ""
                     try:
-                        zip_code = address_dict['postcode']
+                        zip_code = address_dict["postcode"]
                     except:
-                        zip_code = ''
+                        zip_code = ""
 
                     # Parse location fields
-                    if ',' in full_location:
-                        loc_arr = full_location.split(',')
+                    if "," in full_location:
+                        loc_arr = full_location.split(",")
                         if len(loc_arr) >= 3:
-                            if loc_arr[2].strip().lower() == 'france':
+                            if loc_arr[2].strip().lower() == "france":
                                 address = loc_arr[0]
                                 city = loc_arr[1]
                             else:
@@ -284,7 +305,7 @@ def get_billetweb_data(dr, headless=False):
                                 address = loc_arr[1]
                                 city = loc_arr[2]
                         elif len(loc_arr) == 2:
-                            if loc_arr[1].strip().lower() == 'france':
+                            if loc_arr[1].strip().lower() == "france":
                                 city = loc_arr[0]
                             else:
                                 address = loc_arr[0]
@@ -294,7 +315,7 @@ def get_billetweb_data(dr, headless=False):
                     address = address.strip()
                     city = strip_zip_code(city)
 
-                    if address == '':
+                    if address == "":
                         print("Rejecting record: empty address")
                         continue
 
@@ -303,7 +324,8 @@ def get_billetweb_data(dr, headless=False):
                 ################################################################
                 try:
                     even_el = driver.find_element(
-                            by=By.CSS_SELECTOR, value='#description')
+                        by=By.CSS_SELECTOR, value="#description"
+                    )
                 except:
                     print(f"Rejecting record: no description")
                     continue
@@ -317,32 +339,54 @@ def get_billetweb_data(dr, headless=False):
                 for w in training_list:
                     if w in title.lower():
                         check_tr = +1
-                training = (check_tr > 0)
+                training = check_tr > 0
 
                 ################################################################
                 # Is it full?
                 ################################################################
-                #TODO scrape middle div
-                full = ('complet' in title.lower())
+                # TODO scrape middle div
+                full = "complet" in title.lower()
 
                 ################################################################
                 # Is it suited for kids?
                 ################################################################
-                kids = ('kids' in title.lower() or 'junior' in title.lower() or 'jeunes' in title.lower())
+                kids = (
+                    "kids" in title.lower()
+                    or "junior" in title.lower()
+                    or "jeunes" in title.lower()
+                )
 
                 ################################################################
                 # Building final object
                 ################################################################
 
-                record = get_record_dict(page["id"], title, event_date, start_time,
-                    event_date, end_time, full_location, location_name,
-                    address, city, department, zip_code,
-                    latitude, longitude, online, training, full, kids, link,
-                    link, description)
+                record = get_record_dict(
+                    page["id"],
+                    title,
+                    event_date,
+                    start_time,
+                    event_date,
+                    end_time,
+                    full_location,
+                    location_name,
+                    address,
+                    city,
+                    department,
+                    zip_code,
+                    latitude,
+                    longitude,
+                    online,
+                    training,
+                    full,
+                    kids,
+                    link,
+                    link,
+                    description,
+                )
 
                 records.append(record)
                 print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
-    
+
     driver.quit()
 
     return records

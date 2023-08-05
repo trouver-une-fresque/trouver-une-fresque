@@ -8,7 +8,7 @@ import json
 
 def execute_values(conn, df, table):
     tuples = [tuple(x) for x in df.to_numpy()]
-    cols = ','.join(list(df.columns))
+    cols = ",".join(list(df.columns))
 
     # SQL query to execute
     query = "INSERT INTO %s(%s) VALUES %%s" % (table, cols)
@@ -40,17 +40,17 @@ def truncate(conn, table):
 
 
 def etl(df):
-    file = open('config.json', 'r')
+    file = open("config.json", "r")
     file = json.loads(file.read())
     credentials = dict(file)
 
     df = df.astype(str)
 
-    host = credentials['host']
-    port = credentials['port']
-    user = credentials['user']
-    psw = credentials['psw']
-    database = credentials['database']
+    host = credentials["host"]
+    port = credentials["port"]
+    user = credentials["user"]
+    psw = credentials["psw"]
+    database = credentials["database"]
 
     conn = psycopg2.connect(
         database=database, user=user, password=psw, host=host, port=port
@@ -60,11 +60,11 @@ def etl(df):
     # leur start_date+start_time < maintenant, les ajouter dans table past_events
 
     # Insert all events to the historical table
-    execute_values(conn, df, 'auth.events_scrapped')
+    execute_values(conn, df, "auth.events_scrapped")
 
     # Delete all future events before inserting them again, so that they are
     # updated
-    truncate(conn, 'auth.events_future')
-    execute_values(conn, df, 'auth.events_future')
+    truncate(conn, "auth.events_future")
+    execute_values(conn, df, "auth.events_future")
 
     conn.close()
