@@ -3,8 +3,10 @@ import time
 import pandas as pd
 import requests
 import json
+from datetime import datetime, timedelta
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from geopy.geocoders import Nominatim
@@ -73,8 +75,8 @@ def get_billetweb_data(dr, headless=False):
         },
         {
             # Fresque du Sexisme
-            "url": "https://www.billetweb.fr/pro/fresquedusexisme",
-            "iframe": 'event21743',
+            "url": "https://www.billetweb.fr/pro/fresque-du-sexisme",
+            "iframe": 'event27112',
             "id": 8
         },
         {
@@ -105,76 +107,152 @@ def get_billetweb_data(dr, headless=False):
 
         for link in links:
             if 'https://www.billetweb.fr/multi_event.php?&multi' not in link:
-                print(f"-> Processing {link}...")
-
+                print(f"\n-> Processing {link} ...")
                 driver.get(link)
                 driver.implicitly_wait(3)
+
+                try:
+                    # Attempt to find the div element by its id
+                    shop_block = driver.find_element(By.ID, "description_block")
+                except NoSuchElementException:
+                    print("Rejecting record: no description")
+                    continue
+
+                new_ui = False
+                try:
+                    driver.find_element(
+                        By.CSS_SELECTOR, '#description_block > div.event_title > div.event_name')
+                except NoSuchElementException:
+                    new_ui = True
+                    pass
 
                 try:
                     driver.find_element(By.ID, 'more_info').click()
                 except:
                     pass
 
-                try:
-                    page_link = driver.find_element(
-                        by=By.CSS_SELECTOR, value='#page_block_location > div > div.location_info > div.address > a')
-                except Exception as e:
-                    print(f"Rejecting record: {e}")
-                    continue
+                ################################################################
+                # Parse event title
+                ################################################################
+                print("Parsing title...")
 
-                title_el = driver.find_element(
-                    by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > div.event_name.custom_font')
+                if new_ui:
+                    title_el = driver.find_element(
+                        by=By.CSS_SELECTOR, value='#event_title > div.event_name')
+                else:
+                    title_el = driver.find_element(
+                        by=By.CSS_SELECTOR, value='#description_block > div.event_title > div.event_name')
                 title = title_el.text
-                if 'cadeau' in title.lower():
+
+                if 'cadeau' in title.lower() or 'don' in title.lower():
                     print("Rejecting record: gift card")
                     continue
 
-                time_el = driver.find_element(
-                    by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > span > a > div')
-                event_time = time_el.text
-                event_arr = event_time.lower().split(' from ')
-                if len(event_arr) > 1:
-                    date_event = event_arr[0]
+                ################################################################
+                # Parse start and end dates
+                ################################################################
+                print("Parsing start and end dates...")
+
+                if new_ui:
+                    time_el = driver.find_element(
+                        by=By.CSS_SELECTOR, value='#event_title > div.event_start_time > span.text')
+                    event_time = time_el.text.lower()
+                else:
+                    time_el = driver.find_element(
+                        by=By.CSS_SELECTOR, value='#description_block > div.event_title > span > a > div.event_start_time')
+                    event_time = time_el.text.lower()
+
+                if ' from ' in event_time and ' to ' in event_time:
+                    """Thu Oct 19, 2023 from 01:00 PM to 02:00 PM"""
                     try:
-                        time_split = event_arr[1].split(' to ')
-                        start_time = time_split[0]
-                        end_time = time_split[1]
+                        date_and_times = event_time.split(" from ")
+                        start_date_string = date_and_times[0]
+                        time_range = date_and_times[1].split(" to ")
+                        start_time_string = time_range[0]
+                        end_time_string = time_range[1]
                     except:
-                        print(f"Rejecting record: invalid dates")
+                        print(f"Rejecting record: invalid dates: start_date_string={start_date_string}, start_time_string={start_time_string}, end_time_string={end_time_string}")
                         continue
 
-                    event_start_time = f'{date_event}, {start_time}'
-                    event_end_time = f'{date_event}, {end_time}'
-                else:
-                    event_arr = event_time.lower().split(' at ')
+                elif ' to ' in event_time:
+                    """Sat Apr 22, 2023 to Sat Sep 02, 2023"""
                     try:
-                        date_event = event_arr[0]
-                        start_time = event_arr[1]
-                        end_time = start_time
+                        dates = event_time.split(" to ")
+                        start_date_string = dates[0]
+                        end_date_string = dates[1]
+                        start_time_string = ""
+                        end_time_string = ""
                     except:
-                        print(f"Rejecting record: invalid dates")
+                        print(f"Rejecting record: invalid dates: start_date_string={start_date_string}, end_date_string={end_date_string}")
                         continue
 
-                    event_start_time = f'{start_time}'
-                    event_end_time = f'{end_time}'
-
-                if page_link.get_attribute("href") == "http://maps.google.fr/maps?q=":
+                elif ' at ' in event_time:
+                    event_arr = event_time.split(' at ')
                     try:
-                        page_link = driver.find_element(
-                            by=By.CSS_SELECTOR, value='#description_block > div.event_title.center > div.event_name.custom_font > a.action_button.secondary.virtual.active')
-                        location = page_link.text
-                        full_location = page_link.text
+                        start_date_string = event_arr[0]
+                        start_time_string = event_arr[1]
+                        end_time_string = ""
                     except:
-                        full_location = ''
-                    if 'en ligne' in title.lower():
-                        full_location = ''
-                    department = ''
-                    zip_code = ''
-                    longitude = ''
-                    latitude = ''
+                        print(f"Rejecting record: invalid dates: {start_time} (start_time) and {end_time} (end_time)")
+                        continue
+
                 else:
-                    location = page_link.get_attribute("href")
-                    full_location = page_link.text
+                    """Sat Sep 02, 2023"""
+                    #title_el = driver.find_element(
+                    #    by=By.CSS_SELECTOR, value='#shop_block > #context_title')
+                    #title = title_el.text
+
+                    start_date_string = event_time
+                    start_time_string = ""
+                    end_time_string = ""
+
+                if start_time_string == "":
+                    print(f"The page should be clearer about the event start time.")
+                    continue
+
+                event_date = datetime.strptime(start_date_string, "%a %b %d, %Y")
+                start_time = datetime.strptime(start_time_string, "%I:%M %p")
+
+                if not end_time_string == "":
+                    end_time = datetime.strptime(end_time_string, "%I:%M %p")
+                    duration = end_time - start_time
+                    
+                    if duration > timedelta(hours=48):
+                        print(f"Rejecting record: event is too long duration={duration}")
+                        continue
+
+                ################################################################
+                # Is it an online event?
+                ################################################################
+                online = ('online' in title.lower() or 'en ligne' in title.lower())
+                title = title.replace(" Online event", "")
+
+                ################################################################
+                # Location data
+                ################################################################
+                full_location = ''
+                location_name = ''
+                address = ''
+                city = ''
+                department = ''
+                longitude = ''
+                latitude = ''
+                zip_code = ''
+
+                if not online:
+                    try:
+                        if new_ui:
+                            address_el = driver.find_element(
+                                by=By.CSS_SELECTOR, value='div.location_summary')
+                        else:
+                            address_el = driver.find_element(
+                                by=By.CSS_SELECTOR, value='#page_block_location > div.location > div.location_info > div.address > a')
+                    except:
+                        print(f"Rejecting record: empty address")
+                        continue
+
+                    location = address_el.get_attribute("href")
+                    full_location = address_el.text
                     address_dict = get_address_data(full_location)
 
                     try:
@@ -194,7 +272,35 @@ def get_billetweb_data(dr, headless=False):
                     except:
                         zip_code = ''
 
-                # Get the description
+                    # Parse location fields
+                    if ',' in full_location:
+                        loc_arr = full_location.split(',')
+                        if len(loc_arr) >= 3:
+                            if loc_arr[2].strip().lower() == 'france':
+                                address = loc_arr[0]
+                                city = loc_arr[1]
+                            else:
+                                location_name = loc_arr[0]
+                                address = loc_arr[1]
+                                city = loc_arr[2]
+                        elif len(loc_arr) == 2:
+                            if loc_arr[1].strip().lower() == 'france':
+                                city = loc_arr[0]
+                            else:
+                                address = loc_arr[0]
+                                city = loc_arr[1]
+
+                    location_name = location_name.strip()
+                    address = address.strip()
+                    city = strip_zip_code(city)
+
+                    if address == '':
+                        print("Rejecting record: empty address")
+                        continue
+
+                ################################################################
+                # Description
+                ################################################################
                 try:
                     even_el = driver.find_element(
                             by=By.CSS_SELECTOR, value='#description')
@@ -203,7 +309,9 @@ def get_billetweb_data(dr, headless=False):
                     continue
                 description = even_el.text
 
-                # Is it a training event?
+                ################################################################
+                # Training?
+                ################################################################
                 training_list = ["formation", "briefing", "animateur"]
                 check_tr = 0
                 for w in training_list:
@@ -211,79 +319,23 @@ def get_billetweb_data(dr, headless=False):
                         check_tr = +1
                 training = (check_tr > 0)
 
-                # Is it an online event?
-                online = ('online' in title.lower() or 'en ligne' in title.lower())
-                title = title.replace(" Online event", "")
-
-                # Is the event full?
+                ################################################################
+                # Is it full?
+                ################################################################
                 #TODO scrape middle div
                 full = ('complet' in title.lower())
 
-                # Is it an event for kids?
+                ################################################################
+                # Is it suited for kids?
+                ################################################################
                 kids = ('kids' in title.lower() or 'junior' in title.lower() or 'jeunes' in title.lower())
 
-                # Parse location fields
-                if ',' in full_location:
-                    loc_arr = full_location.split(',')
-                    if len(loc_arr) >= 3:
-                        if loc_arr[2].strip().lower() == 'france':
-                            location_name = ''
-                            address = loc_arr[0]
-                            city = loc_arr[1]
-                        else:
-                            location_name = loc_arr[0]
-                            address = loc_arr[1]
-                            city = loc_arr[2]
-                    elif len(loc_arr) == 2:
-                        if loc_arr[1].strip().lower() == 'france':
-                            location_name = ''
-                            address = ''
-                            city = loc_arr[0]
-                        else:
-                            location_name = ''
-                            address = loc_arr[0]
-                            city = loc_arr[1]
-                else:
-                    location_name = ''
-                    address = ''
-                    city = ''
-                location_name = location_name.strip()
-                address = address.strip()
-                city = strip_zip_code(city)
+                ################################################################
+                # Building final object
+                ################################################################
 
-                if not online and address == '':
-                    print("Rejecting record: empty address")
-                    continue
-
-                # Parse start and end dates
-                try:
-                    start_datetime = parse(event_start_time)
-                except ParserError:
-                    try :
-                        start_datetime = parse(event_time)
-                    except ParserError as e:
-                        print(f"Rejecting record: {e}")
-                        continue
-
-                start_date = start_datetime.strftime('%Y-%m-%d')
-                start_time = start_datetime.strftime('%H:%M:%S')
-
-                try:
-                    end_datetime = parse(event_end_time)
-                    end_date = end_datetime.strftime('%Y-%m-%d')
-                    end_time = end_datetime.strftime('%H:%M:%S')
-
-                    duration = end_datetime - start_datetime
-                    hours = divmod(duration.total_seconds(), 3600)[0]
-                    if hours > 48:
-                        print(f"Rejecting record: event is too long {end_datetime}")
-                        continue
-                except:
-                    end_date = None
-                    end_time = None
-
-                record = get_record_dict(page["id"], title, start_date, start_time,
-                    end_date, end_time, full_location, location_name,
+                record = get_record_dict(page["id"], title, event_date, start_time,
+                    event_date, end_time, full_location, location_name,
                     address, city, department, zip_code,
                     latitude, longitude, online, training, full, kids, link,
                     link, description)
