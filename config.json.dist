@@ -1,0 +1,9 @@
+{
+    "webdriver": "",
+    "host" : "",
+    "port" : "",
+    "user" : "",
+    "psw"  : "",
+    "database":"",
+    "eventbrite_auth": ""
+}

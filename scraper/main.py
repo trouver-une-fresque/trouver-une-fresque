@@ -25,10 +25,10 @@ def main():
     credentials = dict(file)
 
     billetweb_records = get_billetweb_data(
-        dr=credentials["chromedriver"], headless=args.headless
+        dr=credentials["webdriver"], headless=args.headless
     )
     eventbrite_records = get_eventbrite_data(
-        dr=credentials["chromedriver"], headless=args.headless
+        dr=credentials["webdriver"], headless=args.headless
     )
 
     tot = billetweb_records + eventbrite_records

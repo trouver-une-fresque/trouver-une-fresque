@@ -4,7 +4,7 @@ Trouver une Fresque est un outil open source permettant de détecter les atelier
 
 ## Lancer le scraping
 
-Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [GeckoDriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renseignez le chemin absolu vers `bin/geckodriver` dans le fichier de configuration `config.js`.
+Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renseignez le chemin absolu vers `bin/geckodriver` dans le fichier de configuration `config.json`.
 
 ```
 make install
@@ -37,13 +37,15 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de la Mobilité | https://www.billetweb.fr/pro/fresquedelamobilite | Scraping Billetweb | OK |
 | Fresque de l'Alimentation | https://www.billetweb.fr/pro/fresquealimentation | Scraping Billetweb | OK |
 | Fresque de la Construction | https://www.billetweb.fr/pro/fresquedelaconstruction | Scraping Billetweb | OK |
-| Fresque du Sexisme | https://www.billetweb.fr/pro/fresquedusexisme | Scraping Billetweb | OK |
+| Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | OK |
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
 | Fresque Nos Vies Bas Carbone | https://www.nosviesbascarbone.org/participer-a-un-atelier | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | | Pas prévu pour le moment |
 | Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | | Pas prévu pour le moment |
 | Fresque des Déchets | https://greendonut.org/dechets/ | | Pas prévu pour le moment |
 | Fresque du Textile | https://greendonut.org/textile/ | | Pas prévu pour le moment |
+| Fresque des Frontières Planétaires | https://fresquefrontieresplanetaires.earth/ | | Pas prévu pour le moment |
+| Horizons Décarbonés | https://www.horizons-decarbones.earth/ | | Pas prévu pour le moment |
 
 ## Dev
 
