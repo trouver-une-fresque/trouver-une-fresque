@@ -4,6 +4,8 @@ Trouver une Fresque est un outil open source permettant de détecter les atelier
 
 ## Lancer le scraping
 
+Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [GeckoDriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renseignez le chemin absolu vers `bin/geckodriver` dans le fichier de configuration `config.js`.
+
 ```
 make install
 make scrape

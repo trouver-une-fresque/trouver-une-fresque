@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
@@ -19,10 +19,10 @@ from utils.readJson import get_address_data, strip_zip_code
 def get_billetweb_data(dr, headless=False):
     print('Scraping data from www.billetweb.fr\n\n')
 
-    options = Options()
+    options = FirefoxOptions()
     options.headless = headless
 
-    driver = webdriver.Chrome(options=options, executable_path=dr)
+    driver = webdriver.Firefox(options=options, executable_path=dr)
 
     webSites = [
         {
