@@ -1,10 +1,12 @@
+from zoneinfo import ZoneInfo
+from datetime import datetime
+
+
 def get_record_dict(
     ids,
     title,
-    start_date,
-    start_time,
-    end_date,
-    end_time,
+    start_datetime,
+    end_datetime,
     full_location,
     location_name,
     address,
@@ -21,13 +23,13 @@ def get_record_dict(
     tickets_link,
     description,
 ):
+    origin_tz = ZoneInfo("Europe/Paris")
+
     return {
         "workshop_type": ids,
         "title": title,
-        "start_date": start_date.strftime("%Y-%m-%d"),
-        "start_time": start_time.strftime("%I:%M %p"),
-        "end_date": end_date.strftime("%Y-%m-%d"),
-        "end_time": end_time.strftime("%I:%M %p"),
+        "start_date": start_datetime.replace(tzinfo=origin_tz).isoformat(),
+        "end_date": end_datetime.replace(tzinfo=origin_tz).isoformat(),
         #'location': location,
         "full_location": full_location,
         "location_name": location_name,

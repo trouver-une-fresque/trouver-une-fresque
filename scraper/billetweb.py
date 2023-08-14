@@ -227,11 +227,17 @@ def get_billetweb_data(dr, headless=False):
                     continue
 
                 event_date = datetime.strptime(start_date_string, "%a %b %d, %Y")
-                start_time = datetime.strptime(start_time_string, "%I:%M %p")
+                event_start_time = datetime.strptime(
+                    start_time_string, "%I:%M %p"
+                ).time()
+                event_start_datetime = datetime.combine(event_date, event_start_time)
 
                 if not end_time_string == "":
-                    end_time = datetime.strptime(end_time_string, "%I:%M %p")
-                    duration = end_time - start_time
+                    event_end_time = datetime.strptime(
+                        end_time_string, "%I:%M %p"
+                    ).time()
+                    event_end_datetime = datetime.combine(event_date, event_end_time)
+                    duration = event_end_datetime - event_start_datetime
 
                     if duration > timedelta(hours=48):
                         print(
@@ -363,10 +369,8 @@ def get_billetweb_data(dr, headless=False):
                 record = get_record_dict(
                     page["id"],
                     title,
-                    event_date,
-                    start_time,
-                    event_date,
-                    end_time,
+                    event_start_datetime,
+                    event_end_datetime,
                     full_location,
                     location_name,
                     address,
