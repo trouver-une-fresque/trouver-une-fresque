@@ -12,6 +12,7 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from scraper.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
+from utils.utils import get_config
 
 
 def ticket_api(workshop_type, eventbrite_id, link):
@@ -58,10 +59,7 @@ def ticket_api(workshop_type, eventbrite_id, link):
     sold_out = "complet" in title.lower()
 
     if not online:
-        file = open("config.json", "r")
-        file = json.loads(file.read())
-        credentials = dict(file)
-        headers["Authorization"] = credentials["eventbrite_auth"]
+        headers["Authorization"] = get_config("eventbrite_auth")
 
         venue_id = data["primary_venue_id"]
         venue_url = f"https://www.eventbriteapi.com/v3/venues/{venue_id}"

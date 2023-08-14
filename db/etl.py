@@ -5,6 +5,8 @@ import pandas as pd
 from time import sleep
 import json
 
+from utils.utils import get_config
+
 
 def execute_values(conn, df, table):
     tuples = [tuple(x) for x in df.to_numpy()]
@@ -40,12 +42,9 @@ def truncate(conn, table):
 
 
 def etl(df):
-    file = open("config.json", "r")
-    file = json.loads(file.read())
-    credentials = dict(file)
-
     df = df.astype(str)
 
+    credentials = get_config()
     host = credentials["host"]
     port = credentials["port"]
     user = credentials["user"]

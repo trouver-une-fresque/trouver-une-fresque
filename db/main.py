@@ -4,6 +4,7 @@ import pandas as pd
 import psycopg2
 
 from db.etl import execute_values, truncate
+from utils.utils import get_config
 
 
 def main():
@@ -22,9 +23,7 @@ def main():
     )
     args = parser.parse_args()
 
-    file = open("config.json", "r")
-    file = json.loads(file.read())
-    credentials = dict(file)
+    credentials = get_config()
     host = credentials["host"]
     port = credentials["port"]
     user = credentials["user"]

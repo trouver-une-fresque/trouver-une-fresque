@@ -1,6 +1,8 @@
 from zoneinfo import ZoneInfo
 from datetime import datetime
 
+from utils.utils import get_config
+
 
 def get_record_dict(
     ids,
@@ -23,7 +25,7 @@ def get_record_dict(
     tickets_link,
     description,
 ):
-    origin_tz = ZoneInfo("Europe/Paris")
+    origin_tz = ZoneInfo(get_config("timezone"))
 
     return {
         "workshop_type": ids,

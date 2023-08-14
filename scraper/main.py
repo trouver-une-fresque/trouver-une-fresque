@@ -9,6 +9,7 @@ from scraper.fdc import get_fdc_data
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from db.etl import etl
+from utils.utils import get_config
 
 
 def main():
@@ -21,26 +22,24 @@ def main():
     )
     args = parser.parse_args()
 
-    file = open("config.json", "r")
-    file = json.loads(file.read())
-    credentials = dict(file)
-
-    fdc_records = get_fdc_data(dr=credentials["webdriver"], headless=args.headless)
+    # fdc_records = get_fdc_data(dr=credentials["webdriver"], headless=args.headless)
     billetweb_records = get_billetweb_data(
-        dr=credentials["webdriver"], headless=args.headless
+        dr=get_config("webdriver"), headless=args.headless
     )
-    eventbrite_records = get_eventbrite_data(
-        dr=credentials["webdriver"], headless=args.headless
-    )
+    # eventbrite_records = get_eventbrite_data(
+    #    dr=credentials["webdriver"], headless=args.headless
+    # )
 
-    tot = billetweb_records + eventbrite_records
-    df = pd.DataFrame(tot)
+    # tot = billetweb_records + eventbrite_records
+    df = pd.DataFrame(billetweb_records)
 
     # df['location'] = df['location'].str.strip()
     df["location_name"] = df["location_name"].str.strip()
     df["address"] = df["address"].str.strip()
     df["city"] = df["city"].str.strip()
-    df["scrape_date"] = pd.to_datetime("now", utc=True).strftime("%Y-%m-%d %H:%M:%S")
+    df["scrape_date"] = (
+        pd.to_datetime("now", utc=True).tz_convert(get_config("timezone")).isoformat()
+    )
 
     # etl(df)
 
