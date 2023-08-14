@@ -19,18 +19,36 @@ Si après avoir vérifier tous les points énoncés, et avoir attendu 12h, votre
 
 ### Adresse
 
-Si l'évènement ne se tient pas en ligne, l'adresse est-elle formatée comme suit ?
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
 
 ```
-Trattino, Rue Clément Marot, Lyon, France
+Trattino, 2 Rue Clément Marot, Lyon, France
 Trattino, Rue Clément Marot, 35000 Rennes, France
 Rue Clément Marot, 35000 Rennes
+ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
 ```
 
 Des exemples incorrects :
 
 ```
+# Les parties composant l'adresse ne sont pas séparées par des virgules
 Oasis Fontmarie - 1790 Route de Fontmarie à Castries
+# Le nom du lieu et son adresse ne sont pas séparés par une virgule
+Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+```
+
+## Erreur de localisation
+
+Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
+
+```
+Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
+```
+
+est plus précis que
+
+```
+Jeu de Paume, Rue Saint-Louis, Rennes, France
 ```
 
 ## Ouvrir une issue

@@ -28,12 +28,12 @@ def get_billetweb_data(dr, headless=False):
     driver = webdriver.Firefox(options=options, executable_path=dr)
 
     webSites = [
-        {
-            # Fresque des Nouveaux Récits
-            "url": "https://www.billetweb.fr/pro/fdnr",
-            "iframe": "event21569",
-            "id": 0,
-        },
+        # {
+        #    # Fresque des Nouveaux Récits
+        #    "url": "https://www.billetweb.fr/pro/fdnr",
+        #    "iframe": "event21569",
+        #    "id": 0,
+        # },
         {
             # Fresque Océane
             "url": "https://www.billetweb.fr/pro/billetteriefo",
@@ -281,31 +281,17 @@ def get_billetweb_data(dr, headless=False):
                         print(f"Rejecting record: empty address")
                         continue
 
-                    location = address_el.get_attribute("href")
                     full_location = address_el.text
-                    address_dict = get_address_data(full_location)
-
-                    try:
-                        department = address_dict["cod_dep"]
-                    except:
-                        department = ""
-                    try:
-                        longitude = address_dict["longitude"]
-                    except:
-                        longitude = ""
-                    try:
-                        latitude = address_dict["latitude"]
-                    except:
-                        latitude = ""
-                    try:
-                        zip_code = address_dict["postcode"]
-                    except:
-                        zip_code = ""
 
                     # Parse location fields
                     if "," in full_location:
                         loc_arr = full_location.split(",")
-                        if len(loc_arr) >= 3:
+                        if len(loc_arr) >= 5:
+                            print(
+                                f"Rejecting records: address is too long ({len(loc_arr)} parts)"
+                            )
+                            continue
+                        elif len(loc_arr) >= 3:
                             if loc_arr[2].strip().lower() == "france":
                                 address = loc_arr[0]
                                 city = loc_arr[1]
@@ -326,6 +312,23 @@ def get_billetweb_data(dr, headless=False):
 
                     if address == "":
                         print("Rejecting record: empty address")
+                        continue
+
+                    ############################################################
+                    # Localisation sanitizer
+                    ############################################################
+                    search_query = f"{address}, {city}, France"
+                    address_dict = get_address_data(search_query)
+
+                    department = address_dict.get("cod_dep", "")
+                    longitude = address_dict.get("longitude", "")
+                    latitude = address_dict.get("latitude", "")
+                    zip_code = address_dict.get("postcode", "")
+
+                    if department == "":
+                        print(
+                            "Rejecting record: no result from the national address API"
+                        )
                         continue
 
                 ################################################################
