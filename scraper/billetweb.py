@@ -9,6 +9,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
@@ -114,7 +116,7 @@ def get_billetweb_data(dr, headless=False):
 
                 try:
                     # Attempt to find the div element by its id
-                    shop_block = driver.find_element(By.ID, "description_block")
+                    description_block = driver.find_element(By.ID, "description_block")
                 except NoSuchElementException:
                     print("Rejecting record: no description")
                     continue
@@ -248,7 +250,8 @@ def get_billetweb_data(dr, headless=False):
                 ################################################################
                 # Is it an online event?
                 ################################################################
-                online = "online" in title.lower() or "en ligne" in title.lower()
+                online_list = ["online", "en ligne", "distanciel"]
+                online = any(w in title.lower() for w in online_list)
                 title = title.replace(" Online event", "")
 
                 ################################################################
@@ -341,26 +344,34 @@ def get_billetweb_data(dr, headless=False):
                 # Training?
                 ################################################################
                 training_list = ["formation", "briefing", "animateur"]
-                check_tr = 0
-                for w in training_list:
-                    if w in title.lower():
-                        check_tr = +1
-                training = check_tr > 0
+                training = any(w in title.lower() for w in training_list)
 
                 ################################################################
                 # Is it full?
                 ################################################################
-                # TODO scrape middle div
-                sold_out = "complet" in title.lower()
+                try:
+                    wait = WebDriverWait(driver, 10)
+                    iframe = wait.until(
+                        EC.frame_to_be_available_and_switch_to_it(
+                            (By.CSS_SELECTOR, "#shop_block iframe")
+                        )
+                    )
+                    # Attempt to find the div element by its id
+                    remaining_slots_el = driver.find_element(
+                        By.CSS_SELECTOR,
+                        "div.block",
+                    )
+                    sold_out = "aucune" in remaining_slots_el.text
+                except NoSuchElementException:
+                    sold_out = "complet" in title.lower()
+                finally:
+                    driver.switch_to.default_content()
 
                 ################################################################
                 # Is it suited for kids?
                 ################################################################
-                kids = (
-                    "kids" in title.lower()
-                    or "junior" in title.lower()
-                    or "jeunes" in title.lower()
-                )
+                kids_list = ["kids", "junior", "jeunes"]
+                kids = any(w in title.lower() for w in kids_list) and not training
 
                 ################################################################
                 # Building final object
