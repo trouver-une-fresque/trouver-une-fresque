@@ -15,7 +15,10 @@ def main():
         help="truncate db before inserting again",
     )
     parser.add_argument(
-        "--input", type=str, help="input json file to be inserted in db"
+        "--input",
+        type=str,
+        help="input json file to be inserted in db",
+        required=True,
     )
     args = parser.parse_args()
 

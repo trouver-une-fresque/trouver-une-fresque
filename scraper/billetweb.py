@@ -345,7 +345,7 @@ def get_billetweb_data(dr, headless=False):
                 # Is it full?
                 ################################################################
                 # TODO scrape middle div
-                full = "complet" in title.lower()
+                sold_out = "complet" in title.lower()
 
                 ################################################################
                 # Is it suited for kids?
@@ -377,7 +377,7 @@ def get_billetweb_data(dr, headless=False):
                     longitude,
                     online,
                     training,
-                    full,
+                    sold_out,
                     kids,
                     link,
                     link,

@@ -6,7 +6,7 @@ Trouver une Fresque est un outil open source permettant de détecter les atelier
 
 Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renseignez le chemin absolu vers `bin/geckodriver` dans le fichier de configuration `config.json`.
 
-```
+```console
 make install
 make scrape
 ```
@@ -48,5 +48,23 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Horizons Décarbonés | https://www.horizons-decarbones.earth/ | | Pas prévu pour le moment |
 
 ## Dev
+
+### Supabase setup
+
+Login to the CLI and start the database. When starting the database, if file `supabase/seed.sql` is present, the `INSERT` statements will be executed to populate the database with testing data. 
+
+```console
+supabase login
+supabase init
+supabase start
+```
+
+The `supabase/tables.sql` contains SQL statements allowing to create the required tables. 
+
+To push some data into the database, use the following command:
+
+```console
+python push_to_db.py --input results/output.json
+```
 
 https://supabase.com/docs/guides/cli/local-development

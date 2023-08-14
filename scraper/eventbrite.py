@@ -55,7 +55,7 @@ def ticket_api(workshop_type, eventbrite_id, link):
     online = data["is_online_event"]
     training = field_training[0] in title.lower() or field_training[1] in title.lower()
 
-    full = "complet" in title.lower()
+    sold_out = "complet" in title.lower()
 
     if not online:
         file = open("config.json", "r")
@@ -124,7 +124,7 @@ def ticket_api(workshop_type, eventbrite_id, link):
         longitude,
         online,
         training,
-        full,
+        sold_out,
         False,
         link,
         tickets_url,
