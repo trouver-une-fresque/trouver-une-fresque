@@ -18,10 +18,11 @@ def department_code(postcode):
 
         dep_data_from_link = dict(re2.json())
         dep_dict = dep_data_from_link[insee_code]
-        department_code = dep_dict["department"]
+        department_code = dep_dict["departement"]
 
         return department_code
-    except:
+    except Exception as error:
+        print(f"An error occurred while getting the department code:", error)
         return ""
 
 
