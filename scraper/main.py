@@ -5,6 +5,7 @@ import numpy as np
 
 from datetime import datetime
 
+from scraper.fdc import get_fdc_data
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from db.etl import etl
@@ -24,6 +25,7 @@ def main():
     file = json.loads(file.read())
     credentials = dict(file)
 
+    fdc_records = get_fdc_data(dr=credentials["webdriver"], headless=args.headless)
     billetweb_records = get_billetweb_data(
         dr=credentials["webdriver"], headless=args.headless
     )

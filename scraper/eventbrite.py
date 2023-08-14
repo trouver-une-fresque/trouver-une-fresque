@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from scraper.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
@@ -137,10 +137,10 @@ def ticket_api(workshop_type, eventbrite_id, link):
 def get_eventbrite_data(dr, headless=False):
     print("Scraping data from www.eventbrite.fr\n\n")
 
-    options = Options()
+    options = FirefoxOptions()
     options.headless = headless
 
-    driver = webdriver.Chrome(options=options, executable_path=dr)
+    driver = webdriver.Firefox(options=options, executable_path=dr)
 
     webSites = [
         {
