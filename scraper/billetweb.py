@@ -225,7 +225,9 @@ def get_billetweb_data(dr, headless=False):
                     end_time_string = ""
 
                 if start_time_string == "":
-                    print(f"The page should be clearer about the event start time.")
+                    print(
+                        f"The page should be more specific about the event start time."
+                    )
                     continue
 
                 event_date = datetime.strptime(start_date_string, "%a %b %d, %Y")
@@ -379,7 +381,6 @@ def get_billetweb_data(dr, headless=False):
                 ################################################################
                 # Building final object
                 ################################################################
-
                 record = get_record_dict(
                     page["id"],
                     title,

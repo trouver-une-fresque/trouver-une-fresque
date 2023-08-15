@@ -26,6 +26,7 @@ Trattino, 2 Rue Clément Marot, Lyon, France
 Trattino, Rue Clément Marot, 35000 Rennes, France
 Rue Clément Marot, 35000 Rennes
 ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
+Chez moi , 1560 Rue Maurice Jacob, Lyon, France
 ```
 
 Des exemples incorrects :

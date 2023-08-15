@@ -27,7 +27,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 
 | Atelier       | Lien           | Source | Supporté  |
 | ------------- |:-------------:| :-----:| :-----:|
-| Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | Non supporté pour le moment |
+| Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | OK |
 | 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
 | Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |
@@ -68,3 +68,12 @@ python push_to_db.py --input results/output.json
 ```
 
 https://supabase.com/docs/guides/cli/local-development
+
+### Hoppscotch.io
+
+Follow these steps:
+
+- Install our Browser Extension.
+- Click on the Hoppscotch extension icon from Browser's toolbar to add your localhost origins to the Active Origins list. This corresponds to the `API URL` returned by Supabase on startup.
+- Refresh the Hoppscotch.io app.
+- Change interceptor to Browser Extension in the settings.

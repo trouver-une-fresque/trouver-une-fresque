@@ -22,7 +22,7 @@ def main():
     )
     args = parser.parse_args()
 
-    # fdc_records = get_fdc_data(dr=credentials["webdriver"], headless=args.headless)
+    fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=args.headless)
     billetweb_records = get_billetweb_data(
         dr=get_config("webdriver"), headless=args.headless
     )
@@ -30,8 +30,8 @@ def main():
     #    dr=credentials["webdriver"], headless=args.headless
     # )
 
-    # tot = billetweb_records + eventbrite_records
-    df = pd.DataFrame(billetweb_records)
+    tot_records = fdc_records + billetweb_records
+    df = pd.DataFrame(tot_records)
 
     # df['location'] = df['location'].str.strip()
     df["location_name"] = df["location_name"].str.strip()

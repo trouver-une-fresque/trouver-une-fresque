@@ -25,7 +25,11 @@ def get_fdc_data(dr, headless=False):
         {
             "url": "https://fresqueduclimat.org/inscription-atelier/grand-public/",
             "id": 200,
-        }
+        },
+        {
+            "url": "https://fresqueduclimat.org/inscription-formation/grand-public/",
+            "id": 200,
+        },
     ]
 
     records = []
@@ -125,6 +129,15 @@ def get_fdc_data(dr, headless=False):
             ################################################################
             # Location data
             ################################################################
+            full_location = ""
+            location_name = ""
+            address = ""
+            city = ""
+            department = ""
+            longitude = ""
+            latitude = ""
+            zip_code = ""
+
             if not online:
                 pin_icon = driver.find_element(By.CLASS_NAME, "fa-map-pin")
                 parent_div = pin_icon.find_element(By.XPATH, "..")
@@ -187,7 +200,8 @@ def get_fdc_data(dr, headless=False):
             ################################################################
             # Training?
             ################################################################
-            training = False
+            training_list = ["formation", "briefing", "animateur"]
+            training = any(w in title.lower() for w in training_list)
 
             ################################################################
             # Is it full?
