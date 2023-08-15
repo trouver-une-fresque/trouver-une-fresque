@@ -28,12 +28,12 @@ def get_billetweb_data(dr, headless=False):
     driver = webdriver.Firefox(options=options, executable_path=dr)
 
     webSites = [
-        # {
-        #    # Fresque des Nouveaux Récits
-        #    "url": "https://www.billetweb.fr/pro/fdnr",
-        #    "iframe": "event21569",
-        #    "id": 0,
-        # },
+        {
+            # Fresque des Nouveaux Récits
+            "url": "https://www.billetweb.fr/pro/fdnr",
+            "iframe": "event21569",
+            "id": 0,
+        },
         {
             # Fresque Océane
             "url": "https://www.billetweb.fr/pro/billetteriefo",
