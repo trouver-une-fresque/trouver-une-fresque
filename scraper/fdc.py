@@ -292,6 +292,7 @@ def get_fdc_data(dr, headless=False):
             try:
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 driver.implicitly_wait(2)
+                time.sleep(2)
                 next_button = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable(
                         (
