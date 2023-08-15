@@ -6,7 +6,7 @@ Sautez à la section correspondante à la plateforme utilisée pour publier votr
 
 Si après avoir vérifier tous les points énoncés, et avoir attendu 12h, votre évènement n'apparaît toujours pas dans l'application Trouver une Fresque, merci de lire la section "Ouvrir une issue" en bas de cette page.
 
-## Billetweb
+## Billetweb.fr
 
 ### Page d'évènement
 
@@ -51,6 +51,12 @@ est plus précis que
 ```
 Jeu de Paume, Rue Saint-Louis, Rennes, France
 ```
+
+## Fresqueduclimat.org
+
+### Un évènement complet n'apparait pas
+
+C'est normal, il n'est malheureusement pas possible d'accéder à la page d'un évènement complet sur fresqueduclimat.org.
 
 ## Ouvrir une issue
 

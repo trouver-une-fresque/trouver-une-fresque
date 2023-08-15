@@ -46,7 +46,7 @@ def get_fdc_data(dr, headless=False):
 
         while True:
             ele = driver.find_elements(By.CSS_SELECTOR, "a.link-dark")
-            links = [e.get_attribute("href") for e in ele]
+            links = [e.get_attribute("href") for e in ele if "Complet" not in e.text]
 
             for link in links:
                 print(f"\n-> Processing {link} ...")
