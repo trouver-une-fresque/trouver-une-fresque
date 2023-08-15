@@ -178,7 +178,11 @@ def get_fdc_data(dr, headless=False):
             ################################################################
             # Description
             ################################################################
-            description = False
+            description_title_el = driver.find_element(
+                By.XPATH, "//strong[text()='Description']"
+            )
+            parent_description_el = description_title_el.find_element(By.XPATH, "..")
+            description = parent_description_el.text
 
             ################################################################
             # Training?
@@ -194,6 +198,13 @@ def get_fdc_data(dr, headless=False):
             # Is it suited for kids?
             ################################################################
             kids = False
+
+            ################################################################
+            # Parse tickets link
+            ################################################################
+            user_icon = driver.find_element(By.CLASS_NAME, "fa-user")
+            parent_link = user_icon.find_element(By.XPATH, "..")
+            tickets_link = parent_link.get_attribute("href")
 
             ################################################################
             # Building final object
@@ -216,7 +227,7 @@ def get_fdc_data(dr, headless=False):
                 sold_out,
                 kids,
                 link,
-                link,
+                tickets_link,
                 description,
             )
 
