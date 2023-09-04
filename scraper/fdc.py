@@ -187,8 +187,8 @@ def get_fdc_data(dr, headless=False):
                     address = address.strip()
                     city = strip_zip_code(city)
 
-                    if address == "":
-                        print("Rejecting record: empty address")
+                    if address == "" or city == "":
+                        print("Rejecting record: empty address or city")
                         driver.back()
                         wait = WebDriverWait(driver, 10)
                         iframe = wait.until(

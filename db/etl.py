@@ -59,7 +59,7 @@ def etl(df):
     # leur start_date+start_time < maintenant, les ajouter dans table past_events
 
     # Insert all events to the historical table
-    execute_values(conn, df, "auth.events_scrapped")
+    execute_values(conn, df, "auth.events_scraped")
 
     # Delete all future events before inserting them again, so that they are
     # updated
