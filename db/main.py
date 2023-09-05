@@ -3,12 +3,18 @@ import argparse
 import pandas as pd
 import psycopg2
 
-from db.etl import execute_values, truncate
+from db.etl import etl, insert, truncate
 from utils.utils import get_config
 
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--full-etl",
+        action="store_true",
+        default=True,
+        help="perform the full ETL cycle, including truncating future events",
+    )
     parser.add_argument(
         "--truncate-first",
         action="store_true",
@@ -22,6 +28,9 @@ def main():
         required=True,
     )
     args = parser.parse_args()
+
+    if args.full_etl and args.truncate_first:
+        raise Exception
 
     credentials = get_config()
     host = credentials["host"]
@@ -39,7 +48,11 @@ def main():
     df = pd.DataFrame.from_dict(pd.json_normalize(input_records), orient="columns")
     print(df)
 
-    if args.truncate_first:
-        truncate(conn, "auth.events_future")
+    if args.full_etl:
+        etl(conn, df)
+    else:
+        if args.truncate_first:
+            truncate(conn, "auth.events_future")
+        insert(conn, df, "auth.events_future")
 
-    execute_values(conn, df, "auth.events_future")
+    conn.close()
