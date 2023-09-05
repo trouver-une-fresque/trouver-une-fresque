@@ -5,6 +5,7 @@ from utils.utils import get_config
 
 
 def get_record_dict(
+    uuid,
     ids,
     title,
     start_datetime,
@@ -28,6 +29,7 @@ def get_record_dict(
     origin_tz = ZoneInfo(get_config("timezone"))
 
     return {
+        "id": uuid,
         "workshop_type": ids,
         "title": title,
         "start_date": start_datetime.replace(tzinfo=origin_tz).isoformat(),

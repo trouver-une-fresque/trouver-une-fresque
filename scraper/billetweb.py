@@ -2,6 +2,7 @@ import numpy as np
 import time
 import pandas as pd
 import requests
+import re
 import json
 from datetime import datetime, timedelta
 
@@ -137,10 +138,16 @@ def get_billetweb_data(dr, headless=False):
                     pass
 
                 ################################################################
+                # Parse event id
+                ################################################################
+                uuids = re.search(r"/([^/]+?)&", link)
+                if not uuids:
+                    print("Rejecting record: UUID not found")
+                    continue
+
+                ################################################################
                 # Parse event title
                 ################################################################
-                print("Parsing title...")
-
                 if new_ui:
                     title_el = driver.find_element(
                         by=By.CSS_SELECTOR, value="#event_title > div.event_name"
@@ -159,8 +166,6 @@ def get_billetweb_data(dr, headless=False):
                 ################################################################
                 # Parse start and end dates
                 ################################################################
-                print("Parsing start and end dates...")
-
                 if new_ui:
                     time_el = driver.find_element(
                         by=By.CSS_SELECTOR,
@@ -382,6 +387,7 @@ def get_billetweb_data(dr, headless=False):
                 # Building final object
                 ################################################################
                 record = get_record_dict(
+                    f"{page['id']}-{uuids.group(1)}",
                     page["id"],
                     title,
                     event_start_datetime,

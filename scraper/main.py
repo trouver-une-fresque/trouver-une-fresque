@@ -41,8 +41,6 @@ def main():
         pd.to_datetime("now", utc=True).tz_convert(get_config("timezone")).isoformat()
     )
 
-    # etl(df)
-
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
 

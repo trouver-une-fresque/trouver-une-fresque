@@ -54,10 +54,18 @@ def get_fdc_data(dr, headless=False):
                 driver.implicitly_wait(3)
 
                 ################################################################
+                # Parse event id
+                ################################################################
+                # Define the regex pattern for UUIDs
+                uuid_pattern = r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+                uuids = re.findall(uuid_pattern, link)
+                if not uuids:
+                    print("Rejecting record: UUID not found")
+                    continue
+
+                ################################################################
                 # Parse event title
                 ################################################################
-                print("Parsing title...")
-
                 title_el = driver.find_element(
                     by=By.TAG_NAME,
                     value="h3",
@@ -67,8 +75,6 @@ def get_fdc_data(dr, headless=False):
                 ################################################################
                 # Parse start and end dates
                 ################################################################
-                print("Parsing start and end dates...")
-
                 clock_icon = driver.find_element(By.CLASS_NAME, "fa-clock")
                 parent_div = clock_icon.find_element(By.XPATH, "..")
                 event_time = parent_div.text
@@ -258,6 +264,7 @@ def get_fdc_data(dr, headless=False):
                 # Building final object
                 ################################################################
                 record = get_record_dict(
+                    f"{page['id']}-{uuids[0]}",
                     page["id"],
                     title,
                     event_start_datetime,
