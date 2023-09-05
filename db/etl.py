@@ -76,12 +76,12 @@ def etl(conn, df):
     # Insert all events to the historical table. Setting most_recent to False,
     # but maybe the call to `update_most_recent()` below will change this.
     insert(conn, df, "auth.events_scraped", most_recent=False)
-    print("done")
+
     # Delete all future events before inserting them again, so that they are
     # updated
     truncate(conn, "auth.events_future")
     insert(conn, df, "auth.events_future", most_recent=True)
-    print("done2")
+
     update_most_recent(conn, "auth.events_scraped")
 
     conn.close()
