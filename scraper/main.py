@@ -16,8 +16,8 @@ def main(headless=False, push_to_db=False):
     tot_records = []
 
     # Fresque du Climat
-    # fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=headless)
-    # tot_records += fdc_records
+    fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=headless)
+    tot_records += fdc_records
 
     # Billetweb
     billetweb_records = get_billetweb_data(
@@ -26,10 +26,10 @@ def main(headless=False, push_to_db=False):
     tot_records += billetweb_records
 
     # Eventbrite
-    eventbrite_records = get_eventbrite_data(
-        dr=get_config("webdriver"), headless=headless
-    )
-    tot_records += eventbrite_records
+    # eventbrite_records = get_eventbrite_data(
+    #    dr=get_config("webdriver"), headless=headless
+    # )
+    # tot_records += eventbrite_records
 
     df = pd.DataFrame(tot_records)
 
@@ -39,6 +39,7 @@ def main(headless=False, push_to_db=False):
         df.to_json(file, orient="records", force_ascii=False)
 
     if push_to_db:
+        print("Pushing scraped results into db...")
         credentials = get_config()
         host = credentials["host"]
         port = credentials["port"]
@@ -50,7 +51,8 @@ def main(headless=False, push_to_db=False):
             database=database, user=user, password=psw, host=host, port=port
         )
 
-        etl(conn, db)
+        etl(conn, df)
+        print("Done")
 
         conn.close()
 

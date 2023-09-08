@@ -83,5 +83,3 @@ def etl(conn, df):
     insert(conn, df, "auth.events_future", most_recent=True)
 
     update_most_recent(conn, "auth.events_scraped")
-
-    conn.close()

@@ -142,11 +142,6 @@ def get_eventbrite_data(dr, headless=False):
 
     webSites = [
         {
-            # Fresque du Climat
-            "url": "https://www.eventbrite.fr/o/la-fresque-du-climat-18716137245",
-            "id": 100,
-        },
-        {
             # 2tonnes
             "url": "https://www.eventbrite.fr/o/2-tonnes-29470123869",
             "id": 101,
