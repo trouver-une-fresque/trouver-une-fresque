@@ -1,7 +1,7 @@
 import json
-import argparse
-import pandas as pd
+import psycopg2
 import numpy as np
+import pandas as pd
 
 from datetime import datetime
 
@@ -12,40 +12,47 @@ from db.etl import etl
 from utils.utils import get_config
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--headless",
-        action="store_true",
-        default=False,
-        help="run scraping in headless mode",
-    )
-    args = parser.parse_args()
+def main(headless=False, push_to_db=False):
+    tot_records = []
 
-    fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=args.headless)
+    # Fresque du Climat
+    # fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=headless)
+    # tot_records += fdc_records
+
+    # Billetweb
     billetweb_records = get_billetweb_data(
-        dr=get_config("webdriver"), headless=args.headless
+        dr=get_config("webdriver"), headless=headless
     )
-    # eventbrite_records = get_eventbrite_data(
-    #    dr=credentials["webdriver"], headless=args.headless
-    # )
+    tot_records += billetweb_records
 
-    tot_records = fdc_records + billetweb_records
+    # Eventbrite
+    eventbrite_records = get_eventbrite_data(
+        dr=get_config("webdriver"), headless=headless
+    )
+    tot_records += eventbrite_records
+
     df = pd.DataFrame(tot_records)
-
-    # df['location'] = df['location'].str.strip()
-    df["location_name"] = df["location_name"].str.strip()
-    df["address"] = df["address"].str.strip()
-    df["city"] = df["city"].str.strip()
-    df["scrape_date"] = (
-        pd.to_datetime("now", utc=True).tz_convert(get_config("timezone")).isoformat()
-    )
 
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
-
     with open(f"results/events_{insert_time}.json", "w", encoding="UTF-8") as file:
         df.to_json(file, orient="records", force_ascii=False)
+
+    if push_to_db:
+        credentials = get_config()
+        host = credentials["host"]
+        port = credentials["port"]
+        user = credentials["user"]
+        psw = credentials["psw"]
+        database = credentials["database"]
+
+        conn = psycopg2.connect(
+            database=database, user=user, password=psw, host=host, port=port
+        )
+
+        etl(conn, db)
+
+        conn.close()
 
 
 if __name__ == "__main__":  # pragma: no cover

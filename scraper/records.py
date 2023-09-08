@@ -1,6 +1,7 @@
+import pandas as pd
+
 from zoneinfo import ZoneInfo
 from datetime import datetime
-
 from utils.utils import get_config
 
 
@@ -26,7 +27,8 @@ def get_record_dict(
     tickets_link,
     description,
 ):
-    origin_tz = ZoneInfo(get_config("timezone"))
+    timezone = get_config("timezone")
+    origin_tz = ZoneInfo(timezone)
 
     return {
         "id": uuid,
@@ -34,11 +36,10 @@ def get_record_dict(
         "title": title,
         "start_date": start_datetime.replace(tzinfo=origin_tz).isoformat(),
         "end_date": end_datetime.replace(tzinfo=origin_tz).isoformat(),
-        #'location': location,
         "full_location": full_location,
-        "location_name": location_name,
-        "address": address,
-        "city": city,
+        "location_name": location_name.strip(),
+        "address": address.strip(),
+        "city": city.strip(),
         "department": department,
         "zip_code": zip_code,
         "latitude": latitude,
@@ -50,4 +51,5 @@ def get_record_dict(
         "source_link": event_link,
         "tickets_link": tickets_link,
         "description": description,
+        "scrape_date": pd.to_datetime("now", utc=True).tz_convert(timezone).isoformat(),
     }

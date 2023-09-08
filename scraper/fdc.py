@@ -15,7 +15,7 @@ from utils.readJson import get_address_data, strip_zip_code
 
 
 def get_fdc_data(dr, headless=False):
-    print("Scraping data from fresqueduclimat.org\n\n")
+    print("Scraping data from fresqueduclimat.org")
 
     options = FirefoxOptions()
     options.headless = headless
@@ -36,7 +36,7 @@ def get_fdc_data(dr, headless=False):
     records = []
 
     for page in webSites:
-        print(f"\n========================")
+        print(f"========================")
         driver.get(page["url"])
         driver.implicitly_wait(2)
 

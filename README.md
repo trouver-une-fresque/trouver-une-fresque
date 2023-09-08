@@ -8,8 +8,10 @@ Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver]
 
 ```console
 make install
-make scrape
+python scrape.py
 ```
+
+Option `--headless` runs the scraping in headless mode, and `--push-to-db` pushes the results of the output json file into the database using the credentials defined in `config.json`.
 
 ## Signaler un problème, une idée de modification
 
@@ -77,3 +79,7 @@ Follow these steps:
 - Click on the Hoppscotch extension icon from Browser's toolbar to add your localhost origins to the Active Origins list. This corresponds to the `API URL` returned by Supabase on startup.
 - Refresh the Hoppscotch.io app.
 - Change interceptor to Browser Extension in the settings.
+
+```
+http://localhost:54321/rest/v1/events?start_date=gte.now
+```
