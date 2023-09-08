@@ -5,6 +5,5 @@
     "user" : "",
     "psw"  : "",
     "database":"",
-    "eventbrite_auth": "",
     "timezone": ""
 }

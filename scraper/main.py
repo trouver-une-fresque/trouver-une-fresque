@@ -27,7 +27,7 @@ def main(headless=False, push_to_db=False):
 
     # Eventbrite
     # eventbrite_records = get_eventbrite_data(
-    #    dr=get_config("webdriver"), headless=headless
+    #   dr=get_config("webdriver"), headless=headless
     # )
     # tot_records += eventbrite_records
 
