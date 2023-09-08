@@ -21,7 +21,7 @@ from utils.readJson import get_address_data, strip_zip_code
 
 
 def get_billetweb_data(dr, headless=False):
-    print("Scraping data from www.billetweb.fr\n\n")
+    print("Scraping data from www.billetweb.fr")
 
     options = FirefoxOptions()
     options.headless = headless
@@ -100,7 +100,7 @@ def get_billetweb_data(dr, headless=False):
     records = []
 
     for page in webSites:
-        print(f"\n==================\nProcessing page {page}")
+        print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
         driver.implicitly_wait(2)
 
@@ -371,7 +371,10 @@ def get_billetweb_data(dr, headless=False):
                         By.CSS_SELECTOR,
                         "div.block",
                     )
-                    sold_out = "aucune" in remaining_slots_el.text
+                    sold_out = (
+                        "aucune" in remaining_slots_el.text
+                        or "nombre maximal" in remaining_slots_el.text
+                    )
                 except NoSuchElementException:
                     sold_out = "complet" in title.lower()
                 finally:
