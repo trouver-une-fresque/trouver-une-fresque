@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import time
 import json
+import re
 
 from datetime import datetime
 from selenium import webdriver
@@ -77,8 +78,6 @@ def get_eventbrite_data(dr, headless=False):
                 links.append(href)
         links = np.unique(links)
 
-        print(links, len(links))
-
         for link in links:
             print(f"\n-> Processing {link} ...")
             driver.get(link)
@@ -99,9 +98,17 @@ def get_eventbrite_data(dr, headless=False):
             ################################################################
             if driver.find_elements(
                 By.XPATH,
-                "//*[contains(text(), 'Sélectionnez') or contains(text(), 'Sélectionner')]",
+                "//button[contains(text(), 'Sélectionnez') or contains(text(), 'Sélectionner') or contains(text(), 'Select')]",
             ):
                 print("Rejecting record: multiple events")
+                continue
+
+            ################################################################
+            # Parse event id
+            ################################################################
+            uuids = re.search(r"/e/([^/?]+)", link)
+            if not uuids:
+                print("Rejecting record: UUID not found")
                 continue
 
             ################################################################
@@ -116,11 +123,15 @@ def get_eventbrite_data(dr, headless=False):
             ################################################################
             # Parse start and end dates
             ################################################################
-            date_info_el = driver.find_element(
-                by=By.CSS_SELECTOR,
-                value="div.date-info",
-            )
-            event_time = date_info_el.text
+            try:
+                date_info_el = driver.find_element(
+                    by=By.CSS_SELECTOR,
+                    value="div.date-info",
+                )
+                event_time = date_info_el.text
+            except NoSuchElementException:
+                print("Rejecting record: no dates")
+                continue
 
             months = {
                 "janv.": 1,
@@ -193,7 +204,41 @@ def get_eventbrite_data(dr, headless=False):
                 location_el = driver.find_element(
                     By.CSS_SELECTOR, "div.location-info__address"
                 )
-                full_location = location_el.text
+                full_location_text = location_el.text.split("\n")
+                location_name = full_location_text[0]
+                address_and_city = full_location_text[1]
+                full_location = f"{location_name}, {address_and_city}"
+
+                pattern = r"^(.*?)\s+(\d{5})\s+(.*?)$"
+                match = re.match(pattern, address_and_city)
+                if match:
+                    address = match.group(1)
+                    zip_code = match.group(2)
+                    city = match.group(3)
+                else:
+                    print("Rejecting record: bad address format")
+                    continue
+
+                ############################################################
+                # Localisation sanitizer
+                ############################################################
+                search_query = f"{address}, {city}, France"
+                address_dict = get_address_data(search_query)
+
+                department = address_dict.get("cod_dep", "")
+                longitude = address_dict.get("longitude", "")
+                latitude = address_dict.get("latitude", "")
+                zip_code = address_dict.get("postcode", "")
+
+                if department == "":
+                    print("Rejecting record: no result from the national address API")
+                    driver.back()
+                    wait = WebDriverWait(driver, 10)
+                    iframe = wait.until(
+                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
+                    )
+                    driver.switch_to.frame(iframe)
+                    continue
 
             ################################################################
             # Description
@@ -204,6 +249,28 @@ def get_eventbrite_data(dr, headless=False):
             description = description_title_el.text
 
             ################################################################
+            # Training?
+            ################################################################
+            training_list = ["formation", "briefing", "animateur"]
+            training = any(w in title.lower() for w in training_list)
+
+            ################################################################
+            # Is it full?
+            ################################################################
+            tickets_link_el = driver.find_element(
+                By.CSS_SELECTOR, "div.conversion-bar__panel-info"
+            )
+            sold_out = (
+                "complet" in tickets_link_el.text.lower()
+                or "ventes achevées" in tickets_link_el.text.lower()
+            )
+
+            ################################################################
+            # Is it suited for kids?
+            ################################################################
+            kids = False
+
+            ################################################################
             # Parse tickets link
             ################################################################
             tickets_link = link
@@ -212,7 +279,7 @@ def get_eventbrite_data(dr, headless=False):
             # Building final object
             ################################################################
             record = get_record_dict(
-                "",  # f"{page['id']}-{uuids[0]}",
+                f"{page['id']}-{uuids.group(1)}",
                 page["id"],
                 title,
                 event_start_datetime,
@@ -226,9 +293,9 @@ def get_eventbrite_data(dr, headless=False):
                 latitude,
                 longitude,
                 online,
-                "",  # training,
-                "",  # sold_out,
-                "",  # kids,
+                training,
+                sold_out,
+                kids,
                 link,
                 tickets_link,
                 description,
