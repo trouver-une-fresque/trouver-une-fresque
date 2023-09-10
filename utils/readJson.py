@@ -5,7 +5,7 @@ import requests
 def department_code(postcode):
     try:
         re = requests.get(
-            url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/codepostal_to_insee.json"
+            url="https://raw.githubusercontent.com/trouver-une-fresque/trouver-une-fresque/main/data/codepostal_to_insee.json"
         )
 
         data_from_link = dict(re.json())
@@ -13,7 +13,7 @@ def department_code(postcode):
         insee_code = insee["insee"]
 
         re2 = requests.get(
-            url="https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/main/data/input/insee_to_codepostal_and_code_departement.json"
+            url="https://raw.githubusercontent.com/trouver-une-fresque/trouver-une-fresque/main/data/insee_to_codepostal_and_code_departement.json"
         )
 
         dep_data_from_link = dict(re2.json())
