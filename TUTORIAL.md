@@ -1,10 +1,10 @@
 # Tutoriel à destination des organisateurs de fresques
 
-Ce projet vient récupérer les données de vos évènements publiés en ligne. Si un évènement n'apparaît pas dans l'application Trouver une Fresque, merci de vérifier les points ci-dessous. Si l'une des conditions n'est pas vérifiée, merci de mettre votre évènement à jour avant de nous contacter.
+Ce projet vient récupérer les données de vos évènements publiés en ligne. Si un évènement n'apparaît pas sur la plateforme Trouver une Fresque, merci de vérifier les points ci-dessous. Si l'une des conditions n'est pas vérifiée, merci de mettre votre évènement à jour avant de nous contacter.
 
 Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement.
 
-Si après avoir vérifier tous les points énoncés, et avoir attendu 12h, votre évènement n'apparaît toujours pas dans l'application Trouver une Fresque, merci de lire la section "Ouvrir une issue" en bas de cette page.
+Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section "Ouvrir une issue" en bas de cette page.
 
 ## Billetweb.fr
 
@@ -52,6 +52,12 @@ est plus précis que
 Jeu de Paume, Rue Saint-Louis, Rennes, France
 ```
 
+## Eventbrite.fr
+
+### Page d'évènement
+
+- UN SEUL évènement doit apparaître sur la page d'évènement.
+
 ## Fresqueduclimat.org
 
 ### Un évènement complet n'apparait pas
@@ -60,4 +66,4 @@ C'est normal, il n'est malheureusement pas possible d'accéder à la page d'un �
 
 ## Ouvrir une issue
 
-Si après vérification de tous les points énoncés dans la section correspondante à votre plateforme de publication, et après avoir attendu 12h, votre évènement n'apparaît toujours pas dans l'application Trouver une Fresque, merci de nous contacter en remplissant [ce formulaire](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/new). Un compte [GitHub](https://github.com/signup) est nécessaire.
+Si 1) après vérification de tous les points énoncés dans la section correspondante à votre plateforme de publication, et 2) après avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de nous contacter en remplissant [ce formulaire](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/new). Un compte [GitHub](https://github.com/signup) est nécessaire.

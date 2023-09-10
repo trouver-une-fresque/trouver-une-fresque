@@ -15,6 +15,8 @@ Option `--headless` runs the scraping in headless mode, and `--push-to-db` pushe
 
 ## Signaler un problème, une idée de modification
 
+Si vous êtes l'rganisateur d'un atelier Fresque et que votre évènement n'apparaît pas sur la plateforme Trouver une Fresque, merci de lire le [tutoriel à destination des organisateurs de fresques](https://github.com/trouver-une-fresque/trouver-une-fresque/blob/main/TUTORIAL.md).
+
 Ouvrez une [issue Github](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) si vous souhaitez signaler un problème.
 
 ## Comment Contribuer
@@ -30,7 +32,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Atelier       | Lien           | Source | Supporté  |
 | ------------- |:-------------:| :-----:| :-----:|
 | Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | OK |
-| 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | En cours |
+| 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
 | Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |
 | Fresque Agri'Alim | https://www.billetweb.fr/pro/fresqueagrialim | Scraping Billetweb | OK |
