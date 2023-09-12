@@ -374,6 +374,7 @@ def get_billetweb_data(dr, headless=False):
                     sold_out = (
                         "aucune" in remaining_slots_el.text
                         or "nombre maximal" in remaining_slots_el.text
+                        or "sold out" in remaining_slots_el.text
                     )
                 except NoSuchElementException:
                     sold_out = "complet" in title.lower()
