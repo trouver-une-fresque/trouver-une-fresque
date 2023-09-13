@@ -19,7 +19,7 @@ Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h,
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
 
 ```
 Trattino, 2 Rue Clément Marot, Lyon, France
@@ -49,7 +49,7 @@ Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
 est plus précis que
 
 ```
-Jeu de Paume, Rue Saint-Louis, Rennes, France
+Jeu de Paume, Rue Saint-Louis, France
 ```
 
 ## Eventbrite.fr
@@ -63,6 +63,41 @@ Jeu de Paume, Rue Saint-Louis, Rennes, France
 ### Un évènement complet n'apparait pas
 
 C'est normal, il n'est malheureusement pas possible d'accéder à la page d'un évènement complet sur fresqueduclimat.org.
+
+### Adresse
+
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
+
+```
+Trattino, 2 Rue Clément Marot, Lyon, France
+Trattino, Rue Clément Marot, 35000 Rennes, France
+Rue Clément Marot, 35000 Rennes
+ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
+Chez moi , 1560 Rue Maurice Jacob, Lyon, France
+```
+
+Des exemples incorrects :
+
+```
+# Les parties composant l'adresse ne sont pas séparées par des virgules
+Oasis Fontmarie - 1790 Route de Fontmarie à Castries
+# Le nom du lieu et son adresse ne sont pas séparés par une virgule
+Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+```
+
+## Erreur de localisation
+
+Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
+
+```
+Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
+```
+
+est plus précis que
+
+```
+Jeu de Paume, Rue Saint-Louis, France
+```
 
 ## Ouvrir une issue
 
