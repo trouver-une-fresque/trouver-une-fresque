@@ -40,7 +40,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Atelier       | Lien           | Source | Supporté  |
 | ------------- |:-------------:| :-----:| :-----:|
 | Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | OK |
-| 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
+| Atelier 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
 | Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |
 | Fresque Agri'Alim | https://www.billetweb.fr/pro/fresqueagrialim | Scraping Billetweb | OK |
@@ -52,12 +52,13 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | OK |
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
 | Fresque Nos Vies Bas Carbone | https://www.nosviesbascarbone.org/participer-a-un-atelier | Scraping Billetweb | OK |
-| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | | Pas prévu pour le moment |
-| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | | Pas prévu pour le moment |
-| Fresque des Déchets | https://greendonut.org/dechets/ | | Pas prévu pour le moment |
-| Fresque du Textile | https://greendonut.org/textile/ | | Pas prévu pour le moment |
-| Fresque des Frontières Planétaires | https://fresquefrontieresplanetaires.earth/ | | Pas prévu pour le moment |
-| Horizons Décarbonés | https://www.horizons-decarbones.earth/ | | Pas prévu pour le moment |
+| Fresque de l'Eau | https://www.billetweb.fr/multi_event.php?user=138110 | Scraping Billetweb | OK |
+| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping WIX | Prévu, sans date précise |
+| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Pas prévu pour le moment |
+| Fresque des Déchets | https://greendonut.org/dechets/ | Scraping Google Agenda | Pas prévu pour le moment |
+| Fresque du Textile | https://greendonut.org/textile/ | Scraping Google Agenda | Pas prévu pour le moment |
+| Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | Pas prévu pour le moment |
+| Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | Pas prévu pour le moment |
 
 ## Dev
 

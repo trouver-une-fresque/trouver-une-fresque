@@ -15,6 +15,12 @@ from utils.utils import get_config
 def main(headless=False, push_to_db=False):
     tot_records = []
 
+    # Eventbrite
+    eventbrite_records = get_eventbrite_data(
+        dr=get_config("webdriver"), headless=headless
+    )
+    tot_records += eventbrite_records
+
     # Fresque du Climat
     fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=headless)
     tot_records += fdc_records
@@ -24,12 +30,6 @@ def main(headless=False, push_to_db=False):
         dr=get_config("webdriver"), headless=headless
     )
     tot_records += billetweb_records
-
-    # Eventbrite
-    eventbrite_records = get_eventbrite_data(
-        dr=get_config("webdriver"), headless=headless
-    )
-    tot_records += eventbrite_records
 
     df = pd.DataFrame(tot_records)
 

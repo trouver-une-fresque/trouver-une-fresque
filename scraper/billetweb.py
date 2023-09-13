@@ -95,6 +95,12 @@ def get_billetweb_data(dr, headless=False):
             "iframe": "event22230",
             "id": 10,
         },
+        {
+            # Fresque de l'Eau
+            "url": "https://www.billetweb.fr/multi_event.php?user=138110",
+            "iframe": "eventu138110",
+            "id": 11,
+        },
     ]
 
     records = []
