@@ -2,7 +2,7 @@
 
 Ce projet vient récupérer les données de vos évènements publiés en ligne. Si un évènement n'apparaît pas sur la plateforme Trouver une Fresque, merci de vérifier les points ci-dessous. Si l'une des conditions n'est pas vérifiée, merci de mettre votre évènement à jour avant de nous contacter.
 
-Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement.
+Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement. Dans tous les cas, soyez patients : les évènements sont mis à jour une fois tous les 24h. Si vous postez un évènement, il n'apparaitra pas immédiatement sur Trouver une Fresque.
 
 Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section "Ouvrir une issue" en bas de cette page.
 
@@ -40,18 +40,20 @@ Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
 la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
 
-## Erreur de localisation
+### Erreur de localisation
 
 Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
 
 ```
 Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
+la base, 3 Rue Pierre Roche, Marseille
 ```
 
-est plus précis que
+sont plus précises que
 
 ```
 Jeu de Paume, Rue Saint-Louis, France
+la base marseille, 3 Rue Pierre Roche
 ```
 
 ## Eventbrite.fr
@@ -89,18 +91,20 @@ Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
 la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
 
-## Erreur de localisation
+### Erreur de localisation
 
 Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
 
 ```
 Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
+la base, 3 Rue Pierre Roche, Marseille
 ```
 
-est plus précis que
+sont plus précises que
 
 ```
 Jeu de Paume, Rue Saint-Louis, France
+la base marseille, 3 Rue Pierre Roche
 ```
 
 ## Ouvrir une issue

@@ -44,12 +44,12 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |
 | Fresque Agri'Alim | https://www.billetweb.fr/pro/fresqueagrialim | Scraping Billetweb | OK |
-| Fresque du Numérique | https://www.fresquedunumerique.org/#participer | Scraping Billetweb | OK |
+| Fresque du Numérique | https://www.fresquedunumerique.org/#participer | Scraping Billetweb | OK de notre côté, pas côté billetterie |
 | Fresque des Nouveaux Récits | https://www.billetweb.fr/pro/fdnr | Scraping Billetweb | OK |
 | Fresque de la Mobilité | https://www.billetweb.fr/pro/fresquedelamobilite | Scraping Billetweb | OK |
 | Fresque de l'Alimentation | https://www.billetweb.fr/pro/fresquealimentation | Scraping Billetweb | OK |
 | Fresque de la Construction | https://www.billetweb.fr/pro/fresquedelaconstruction | Scraping Billetweb | OK |
-| Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | OK |
+| Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | OK de notre côté, pas côté billetterie |
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
 | Fresque Nos Vies Bas Carbone | https://www.nosviesbascarbone.org/participer-a-un-atelier | Scraping Billetweb | OK |
 | Fresque de l'Eau | https://www.billetweb.fr/multi_event.php?user=138110 | Scraping Billetweb | OK |
