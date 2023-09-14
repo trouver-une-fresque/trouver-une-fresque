@@ -36,6 +36,8 @@ Des exemples incorrects :
 Oasis Fontmarie - 1790 Route de Fontmarie à Castries
 # Le nom du lieu et son adresse ne sont pas séparés par une virgule
 Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+# Une virgule en trop !
+la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
 
 ## Erreur de localisation
@@ -56,7 +58,7 @@ Jeu de Paume, Rue Saint-Louis, France
 
 ### Page d'évènement
 
-- UN SEUL évènement doit apparaître sur la page d'évènement.
+- UN SEUL évènement doit apparaître sur la page d'évènement. Cela signifie que le bouton "Sélectionner une date" ou "Sélectionner une heure" ne doit pas apparaître sur la page. Un bouton "Obtenir des billets" sur la page de l'évènement est une condition pour être référencé.
 
 ## Fresqueduclimat.org
 
@@ -83,6 +85,8 @@ Des exemples incorrects :
 Oasis Fontmarie - 1790 Route de Fontmarie à Castries
 # Le nom du lieu et son adresse ne sont pas séparés par une virgule
 Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+# Une virgule en trop !
+la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
 
 ## Erreur de localisation
