@@ -4,14 +4,18 @@ Ce projet vient récupérer les données de vos évènements publiés en ligne. 
 
 Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement. Dans tous les cas, soyez patients : les évènements sont mis à jour une fois tous les 24h. Si vous postez un évènement, il n'apparaitra pas immédiatement sur Trouver une Fresque.
 
-Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section "Ouvrir une issue" en bas de cette page.
+- [Billetweb.fr](#billetwebfr)
+- [Eventbrite.fr](#eventbritefr)
+- [Fresqueduclimat.org](#fresqueduclimatorg)
+
+Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section [Ouvrir une issue](#ouvrir-une-issue) en bas de cette page.
 
 ## Billetweb.fr
 
 ### Page d'évènement
 
 - UN SEUL évènement doit apparaître sur la page d'évènement.
-- Une page avec le module d'achat de ticket seul n'est pas valide.
+- Une page avec le module d'achat de ticket seul n'est pas valide. Ces pages sont facilement identifiables : `?shop=` apparait quelque part dans l'URL de la page.
 
 ### Date
 

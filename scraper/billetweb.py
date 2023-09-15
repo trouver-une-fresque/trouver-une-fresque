@@ -101,6 +101,12 @@ def get_billetweb_data(dr, headless=False):
             "iframe": "eventu138110",
             "id": 11,
         },
+        {
+            # futurs proches
+            "url": "https://www.billetweb.fr/pro/futursproches",
+            "iframe": "event14893",
+            "id": 12,
+        },
     ]
 
     records = []
