@@ -42,8 +42,10 @@ def get_eventbrite_data(dr, headless=False):
         driver.implicitly_wait(5)
 
         while True:
+            print(f"Scrolling to the bottom...")
             try:
-                element = WebDriverWait(driver, 10).until(
+                time.sleep(10)
+                next_button = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable(
                         (
                             By.CSS_SELECTOR,
@@ -51,10 +53,15 @@ def get_eventbrite_data(dr, headless=False):
                         )
                     )
                 )
-                driver.execute_script("arguments[0].click();", element)
-                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                driver.implicitly_wait(2)
-            except:
+                desired_y = (next_button.size["height"] / 2) + next_button.location["y"]
+                window_h = driver.execute_script("return window.innerHeight")
+                window_y = driver.execute_script("return window.pageYOffset")
+                current_y = (window_h / 2) + window_y
+                scroll_y_by = desired_y - current_y
+                driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
+                time.sleep(2)
+                next_button.click()
+            except TimeoutException:
                 break
 
         driver.execute_script("window.scrollTo(0, 0);")
@@ -119,6 +126,10 @@ def get_eventbrite_data(dr, headless=False):
                 value="h1",
             )
             title = title_el.text
+
+            if "plénière" in title.lower():
+                print("Rejecting record: plénière")
+                continue
 
             ################################################################
             # Parse start and end dates
