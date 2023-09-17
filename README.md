@@ -54,7 +54,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque Nos Vies Bas Carbone | https://www.nosviesbascarbone.org/participer-a-un-atelier | Scraping Billetweb | OK |
 | Fresque de l'Eau | https://www.billetweb.fr/multi_event.php?user=138110 | Scraping Billetweb | OK |
 | Atelier futurs proches | https://www.billetweb.fr/pro/futursproches | Scraping Billetweb | OK |
-| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping WIX | Prévu, sans date précise |
+| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping WIX | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Pas prévu pour le moment |
 | Fresque des Déchets | https://greendonut.org/dechets/ | Scraping Google Agenda | Pas prévu pour le moment |
 | Fresque du Textile | https://greendonut.org/textile/ | Scraping Google Agenda | Pas prévu pour le moment |

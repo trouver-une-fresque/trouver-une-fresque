@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 
 from scraper.fdc import get_fdc_data
+from scraper.fec import get_fec_data
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from db.etl import etl
@@ -14,6 +15,9 @@ from utils.utils import get_config
 
 def main(headless=False, push_to_db=False):
     tot_records = []
+
+    fec_records = get_fec_data(dr=get_config("webdriver"), headless=headless)
+    tot_records += fec_records
 
     # Eventbrite
     eventbrite_records = get_eventbrite_data(

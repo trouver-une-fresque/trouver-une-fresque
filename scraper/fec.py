@@ -1,25 +1,21 @@
-import requests
-import numpy as np
-import pandas as pd
-import time
 import json
 import re
+import time
 
 from datetime import datetime
-from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from scraper.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
-from utils.utils import get_config
 
 
-def get_eventbrite_data(dr, headless=False):
-    print("Scraping data from eventbrite.fr")
+def get_fec_data(dr, headless=False):
+    print("Scraping data from lafresquedeleconomiecirculaire.com")
 
     options = FirefoxOptions()
     options.headless = headless
@@ -28,28 +24,27 @@ def get_eventbrite_data(dr, headless=False):
 
     webSites = [
         {
-            # 2tonnes
-            "url": "https://www.eventbrite.fr/o/2-tonnes-29470123869",
-            "id": 100,
+            "url": "https://www.lafresquedeleconomiecirculaire.com/",
+            "id": 300,
         },
     ]
 
     records = []
 
     for page in webSites:
-        print(f"==================\nProcessing page {page}")
+        print(f"========================")
         driver.get(page["url"])
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(2)
 
         while True:
             print(f"Scrolling to the bottom...")
             try:
-                time.sleep(10)
+                time.sleep(2)
                 next_button = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable(
                         (
                             By.CSS_SELECTOR,
-                            "#events div.organizer-profile__show-more > button",
+                            'button[data-hook="load-more-button"]',
                         )
                     )
                 )
@@ -66,24 +61,10 @@ def get_eventbrite_data(dr, headless=False):
 
         driver.execute_script("window.scrollTo(0, 0);")
 
-        elements = []
-        future_events = driver.find_element(
-            By.CSS_SELECTOR, 'div[data-testid="organizer-profile__future-events"]'
+        ele = driver.find_elements(
+            By.CSS_SELECTOR, 'li[data-hook="events-card"] div[data-hook="title"] a'
         )
-        event_card_divs = future_events.find_elements(By.CSS_SELECTOR, "div.eds-card")
-
-        for event_card_div in event_card_divs:
-            link_elements = event_card_div.find_elements(
-                By.CSS_SELECTOR, "a.eds-event-card-content__action-link"
-            )
-            elements.extend(link_elements)
-
-        links = []
-        for link_element in elements:
-            href = link_element.get_attribute("href")
-            if href:
-                links.append(href)
-        links = np.unique(links)
+        links = [e.get_attribute("href") for e in ele]
 
         for link in links:
             print(f"\n-> Processing {link} ...")
@@ -91,30 +72,11 @@ def get_eventbrite_data(dr, headless=False):
             driver.implicitly_wait(3)
 
             ################################################################
-            # Has it expired?
-            ################################################################
-            try:
-                if driver.find_elements(By.CSS_SELECTOR, "div.expired-event"):
-                    print("Rejecting record: event expired")
-                    continue
-            except:
-                pass
-
-            ################################################################
-            # Is there only one event
-            ################################################################
-            if driver.find_elements(
-                By.XPATH,
-                "//button[contains(text(), 'Sélectionnez') or contains(text(), 'Sélectionner') or contains(text(), 'Select')]",
-            ):
-                print("Rejecting record: multiple events")
-                continue
-
-            ################################################################
             # Parse event id
             ################################################################
-            uuids = re.search(r"/e/([^/?]+)", link)
-            if not uuids:
+            # Define the regex pattern for UUIDs
+            uuid = link.split("/event-details/")[-1]
+            if not uuid:
                 print("Rejecting record: UUID not found")
                 continue
 
@@ -127,24 +89,20 @@ def get_eventbrite_data(dr, headless=False):
             )
             title = title_el.text
 
-            if "plénière" in title.lower():
-                print("Rejecting record: plénière")
-                continue
-
             ################################################################
             # Parse start and end dates
             ################################################################
             try:
                 date_info_el = driver.find_element(
                     by=By.CSS_SELECTOR,
-                    value="div.date-info",
+                    value='p[data-hook="event-full-date"]',
                 )
                 event_time = date_info_el.text
             except NoSuchElementException:
                 print("Rejecting record: no dates")
                 continue
 
-            months = {
+            month_mapping = {
                 "janv.": 1,
                 "févr.": 2,
                 "mars": 3,
@@ -159,42 +117,59 @@ def get_eventbrite_data(dr, headless=False):
                 "déc.": 12,
             }
 
-            try:
-                parts = event_time.split()
-                day = int(parts[1])
-                month = months[parts[2]]
-                year = int(parts[3])
-                start_time = parts[4]
-                end_time = parts[6]
-
-                # Convert time strings to datetime objects
-                event_start_datetime = datetime(
-                    year,
-                    month,
-                    day,
-                    int(start_time.split(":")[0]),
-                    int(start_time.split(":")[1]),
-                )
-                event_end_datetime = datetime(
-                    year,
-                    month,
-                    day,
-                    int(end_time.split(":")[0]),
-                    int(end_time.split(":")[1]),
-                )
-            except:
+            date_and_times = event_time.split(",")
+            day_string = date_and_times[0].split(" ")
+            if len(day_string) == 2:
+                day = day_string[0]
+                month_string = day_string[1]
+                year = 2023
+            elif len(day_string) == 3:
+                day = day_string[0]
+                month_string = day_string[1]
+                year = day_string[2]
+            else:
                 print("Rejecting record: bad date format")
                 continue
 
-            ###########################################################
+            times_and_timezone = date_and_times[1].split(" UTC")
+            times = times_and_timezone[0].split(" – ")
+            if len(times_and_timezone) >= 2:
+                timezone = times_and_timezone[1]
+                print(f"Rejecting record: different timezone")
+                continue
+
+            # Extract hours and minutes from time strings
+            start_hour, start_minute = map(int, times[0].split(":"))
+            end_hour, end_minute = map(int, times[1].split(":"))
+
+            # Construct the datetime objects
+            event_start_datetime = datetime(
+                int(year),
+                month_mapping[month_string],
+                int(day),
+                start_hour,
+                start_minute,
+            )
+            event_end_datetime = datetime(
+                int(year),
+                month_mapping[month_string],
+                int(day),
+                end_hour,
+                end_minute,
+            )
+
+            ################################################################
             # Is it an online event?
             ################################################################
             online = False
             try:
                 online_el = driver.find_element(
-                    By.CLASS_NAME, "p.location-info__address-text"
+                    By.CSS_SELECTOR, 'p[data-hook="event-full-location"]'
                 )
-                if "online" in online_el.text.lower():
+                if (
+                    "en ligne" in online_el.text.lower()
+                    or "online" in online_el.text.lower()
+                ):
                     online = True
             except NoSuchElementException:
                 pass
@@ -213,21 +188,45 @@ def get_eventbrite_data(dr, headless=False):
 
             if not online:
                 location_el = driver.find_element(
-                    By.CSS_SELECTOR, "div.location-info__address"
+                    By.CSS_SELECTOR, 'p[data-hook="event-full-location"]'
                 )
-                full_location_text = location_el.text.split("\n")
-                location_name = full_location_text[0]
-                address_and_city = full_location_text[1]
-                full_location = f"{location_name}, {address_and_city}"
+                full_location = location_el.text
 
-                pattern = r"^(.*?)\s+(\d{5})\s+(.*?)$"
-                match = re.match(pattern, address_and_city)
-                if match:
-                    address = match.group(1)
-                    zip_code = match.group(2)
-                    city = match.group(3)
-                else:
-                    print("Rejecting record: bad address format")
+                if "," in full_location:
+                    loc_arr = full_location.split(",")
+                    if len(loc_arr) >= 5:
+                        print(
+                            f"Rejecting records: address is too long ({len(loc_arr)} parts)"
+                        )
+                        continue
+                    elif len(loc_arr) >= 4:
+                        if loc_arr[3].strip().lower() != "france":
+                            print("rejecting record: not in France")
+                            continue
+                        location_name = loc_arr[0]
+                        address = loc_arr[1]
+                        city = loc_arr[2]
+                    elif len(loc_arr) >= 3:
+                        if loc_arr[2].strip().lower() == "france":
+                            address = loc_arr[0]
+                            city = loc_arr[1]
+                        else:
+                            location_name = loc_arr[0]
+                            address = loc_arr[1]
+                            city = loc_arr[2]
+                    elif len(loc_arr) == 2:
+                        if loc_arr[1].strip().lower() == "france":
+                            city = loc_arr[0]
+                        else:
+                            address = loc_arr[0]
+                            city = loc_arr[1]
+
+                location_name = location_name.strip()
+                address = address.strip()
+                city = strip_zip_code(city)
+
+                if address == "" or city == "":
+                    print("Rejecting record: empty address or city")
                     continue
 
                 ############################################################
@@ -243,21 +242,15 @@ def get_eventbrite_data(dr, headless=False):
 
                 if department == "":
                     print("Rejecting record: no result from the national address API")
-                    driver.back()
-                    wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(
-                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                    )
-                    driver.switch_to.frame(iframe)
                     continue
 
             ################################################################
             # Description
             ################################################################
-            description_title_el = driver.find_element(
-                By.CSS_SELECTOR, "div.eds-text--left"
+            description_el = driver.find_element(
+                By.CSS_SELECTOR, "div#events-details-page-about-inner"
             )
-            description = description_title_el.text
+            description = description_el.text
 
             ################################################################
             # Training?
@@ -268,18 +261,19 @@ def get_eventbrite_data(dr, headless=False):
             ################################################################
             # Is it full?
             ################################################################
-            tickets_link_el = driver.find_element(
-                By.CSS_SELECTOR, "div.conversion-bar__panel-info"
-            )
-            sold_out = (
-                "complet" in tickets_link_el.text.lower()
-                or "ventes achevées" in tickets_link_el.text.lower()
-            )
+            sold_out = True
+            try:
+                sold_out_el = driver.find_element(
+                    by=By.CSS_SELECTOR,
+                    value='div[data-hook="event-sold-out"]',
+                )
+            except NoSuchElementException:
+                sold_out = False
 
             ################################################################
             # Is it suited for kids?
             ################################################################
-            kids = False
+            kids = "junior" in title.lower()
 
             ################################################################
             # Parse tickets link
@@ -290,7 +284,7 @@ def get_eventbrite_data(dr, headless=False):
             # Building final object
             ################################################################
             record = get_record_dict(
-                f"{page['id']}-{uuids.group(1)}",
+                f"{page['id']}-{uuid}",
                 page["id"],
                 title,
                 event_start_datetime,
