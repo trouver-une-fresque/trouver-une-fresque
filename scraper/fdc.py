@@ -183,11 +183,8 @@ def get_fdc_data(dr, headless=False):
                                 address = loc_arr[1]
                                 city = loc_arr[2]
                         elif len(loc_arr) == 2:
-                            if loc_arr[1].strip().lower() == "france":
-                                city = loc_arr[0]
-                            else:
-                                address = loc_arr[0]
-                                city = loc_arr[1]
+                            print("Rejecting record: unprecise address")
+                            continue
 
                     location_name = location_name.strip()
                     address = address.strip()
