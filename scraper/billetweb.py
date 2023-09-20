@@ -107,6 +107,12 @@ def get_billetweb_data(dr, headless=False):
             "iframe": "event14893",
             "id": 12,
         },
+        {
+            # Fresque de la Diversité
+            "url": "https://www.billetweb.fr/multi_event.php?user=163759",
+            "iframe": "eventu163759",
+            "id": 13,
+        },
     ]
 
     records = []
