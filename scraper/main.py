@@ -16,6 +16,7 @@ from utils.utils import get_config
 def main(headless=False, push_to_db=False):
     tot_records = []
 
+    # Fresque de l'Economie Circulaire (WIX)
     fec_records = get_fec_data(dr=get_config("webdriver"), headless=headless)
     tot_records += fec_records
 

@@ -61,6 +61,12 @@ def get_fdc_data(dr, headless=False):
                 uuids = re.findall(uuid_pattern, link)
                 if not uuids:
                     print("Rejecting record: UUID not found")
+                    driver.back()
+                    wait = WebDriverWait(driver, 10)
+                    iframe = wait.until(
+                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
+                    )
+                    driver.switch_to.frame(iframe)
                     continue
 
                 ################################################################
@@ -184,6 +190,12 @@ def get_fdc_data(dr, headless=False):
                                 city = loc_arr[2]
                         elif len(loc_arr) == 2:
                             print("Rejecting record: unprecise address")
+                            driver.back()
+                            wait = WebDriverWait(driver, 10)
+                            iframe = wait.until(
+                                EC.presence_of_element_located((By.TAG_NAME, "iframe"))
+                            )
+                            driver.switch_to.frame(iframe)
                             continue
 
                     location_name = location_name.strip()
