@@ -42,9 +42,12 @@ def get_eventbrite_data(dr, headless=False):
         driver.implicitly_wait(5)
 
         # Reject all cookies
-        overlay = driver.find_element(By.CSS_SELECTOR, "#_evidon_banner")
-        if overlay.is_displayed():
-            overlay.find_element(By.CSS_SELECTOR, "#_evidon-decline-button").click()
+        try:
+            overlay = driver.find_element(By.CSS_SELECTOR, "#_evidon_banner")
+            if overlay.is_displayed():
+                overlay.find_element(By.CSS_SELECTOR, "#_evidon-decline-button").click()
+        except NoSuchElementException:
+            pass
 
         while True:
             print(f"Scrolling to the bottom...")
