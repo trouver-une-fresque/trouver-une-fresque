@@ -7,6 +7,7 @@ Sautez à la section correspondante à la plateforme utilisée pour publier votr
 - [Billetweb.fr](#billetwebfr)
 - [Eventbrite.fr](#eventbritefr)
 - [Fresqueduclimat.org](#fresqueduclimatorg)
+- [Lafresquedeleconomiecirculaire.com](#lafresquedeleconomiecirculairecom)
 
 Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section [Ouvrir une issue](#ouvrir-une-issue) en bas de cette page.
 
@@ -14,8 +15,8 @@ Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h,
 
 ### Page d'évènement
 
-- UN SEUL évènement doit apparaître sur la page d'évènement.
-- Une page avec le module d'achat de ticket seul n'est pas valide. Ces pages sont facilement identifiables : `?shop=` apparait quelque part dans l'URL de la page.
+- UN SEUL évènement doit apparaître sur la page d'évènement. Le mode "Séances" de Billetweb n'est pas (encore) supporté.
+- Une page avec le module d'achat de ticket seul n'est pas valide. Ces pages sont facilement identifiables : `?shop=` apparait quelque part dans l'URL de la page. Pour régler ce problème, dans les paramètres des pages organisateur, il faut changer l'action du bouton de "Afficher le module de vente" à "Afficher la boutique de l'événement".
 
 ### Date
 
@@ -38,8 +39,10 @@ Des exemples incorrects :
 ```
 # Les parties composant l'adresse ne sont pas séparées par des virgules
 Oasis Fontmarie - 1790 Route de Fontmarie à Castries
+
 # Le nom du lieu et son adresse ne sont pas séparés par une virgule
 Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+
 # Une virgule en trop !
 la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
@@ -74,12 +77,12 @@ C'est normal, il n'est malheureusement pas possible d'accéder à la page d'un �
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
 
 ```
 Trattino, 2 Rue Clément Marot, Lyon, France
 Trattino, Rue Clément Marot, 35000 Rennes, France
-Rue Clément Marot, 35000 Rennes
+Super Café, Rue Clément Marot, 35000 Rennes
 ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
 Chez moi , 1560 Rue Maurice Jacob, Lyon, France
 ```
@@ -89,8 +92,10 @@ Des exemples incorrects :
 ```
 # Les parties composant l'adresse ne sont pas séparées par des virgules
 Oasis Fontmarie - 1790 Route de Fontmarie à Castries
+
 # Le nom du lieu et son adresse ne sont pas séparés par une virgule
 Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
+
 # Une virgule en trop !
 la perestroika, , 2 Rue Thiergarten, Strasbourg, France
 ```
@@ -110,6 +115,12 @@ sont plus précises que
 Jeu de Paume, Rue Saint-Louis, France
 la base marseille, 3 Rue Pierre Roche
 ```
+
+## Lafresquedeleconomiecirculaire.com
+
+### Different timezone
+
+Les évènements ne se tenant pas en France ne sont pas encore supportés.
 
 ## Ouvrir une issue
 
