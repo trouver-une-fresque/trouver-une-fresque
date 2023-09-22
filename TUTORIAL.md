@@ -63,6 +63,10 @@ Jeu de Paume, Rue Saint-Louis, France
 la base marseille, 3 Rue Pierre Roche
 ```
 
+### Mon atelier s'adresse aux juniors mais il n'apparait pas comme tel !
+
+Le mot-clé "junior" doit figurer dans le titre de l'atelier.
+
 ## Eventbrite.fr
 
 ### Page d'évènement
@@ -115,6 +119,10 @@ sont plus précises que
 Jeu de Paume, Rue Saint-Louis, France
 la base marseille, 3 Rue Pierre Roche
 ```
+
+### Mon atelier s'adresse aux juniors mais il n'apparait pas comme tel !
+
+Le mot-clé "junior" doit figurer dans la description de l'atelier.
 
 ## Lafresquedeleconomiecirculaire.com
 

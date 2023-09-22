@@ -260,7 +260,8 @@ def get_fdc_data(dr, headless=False):
                 ################################################################
                 # Is it suited for kids?
                 ################################################################
-                kids = False
+                kids_list = ["junior"]
+                kids = any(w in description.lower() for w in kids_list) and not training
 
                 ################################################################
                 # Parse tickets link
