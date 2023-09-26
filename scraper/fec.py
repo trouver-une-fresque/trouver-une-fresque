@@ -70,6 +70,7 @@ def get_fec_data(dr, headless=False):
             print(f"\n-> Processing {link} ...")
             driver.get(link)
             driver.implicitly_wait(3)
+            time.sleep(5)
 
             ################################################################
             # Parse event id
