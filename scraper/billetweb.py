@@ -113,6 +113,20 @@ def get_billetweb_data(dr, headless=False):
             "iframe": "eventu168799",
             "id": 13,
         },
+        {
+            # Fresque du Textile
+            "url": "https://www.billetweb.fr/multi_event.php?user=166793",
+            "iframe": "event27458",
+            "filter": "textile",
+            "id": 14,
+        },
+        {
+            # Fresque des Déchets
+            "url": "https://www.billetweb.fr/multi_event.php?user=166793",
+            "iframe": "event27458",
+            "filter": "dechet",
+            "id": 15,
+        },
     ]
 
     records = []
@@ -132,6 +146,13 @@ def get_billetweb_data(dr, headless=False):
                 print(f"\n-> Processing {link} ...")
                 driver.get(link)
                 driver.implicitly_wait(3)
+
+                if "filter" in page:
+                    if page["filter"] not in link:
+                        print(
+                            "Rejecting filter: expected filtering keyword not present in current link"
+                        )
+                        continue
 
                 try:
                     # Attempt to find the div element by its id
