@@ -135,14 +135,13 @@ Les évènements ne se tenant pas en France ne sont pas encore supportés.
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 2 et 4 parties séparées par des virgules:
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Est-elle accompagnée se son code postal ? Une adresse valide est composée d'entre 2 et 3 parties séparées par des virgules:
 
 ```
-Trattino, 2 Rue Clément Marot, Lyon, France
+Trattino, 2 Rue Clément Marot, 69000 Lyon
 Trattino, Rue Clément Marot, 35000 Rennes
 Super Café, Rue Clément Marot, 35000 Rennes
-ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
-Chez moi , 1560 Rue Maurice Jacob, Lyon, France
+ZEITGEIST café - vegan coffee & cake, Rue des Augustins, 69008 Lyon"
 ```
 
 Des exemples incorrects :
