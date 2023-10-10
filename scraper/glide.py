@@ -150,9 +150,7 @@ def get_glide_data(dr, headless=False):
                 )
                 parent_el = time_label_el.find_element(by=By.XPATH, value="..")
                 online_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
-                online = online_el.text.lower()
-
-                online = any(w in online for w in online_list)
+                online = any(w in online_el.text.lower() for w in online_list)
 
                 ################################################################
                 # Location data

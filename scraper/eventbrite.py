@@ -202,8 +202,8 @@ def get_eventbrite_data(dr, headless=False):
                 online_el = driver.find_element(
                     By.CLASS_NAME, "p.location-info__address-text"
                 )
-                if "online" in online_el.text.lower():
-                    online = True
+                online_list = ["online", "en ligne", "distanciel"]
+                online = any(w in online_el.text.lower() for w in online_list)
             except NoSuchElementException:
                 pass
 
