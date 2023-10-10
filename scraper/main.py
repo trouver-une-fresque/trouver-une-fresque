@@ -9,6 +9,7 @@ from scraper.fdc import get_fdc_data
 from scraper.fec import get_fec_data
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
+from scraper.glide import get_glide_data
 from db.etl import etl
 from utils.utils import get_config
 
@@ -35,6 +36,10 @@ def main(headless=False, push_to_db=False):
         dr=get_config("webdriver"), headless=headless
     )
     tot_records += billetweb_records
+
+    # Glide
+    glide_records = get_glide_data(dr=get_config("webdriver"), headless=headless)
+    tot_records += glide_records
 
     df = pd.DataFrame(tot_records)
 

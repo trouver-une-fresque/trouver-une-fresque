@@ -24,10 +24,12 @@ def get_fdc_data(dr, headless=False):
 
     webSites = [
         {
+            # Fresque du Climat (ateliers)
             "url": "https://fresqueduclimat.org/inscription-atelier/grand-public/",
             "id": 200,
         },
         {
+            # Fresque du Climat (formations)
             "url": "https://fresqueduclimat.org/inscription-formation/grand-public/",
             "id": 200,
         },
@@ -105,7 +107,7 @@ def get_fdc_data(dr, headless=False):
                 times = date_and_times[1].split(" de ")[1]
 
                 # Define a regular expression pattern to extract times
-                time_pattern = r"(\d{2}h\d{2}) à (\d{2}h\d{2})"
+                time_pattern = r"(\d{1,2}h\d{2}) à (\d{1,2}h\d{2})"
 
                 # Find matches using the pattern
                 matches = re.findall(time_pattern, times)

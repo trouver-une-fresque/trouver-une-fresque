@@ -58,11 +58,12 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping WIX | OK |
 | Fresque du Textile | https://www.billetweb.fr/multi_event.php?user=166793 | Scraping Billetweb | OK |
 | Fresque des Déchets | https://www.billetweb.fr/multi_event.php?user=166793 | Scraping Billetweb | OK |
-| Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | Prévu, priorité 1 |
+| Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | Atelier Découverte de la Renaissance Écologique | https://www.weezevent.com/atelier-decouverte-12 | Scraping Weezevent | Prévu, priorité 2 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | Prévu, priorité 2 |
-| Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
+| Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
+| Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | Pas prévu pour le moment |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Pas prévu pour le moment |
 

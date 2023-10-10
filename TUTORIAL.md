@@ -8,6 +8,7 @@ Sautez à la section correspondante à la plateforme utilisée pour publier votr
 - [Eventbrite.fr](#eventbritefr)
 - [Fresqueduclimat.org](#fresqueduclimatorg)
 - [Lafresquedeleconomiecirculaire.com](#lafresquedeleconomiecirculairecom)
+- [Glide.page](#glidepage)
 
 Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section [Ouvrir une issue](#ouvrir-une-issue) en bas de cette page.
 
@@ -129,6 +130,30 @@ Le mot-clé "junior" doit figurer dans la description de l'atelier.
 ### Different timezone
 
 Les évènements ne se tenant pas en France ne sont pas encore supportés.
+
+## Glide.page
+
+### Adresse
+
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 2 et 4 parties séparées par des virgules:
+
+```
+Trattino, 2 Rue Clément Marot, Lyon, France
+Trattino, Rue Clément Marot, 35000 Rennes
+Super Café, Rue Clément Marot, 35000 Rennes
+ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
+Chez moi , 1560 Rue Maurice Jacob, Lyon, France
+```
+
+Des exemples incorrects :
+
+```
+# Les parties composant l'adresse ne sont pas séparées par des virgules
+Oasis Fontmarie - 1790 Route de Fontmarie à Castries
+
+# Pas de virgules
+Souffle du Nord 34 rue de la Haute Loge 59700 Marcq-en-Barœul
+```
 
 ## Ouvrir une issue
 
