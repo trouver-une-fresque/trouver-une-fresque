@@ -63,6 +63,22 @@ def get_glide_data(dr, headless=False):
                 driver.implicitly_wait(3)
 
                 ################################################################
+                # Is it canceled?
+                ################################################################
+                try:
+                    # Attempt to find the div element by its id
+                    large_title_el = driver.find_element(
+                        By.CSS_SELECTOR, "h2.headlineMedium"
+                    )
+                    large_title = large_title_el.text
+                    if "annulé" in large_title:
+                        print("Rejecting record: canceled")
+                        driver.back()
+                        continue
+                except NoSuchElementException:
+                    pass
+
+                ################################################################
                 # Parse event id
                 ################################################################
                 uuid = link.split("/")[-1]
@@ -74,7 +90,9 @@ def get_glide_data(dr, headless=False):
                 ################################################################
                 # Parse event title
                 ################################################################
-                title_el = driver.find_element(by=By.TAG_NAME, value="h2")
+                title_el = driver.find_element(
+                    by=By.CSS_SELECTOR, value="h2.headlineSmall"
+                )
                 title = title_el.text
 
                 ################################################################
