@@ -139,9 +139,13 @@ def get_fec_data(dr, headless=False):
                 print(f"Rejecting record: different timezone")
                 continue
 
-            # Extract hours and minutes from time strings
-            start_hour, start_minute = map(int, times[0].split(":"))
-            end_hour, end_minute = map(int, times[1].split(":"))
+            try:
+                # Extract hours and minutes from time strings
+                start_hour, start_minute = map(int, times[0].split(":"))
+                end_hour, end_minute = map(int, times[1].split(":"))
+            except:
+                print(f"Rejecting record: bad date format")
+                continue
 
             # Construct the datetime objects
             event_start_datetime = datetime(
