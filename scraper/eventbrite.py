@@ -52,12 +52,14 @@ def get_eventbrite_data(dr, headless=False):
         while True:
             print(f"Scrolling to the bottom...")
             try:
-                time.sleep(10)
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                driver.implicitly_wait(2)
+                time.sleep(2)
                 next_button = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable(
                         (
                             By.CSS_SELECTOR,
-                            "#events div.organizer-profile__show-more > button",
+                            "div.organizer-profile__section--content div.organizer-profile__show-more > button",
                         )
                     )
                 )
@@ -69,7 +71,8 @@ def get_eventbrite_data(dr, headless=False):
                 driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
                 time.sleep(2)
                 next_button.click()
-            except TimeoutException:
+            except Exception as e:
+                print(f"Had to break: {e}")
                 break
 
         driver.execute_script("window.scrollTo(0, 0);")
@@ -200,7 +203,7 @@ def get_eventbrite_data(dr, headless=False):
             online = False
             try:
                 online_el = driver.find_element(
-                    By.CLASS_NAME, "p.location-info__address-text"
+                    By.CSS_SELECTOR, "p.location-info__address-text"
                 )
                 online_list = ["online", "en ligne", "distanciel"]
                 online = any(w in online_el.text.lower() for w in online_list)

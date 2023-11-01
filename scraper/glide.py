@@ -50,7 +50,7 @@ def get_glide_data(dr, headless=False):
         driver.implicitly_wait(10)
 
         while True:
-            time.sleep(15)
+            time.sleep(20)
             ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
             num_el = len(ele)
 
