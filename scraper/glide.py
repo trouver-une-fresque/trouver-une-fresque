@@ -33,11 +33,25 @@ def get_glide_data(dr, headless=False):
             # Fresque des Frontières Planétaires (ateliers)
             "url": "https://1erdegre.glide.page/dl/3b1bc8",
             "id": 500,
+            "filter": "Fresque des frontières planétaires",
         },
         {
             # Fresque des Frontières Planétaires (formations)
             "url": "https://1erdegre.glide.page/dl/dcc150",
             "id": 500,
+            "filter": "Fresque des frontières planétaires",
+        },
+        {
+            # Horizons Décarbonés (ateliers)
+            "url": "https://1erdegre.glide.page/dl/3b1bc8",
+            "id": 501,
+            "filter": "Horizons Décarbonés",
+        },
+        {
+            # Horizons Décarbonés (formations)
+            "url": "https://1erdegre.glide.page/dl/dcc150",
+            "id": 501,
+            "filter": "Horizons Décarbonés",
         },
     ]
 
@@ -48,8 +62,16 @@ def get_glide_data(dr, headless=False):
         print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
         driver.implicitly_wait(10)
+        time.sleep(20)
+
+        tab_button_element = driver.find_element(
+            By.XPATH,
+            f"//div[contains(@class, 'button-text') and text()='{page['filter']}']",
+        )
+        tab_button_element.click()
 
         while True:
+            # Loading the page
             time.sleep(20)
             ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
             num_el = len(ele)
