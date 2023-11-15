@@ -75,6 +75,7 @@ def get_glide_data(dr, headless=False):
             time.sleep(20)
             ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
             num_el = len(ele)
+            print(f"Found {num_el} elements")
 
             for i in range(num_el):
                 ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
@@ -145,6 +146,12 @@ def get_glide_data(dr, headless=False):
                 }
 
                 year = 2023
+                year_pattern = r"\b\d{4}\b"
+                year_match = re.search(year_pattern, event_time)
+                if year_match:
+                    year = year_match.group()
+                    event_time = re.sub(f" {year_pattern}", "", event_time)
+
                 date_and_times = event_time.split(" de ")
                 week_day, day, month_string = date_and_times[0].split(" ")
 
