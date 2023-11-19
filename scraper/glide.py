@@ -16,7 +16,7 @@ from geopy.geocoders import Nominatim
 from geopy import geocoders
 from dateutil.parser import *
 
-from scraper.records import get_record_dict
+from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
 

@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from scraper.records import get_record_dict
+from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
 
