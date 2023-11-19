@@ -1,7 +1,8 @@
 import argparse
-import psycopg2
+import psycopg
 
 from datetime import datetime
+from psycopg.conninfo import make_conninfo
 
 from apis import main as main_apis
 from scraper import main as main_scraper
@@ -41,11 +42,11 @@ if __name__ == "__main__":
         psw = credentials["psw"]
         database = credentials["database"]
 
-        conn = psycopg2.connect(
-            database=database, user=user, password=psw, host=host, port=port
-        )
+        with psycopg.connect(
+            make_conninfo(
+                dbname=database, user=user, password=psw, host=host, port=port
+            )
+        ) as conn:
+            etl(conn, df)
 
-        etl(conn, df)
         print("Done")
-
-        conn.close()

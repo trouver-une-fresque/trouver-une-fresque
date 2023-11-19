@@ -1,7 +1,9 @@
 import json
 import argparse
 import pandas as pd
-import psycopg2
+import psycopg
+
+from psycopg.conninfo import make_conninfo
 
 from db.etl import etl, insert, truncate
 from utils.utils import get_config
@@ -39,20 +41,17 @@ def main():
     psw = credentials["psw"]
     database = credentials["database"]
 
-    conn = psycopg2.connect(
-        database=database, user=user, password=psw, host=host, port=port
-    )
+    with psycopg.connect(
+        make_conninfo(dbname=database, user=user, password=psw, host=host, port=port)
+    ) as conn:
+        input_records = open(args.input, "r")
+        input_records = json.loads(input_records.read())
+        df = pd.DataFrame.from_dict(pd.json_normalize(input_records), orient="columns")
+        print(df)
 
-    input_records = open(args.input, "r")
-    input_records = json.loads(input_records.read())
-    df = pd.DataFrame.from_dict(pd.json_normalize(input_records), orient="columns")
-    print(df)
-
-    if args.full_etl:
-        etl(conn, df)
-    else:
-        if args.truncate_first:
-            truncate(conn, "auth.events_future")
-        insert(conn, df, "auth.events_future")
-
-    conn.close()
+        if args.full_etl:
+            etl(conn, df)
+        else:
+            if args.truncate_first:
+                truncate(conn, "auth.events_future")
+            insert(conn, df, "auth.events_future")

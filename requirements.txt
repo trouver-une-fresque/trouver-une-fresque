@@ -1,7 +1,7 @@
-numpy==1.23.3
-requests>=2.31.0
-selenium==4.4.3
-geopy==2.2.0
-pandas==1.5.0
-python-dateutil==2.8.2
-psycopg2==2.9.4
+numpy
+requests
+selenium
+geopy
+pandas
+python-dateutil
+psycopg

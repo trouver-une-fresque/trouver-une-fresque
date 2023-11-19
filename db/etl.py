@@ -1,6 +1,5 @@
-import psycopg2
+import psycopg
 import numpy as np
-import psycopg2.extras as extras
 import pandas as pd
 from time import sleep
 import json
@@ -28,7 +27,7 @@ def update_most_recent(conn, table):
     try:
         cursor.execute(query)
         conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg.DatabaseError) as error:
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
@@ -41,14 +40,19 @@ def insert(conn, df, table, most_recent=False):
     tuples = [tuple(x) for x in df.to_numpy()]
     cols = ",".join(list(df.columns))
 
+    print(list(df.columns))
+
     # SQL query to execute
-    query = "INSERT INTO %s(%s) VALUES %%s" % (table, cols)
     cursor = conn.cursor()
-    print(query)
     try:
-        extras.execute_values(cursor, query, tuples)
+        cursor.executemany(
+            "INSERT INTO %s(%s) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s)"
+            % (table, cols),
+            tuples,
+            returning=True,
+        )
         conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg.DatabaseError) as error:
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
@@ -62,7 +66,7 @@ def truncate(conn, table):
     try:
         cursor.execute(query)
         conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
+    except (Exception, psycopg.DatabaseError) as error:
         print("Error: %s" % error)
         conn.rollback()
         cursor.close()
