@@ -41,15 +41,15 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | ------------- |:-------------:| :-----:| :-----:|
 | Fresque du Climat | https://fresqueduclimat.org/participer-a-un-atelier-grand-public | Scraping fdc | OK |
 | Atelier 2tonnes | https://www.eventbrite.fr/o/2-tonnes-29470123869 | Scraping Eventbrite | OK |
-| Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | OK de notre côté, pas côté billetterie |
+| Fresque de la Biodiversité | https://www.fresquedelabiodiversite.org/#participer | Scraping Billetweb | [Issue #3](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/3) |
 | Fresque Océane | https://www.billetweb.fr/pro/billetteriefo | Scraping Billetweb | OK |
 | Fresque Agri'Alim | https://www.billetweb.fr/pro/fresqueagrialim | Scraping Billetweb | OK |
-| Fresque du Numérique | https://www.fresquedunumerique.org/#participer | Scraping Billetweb | OK de notre côté, pas côté billetterie |
-| Fresque des Nouveaux Récits | https://www.billetweb.fr/pro/fdnr | Scraping Billetweb | OK |
+| Fresque du Numérique | https://www.fresquedunumerique.org/#participer | Scraping Billetweb | [Issue #3](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/3) |
+| Fresque des Nouveaux Récits | https://www.billetweb.fr/pro/fdnr | Scraping Billetweb | [Issue #3](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/3) |
 | Fresque de la Mobilité | https://www.billetweb.fr/pro/fresquedelamobilite | Scraping Billetweb | OK |
 | Fresque de l'Alimentation | https://www.billetweb.fr/pro/fresquealimentation | Scraping Billetweb | OK |
 | Fresque de la Construction | https://www.billetweb.fr/pro/fresquedelaconstruction | Scraping Billetweb | OK |
-| Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | OK de notre côté, pas côté billetterie |
+| Fresque du Sexisme | https://www.billetweb.fr/pro/fresque-du-sexisme | Scraping Billetweb | [Issue #3](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/3) |
 | Atelier OGRE | https://www.billetweb.fr/pro/atelierogre | Scraping Billetweb | OK |
 | Fresque Nos Vies Bas Carbone | https://www.billetweb.fr/multi_event.php?user=132897 | Scraping Billetweb | OK |
 | Fresque de l'Eau | https://www.billetweb.fr/multi_event.php?user=138110 | Scraping Billetweb | OK |
@@ -61,11 +61,11 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | Prévu, priorité 1 |
+| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
+| Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
-| Atelier Découverte de la Renaissance Écologique | https://www.weezevent.com/atelier-decouverte-12 | Scraping Weezevent | Prévu, priorité 2 |
 | Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
-| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Pas prévu pour le moment |
 
 ## Dev
 
