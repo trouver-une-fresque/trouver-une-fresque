@@ -1,3 +1,5 @@
+import pandas as pd
+
 from apis.glorieuses import get_glorieuses_data
 
 

@@ -28,6 +28,11 @@ def get_glorieuses_data():
 
     for json_record in json_records:
         ################################################################
+        # Get event id
+        ################################################################
+        event_id = json_record["RECORD_ID()"]
+
+        ################################################################
         # Get event title
         ################################################################
         title = json_record["Label event"]
@@ -35,18 +40,27 @@ def get_glorieuses_data():
         ################################################################
         # Parse start and end dates
         ################################################################
-        event_time = json_record["Date"]
+        event_start_time = json_record["Date"]
 
         try:
             # Convert time strings to datetime objects
             event_start_datetime = datetime.strptime(
-                event_time, "%Y-%m-%dT%H:%M:%S.%fZ"
+                event_start_time, "%Y-%m-%dT%H:%M:%S.%fZ"
             )
         except Exception as e:
             print(f"Rejecting record: bad date format {e}")
             continue
 
-        event_end_datetime = event_start_datetime
+        event_end_time = json_record["Date fin"]
+
+        try:
+            # Convert time strings to datetime objects
+            event_end_datetime = datetime.strptime(
+                event_end_time, "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+        except Exception as e:
+            print(f"Rejecting record: bad date format {e}")
+            continue
 
         ###########################################################
         # Is it an online event?
@@ -87,7 +101,7 @@ def get_glorieuses_data():
         ################################################################
         # Description
         ################################################################
-        description = ""
+        description = json_record["Label event"]
 
         ################################################################
         # Training?
@@ -114,7 +128,7 @@ def get_glorieuses_data():
         # Building final object
         ################################################################
         record = get_record_dict(
-            f"test",
+            f"{type_id}-{event_id}",
             type_id,
             title,
             event_start_datetime,
@@ -131,10 +145,12 @@ def get_glorieuses_data():
             training,
             sold_out,
             kids,
-            "",  # API
+            "api",  # API
             tickets_link,
             description,
         )
 
         records.append(record)
         print(f"Successfully API record\n{json.dumps(record, indent=4)}")
+
+    return records

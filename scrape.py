@@ -23,10 +23,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    df2 = main_apis()
     df = main_scraper(headless=args.headless)
-    # df2 = main_apis()
 
-    # df = df1 + df2
+    df = df1 + df2
 
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
