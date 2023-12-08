@@ -123,6 +123,7 @@ def get_glorieuses_data():
         # Parse tickets link
         ################################################################
         tickets_link = json_record["Lien billeterie"]
+        source_link = tickets_link
 
         ################################################################
         # Building final object
@@ -145,7 +146,7 @@ def get_glorieuses_data():
             training,
             sold_out,
             kids,
-            "api",  # API
+            source_link,
             tickets_link,
             description,
         )

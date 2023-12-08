@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 import psycopg
 
 from datetime import datetime
@@ -23,15 +24,14 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    df1 = main_scraper(headless=args.headless)
     df2 = main_apis()
-    df = main_scraper(headless=args.headless)
-
-    df = df1 + df2
+    df_merged = pd.concat([df1, df2])
 
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
     with open(f"results/events_{insert_time}.json", "w", encoding="UTF-8") as file:
-        df.to_json(file, orient="records", force_ascii=False)
+        df_merged.to_json(file, orient="records", force_ascii=False)
 
     if args.push_to_db:
         print("Pushing scraped results into db...")
@@ -47,6 +47,6 @@ if __name__ == "__main__":
                 dbname=database, user=user, password=psw, host=host, port=port
             )
         ) as conn:
-            etl(conn, df)
+            etl(conn, df_merged)
 
         print("Done")
