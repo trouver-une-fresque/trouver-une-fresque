@@ -61,11 +61,21 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | OK |
+| Puzzle Climat | https://www.puzzleclimat.org/ | Scraping Billetweb | Prévu, priorité 1 |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
 | Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
+
+## Initiatives locales
+
+Nous avons pris connaissance d'initiatives locales organisée au niveau du département. Nous réfléchissons à un moyen d'intégrer ces ateliers. Le souci est que certains ateliers pourraient être dupliqués par rapport aux billetterie officielles.
+
+| Département       | Lien           | Source | Supporté  |
+| ------------- |:-------------:| :-----:| :-----:|
+| Isère | https://enjeuxcommuns.fr/les-prochains-ateliers-en-isere/ | Airtable | Non |
+| Bas-Rhin/Haut-Rhin | https://hoplatransition.org/index.php/nos-evenements/ | Custom | Non |
 
 ## Dev
 
