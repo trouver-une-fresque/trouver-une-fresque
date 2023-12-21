@@ -316,7 +316,7 @@ def get_glide_data(dr, headless=False):
                 ################################################################
                 # Training?
                 ################################################################
-                training_list = ["formation", "briefing", "animateur"]
+                training_list = ["formation", "briefing", "animateur", "animation"]
                 training = any(w in title.lower() for w in training_list)
 
                 ################################################################

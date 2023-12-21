@@ -43,7 +43,7 @@ def get_eventbrite_data(dr, headless=False):
 
         # Reject all cookies
         try:
-            overlay = driver.find_element(By.CSS_SELECTOR, "#_evidon_banner")
+            overlay = driver.find_element(By.CSS_SELECTOR, "#consentManagerMainDialog")
             if overlay.is_displayed():
                 overlay.find_element(By.CSS_SELECTOR, "#_evidon-decline-button").click()
         except NoSuchElementException:
@@ -249,8 +249,14 @@ def get_eventbrite_data(dr, headless=False):
                 ############################################################
                 # Localisation sanitizer
                 ############################################################
-                search_query = f"{address}, {city}, France"
-                address_dict = get_address_data(search_query)
+                try:
+                    search_query = f"{address}, {city}, France"
+                    address_dict = get_address_data(search_query)
+                except json.JSONDecodeError:
+                    print(
+                        f"Rejecting record: error while parsing the national address API response"
+                    )
+                    continue
 
                 department = address_dict.get("cod_dep", "")
                 longitude = address_dict.get("longitude", "")

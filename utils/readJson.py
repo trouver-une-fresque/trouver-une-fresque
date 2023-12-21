@@ -1,3 +1,4 @@
+import json
 import re
 import requests
 
@@ -47,10 +48,14 @@ def get_address_data(text_address):
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
     }
 
-    response = requests.request(
-        "GET", url, data=payload, headers=headers, params=querystring
-    )
-    data = response.json()
+    try:
+        response = requests.request(
+            "GET", url, data=payload, headers=headers, params=querystring
+        )
+        data = response.json()
+    except json.JSONDecodeError as e:
+        raise e
+
     try:
         housenumber = data["features"][0]["properties"]["housenumber"]
     except:
