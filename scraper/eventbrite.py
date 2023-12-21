@@ -49,7 +49,8 @@ def get_eventbrite_data(dr, headless=False):
         except NoSuchElementException:
             pass
 
-        while True:
+        more_content = True
+        while more_content:
             print(f"Scrolling to the bottom...")
             try:
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -71,8 +72,10 @@ def get_eventbrite_data(dr, headless=False):
                 driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
                 time.sleep(2)
                 next_button.click()
+            except TimeoutException:
+                more_content = False
             except Exception as e:
-                print(f"Had to break: {e}")
+                print(f"Had to break: {type(e)}")
                 break
 
         driver.execute_script("window.scrollTo(0, 0);")
@@ -81,11 +84,13 @@ def get_eventbrite_data(dr, headless=False):
         future_events = driver.find_element(
             By.CSS_SELECTOR, 'div[data-testid="organizer-profile__future-events"]'
         )
-        event_card_divs = future_events.find_elements(By.CSS_SELECTOR, "div.eds-card")
+        event_card_divs = future_events.find_elements(By.CSS_SELECTOR, "div.event-card")
+
+        print(f"Found {len(event_card_divs)} events")
 
         for event_card_div in event_card_divs:
             link_elements = event_card_div.find_elements(
-                By.CSS_SELECTOR, "a.eds-event-card-content__action-link"
+                By.CSS_SELECTOR, "a.event-card-link"
             )
             elements.extend(link_elements)
 
