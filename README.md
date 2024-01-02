@@ -64,6 +64,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Puzzle Climat | https://www.puzzleclimat.org/ | Scraping Billetweb | Prévu, priorité 1 |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
+| Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
 | Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |

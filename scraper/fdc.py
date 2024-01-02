@@ -217,8 +217,20 @@ def get_fdc_data(dr, headless=False):
                     ############################################################
                     # Localisation sanitizer
                     ############################################################
-                    search_query = f"{address}, {city}, France"
-                    address_dict = get_address_data(search_query)
+                    try:
+                        search_query = f"{address}, {city}, France"
+                        address_dict = get_address_data(search_query)
+                    except json.JSONDecodeError:
+                        print(
+                            f"Rejecting record: error while parsing the national address API response"
+                        )
+                        driver.back()
+                        wait = WebDriverWait(driver, 10)
+                        iframe = wait.until(
+                            EC.presence_of_element_located((By.TAG_NAME, "iframe"))
+                        )
+                        driver.switch_to.frame(iframe)
+                        continue
 
                     department = address_dict.get("cod_dep", "")
                     longitude = address_dict.get("longitude", "")

@@ -363,8 +363,14 @@ def get_billetweb_data(dr, headless=False):
                     ############################################################
                     # Localisation sanitizer
                     ############################################################
-                    search_query = f"{address}, {city}, France"
-                    address_dict = get_address_data(search_query)
+                    try:
+                        search_query = f"{address}, {city}, France"
+                        address_dict = get_address_data(search_query)
+                    except json.JSONDecodeError:
+                        print(
+                            f"Rejecting record: error while parsing the national address API response"
+                        )
+                        continue
 
                     department = address_dict.get("cod_dep", "")
                     longitude = address_dict.get("longitude", "")
