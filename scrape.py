@@ -31,7 +31,7 @@ if __name__ == "__main__":
     dt = datetime.now()
     insert_time = dt.strftime("%Y%m%d_%H%M%S")
     with open(f"results/events_{insert_time}.json", "w", encoding="UTF-8") as file:
-        df_merged.to_json(file, orient="records", force_ascii=False)
+        df_merged.to_json(file, orient="records", force_ascii=False, indent=2)
 
     if args.push_to_db:
         print("Pushing scraped results into db...")
