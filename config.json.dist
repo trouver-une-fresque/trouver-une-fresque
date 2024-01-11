@@ -1,9 +1,9 @@
 {
-    "webdriver": "",
+    "webdriver": "bin/geckodriver",
     "host" : "",
     "port" : "",
     "user" : "",
     "psw"  : "",
     "database":"",
-    "timezone": ""
+    "timezone": "Europe/Paris"
 }
