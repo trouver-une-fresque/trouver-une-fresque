@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,10 +18,10 @@ from utils.readJson import get_address_data, strip_zip_code
 def get_fec_data(dr, headless=False):
     print("Scraping data from lafresquedeleconomiecirculaire.com")
 
+    service = Service(executable_path=dr)
     options = FirefoxOptions()
     options.headless = headless
-
-    driver = webdriver.Firefox(options=options, executable_path=dr)
+    driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
         {

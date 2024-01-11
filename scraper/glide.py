@@ -10,6 +10,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from geopy.geocoders import Nominatim
@@ -23,10 +24,10 @@ from utils.readJson import get_address_data, strip_zip_code
 def get_glide_data(dr, headless=False):
     print("Scraping data from glide.page")
 
+    service = Service(executable_path=dr)
     options = FirefoxOptions()
     options.headless = headless
-
-    driver = webdriver.Firefox(options=options, executable_path=dr)
+    driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
         {

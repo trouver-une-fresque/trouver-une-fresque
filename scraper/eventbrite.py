@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 
 from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
@@ -21,10 +22,10 @@ from utils.utils import get_config
 def get_eventbrite_data(dr, headless=False):
     print("Scraping data from eventbrite.fr")
 
+    service = Service(executable_path=dr)
     options = FirefoxOptions()
     options.headless = headless
-
-    driver = webdriver.Firefox(options=options, executable_path=dr)
+    driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
         {
