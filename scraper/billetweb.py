@@ -123,30 +123,17 @@ def get_billetweb_data(service, options):
     for page in webSites:
         print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
-        driver.implicitly_wait(2)
-
-        driver.switch_to.frame(page["iframe"])
-
+        WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.ID, page["iframe"])))
         ele = driver.find_elements(By.CSS_SELECTOR, "a.naviguate")
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
-            if "https://www.billetweb.fr/multi_event.php?&multi" not in link:
+            if 1:
                 print(f"\n-> Processing {link} ...")
                 driver.get(link)
-                driver.implicitly_wait(3)
-
-                if "filter" in page:
-                    if page["filter"] not in link:
-                        print(
-                            "Rejecting filter: expected filtering keyword not present in current link"
-                        )
-                        continue
-
                 try:
-                    # Attempt to find the div element by its id
-                    _ = driver.find_element(By.ID, "description_block")
-                except NoSuchElementException:
+                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "description_block")))
+                except Exception:
                     print("Rejecting record: no description")
                     continue
 
