@@ -24,6 +24,7 @@ def get_eventbrite_data(dr, headless=False):
 
     service = Service(executable_path=dr)
     options = FirefoxOptions()
+    options.set_preference("intl.accept_languages", "en-us")
     options.headless = headless
     driver = webdriver.Firefox(service=service, options=options)
 

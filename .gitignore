@@ -6,3 +6,5 @@ bin
 supabase
 results
 *.log
+.venv
+.DS_Store
