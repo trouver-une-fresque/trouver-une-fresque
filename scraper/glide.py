@@ -1,33 +1,21 @@
-import numpy as np
 import time
-import pandas as pd
-import requests
 import re
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from geopy.geocoders import Nominatim
-from geopy import geocoders
-from dateutil.parser import *
 
 from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
 
-def get_glide_data(dr, headless=False):
+def get_glide_data(service, options):
     print("Scraping data from glide.page")
 
-    service = Service(executable_path=dr)
-    options = FirefoxOptions()
-    options.set_preference("intl.accept_languages", "en-us")
-    options.headless = headless
     driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
@@ -58,7 +46,6 @@ def get_glide_data(dr, headless=False):
     ]
 
     records = []
-    current_page = 0
 
     for page in webSites:
         print(f"==================\nProcessing page {page}")
@@ -224,8 +211,8 @@ def get_glide_data(dr, headless=False):
                             by=By.XPATH, value=".."
                         )
                         address_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
-                    except:
-                        print(f"Rejecting record: empty address")
+                    except Exception:
+                        print("Rejecting record: empty address")
                         driver.back()
                         continue
 
@@ -287,7 +274,7 @@ def get_glide_data(dr, headless=False):
                         address_dict = get_address_data(search_query)
                     except json.JSONDecodeError:
                         print(
-                            f"Rejecting record: error while parsing the national address API response"
+                            "Rejecting record: error while parsing the national address API response"
                         )
                         driver.back()
                         continue
