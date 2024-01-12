@@ -1,7 +1,3 @@
-import numpy as np
-import time
-import pandas as pd
-import requests
 import re
 import json
 from datetime import datetime, timedelta
@@ -9,25 +5,16 @@ from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from geopy.geocoders import Nominatim
-from geopy import geocoders
-from dateutil.parser import *
 
 from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
 
-def get_billetweb_data(dr, headless=False):
+def get_billetweb_data(service, options):
     print("Scraping data from www.billetweb.fr")
 
-    service = Service(executable_path=dr)
-    options = FirefoxOptions()
-    options.set_preference("intl.accept_languages", "en-us")
-    options.headless = headless
     driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
@@ -158,7 +145,7 @@ def get_billetweb_data(dr, headless=False):
 
                 try:
                     # Attempt to find the div element by its id
-                    description_block = driver.find_element(By.ID, "description_block")
+                    _ = driver.find_element(By.ID, "description_block")
                 except NoSuchElementException:
                     print("Rejecting record: no description")
                     continue
@@ -175,7 +162,7 @@ def get_billetweb_data(dr, headless=False):
 
                 try:
                     driver.find_element(By.ID, "more_info").click()
-                except:
+                except Exception:
                     pass
 
                 ################################################################
@@ -228,7 +215,7 @@ def get_billetweb_data(dr, headless=False):
                         time_range = date_and_times[1].split(" to ")
                         start_time_string = time_range[0]
                         end_time_string = time_range[1]
-                    except:
+                    except Exception:
                         print(
                             f"Rejecting record: invalid dates: start_date_string={start_date_string}, start_time_string={start_time_string}, end_time_string={end_time_string}"
                         )
@@ -242,7 +229,7 @@ def get_billetweb_data(dr, headless=False):
                         end_date_string = dates[1]
                         start_time_string = ""
                         end_time_string = ""
-                    except:
+                    except Exception:
                         print(
                             f"Rejecting record: invalid dates: start_date_string={start_date_string}, end_date_string={end_date_string}"
                         )
@@ -254,9 +241,9 @@ def get_billetweb_data(dr, headless=False):
                         start_date_string = event_arr[0]
                         start_time_string = event_arr[1]
                         end_time_string = ""
-                    except:
+                    except Exception:
                         print(
-                            f"Rejecting record: invalid dates: {start_time} (start_time) and {end_time} (end_time)"
+                            f"Rejecting record: invalid times: {start_time_string} (start_time) and {end_time_string} (end_time)"
                         )
                         continue
 
@@ -272,7 +259,7 @@ def get_billetweb_data(dr, headless=False):
 
                 if start_time_string == "":
                     print(
-                        f"The page should be more specific about the event start time."
+                        "The page should be more specific about the event start time."
                     )
                     continue
 
@@ -325,8 +312,8 @@ def get_billetweb_data(dr, headless=False):
                                 by=By.CSS_SELECTOR,
                                 value="#page_block_location > div.location > div.location_info > div.address > a",
                             )
-                    except:
-                        print(f"Rejecting record: empty address")
+                    except Exception:
+                        print("Rejecting record: empty address")
                         continue
 
                     full_location = address_el.text
@@ -370,7 +357,7 @@ def get_billetweb_data(dr, headless=False):
                         address_dict = get_address_data(search_query)
                     except json.JSONDecodeError:
                         print(
-                            f"Rejecting record: error while parsing the national address API response"
+                            "Rejecting record: error while parsing the national address API response"
                         )
                         continue
 
@@ -392,8 +379,8 @@ def get_billetweb_data(dr, headless=False):
                     even_el = driver.find_element(
                         by=By.CSS_SELECTOR, value="#description"
                     )
-                except:
-                    print(f"Rejecting record: no description")
+                except Exception:
+                    print("Rejecting record: no description")
                     continue
                 description = even_el.text
 
@@ -408,7 +395,7 @@ def get_billetweb_data(dr, headless=False):
                 ################################################################
                 try:
                     wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(
+                    _ = wait.until(
                         EC.frame_to_be_available_and_switch_to_it(
                             (By.CSS_SELECTOR, "#shop_block iframe")
                         )

@@ -1,5 +1,3 @@
-import json
-import numpy as np
 import pandas as pd
 
 from scraper.fdc import get_fdc_data
@@ -7,38 +5,26 @@ from scraper.fec import get_fec_data
 from scraper.billetweb import get_billetweb_data
 from scraper.eventbrite import get_eventbrite_data
 from scraper.glide import get_glide_data
-from db.etl import etl
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 from utils.utils import get_config
 
 
 def main(headless=False):
-    tot_records = []
+    records = []
 
-    # Glide
-    glide_records = get_glide_data(dr=get_config("webdriver"), headless=headless)
-    tot_records += glide_records
+    service = Service(executable_path=get_config("webdriver"))
+    options = FirefoxOptions()
+    options.set_preference("intl.accept_languages", "en-us")
+    options.headless = headless
 
-    # Eventbrite
-    eventbrite_records = get_eventbrite_data(
-        dr=get_config("webdriver"), headless=headless
-    )
-    tot_records += eventbrite_records
+    records += get_glide_data(service=service, options=options)
+    records += get_eventbrite_data(service=service, options=options)
+    records += get_fec_data(service=service, options=options)
+    records += get_fdc_data(service=service, options=options)
+    records += get_billetweb_data(service=service, options=options)
 
-    # Fresque de l'Economie Circulaire (WIX)
-    fec_records = get_fec_data(dr=get_config("webdriver"), headless=headless)
-    tot_records += fec_records
-
-    # Fresque du Climat
-    fdc_records = get_fdc_data(dr=get_config("webdriver"), headless=headless)
-    tot_records += fdc_records
-
-    # Billetweb
-    billetweb_records = get_billetweb_data(
-        dr=get_config("webdriver"), headless=headless
-    )
-    tot_records += billetweb_records
-
-    return pd.DataFrame(tot_records)
+    return pd.DataFrame(records)
 
 
 if __name__ == "__main__":  # pragma: no cover

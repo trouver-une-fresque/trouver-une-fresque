@@ -1,6 +1,4 @@
-import requests
 import numpy as np
-import pandas as pd
 import time
 import json
 import re
@@ -11,21 +9,14 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.firefox.service import Service
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data, strip_zip_code
-from utils.utils import get_config
+from utils.readJson import get_address_data
 
 
-def get_eventbrite_data(dr, headless=False):
+def get_eventbrite_data(service, options):
     print("Scraping data from eventbrite.fr")
 
-    service = Service(executable_path=dr)
-    options = FirefoxOptions()
-    options.set_preference("intl.accept_languages", "en-us")
-    options.headless = headless
     driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
@@ -53,7 +44,7 @@ def get_eventbrite_data(dr, headless=False):
 
         more_content = True
         while more_content:
-            print(f"Scrolling to the bottom...")
+            print("Scrolling to the bottom...")
             try:
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 driver.implicitly_wait(2)
@@ -115,7 +106,7 @@ def get_eventbrite_data(dr, headless=False):
                 if driver.find_elements(By.CSS_SELECTOR, "div.expired-event"):
                     print("Rejecting record: event expired")
                     continue
-            except:
+            except Exception:
                 pass
 
             ################################################################
@@ -200,7 +191,7 @@ def get_eventbrite_data(dr, headless=False):
                     int(end_time.split(":")[0]),
                     int(end_time.split(":")[1]),
                 )
-            except:
+            except Exception:
                 print("Rejecting record: bad date format")
                 continue
 
@@ -256,7 +247,7 @@ def get_eventbrite_data(dr, headless=False):
                     address_dict = get_address_data(search_query)
                 except json.JSONDecodeError:
                     print(
-                        f"Rejecting record: error while parsing the national address API response"
+                        "Rejecting record: error while parsing the national address API response"
                     )
                     continue
 

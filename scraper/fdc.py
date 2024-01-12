@@ -3,10 +3,8 @@ import re
 import time
 
 from datetime import datetime
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.firefox.service import Service
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,13 +13,9 @@ from db.records import get_record_dict
 from utils.readJson import get_address_data, strip_zip_code
 
 
-def get_fdc_data(dr, headless=False):
+def get_fdc_data(service, options):
     print("Scraping data from fresqueduclimat.org")
 
-    service = Service(executable_path=dr)
-    options = FirefoxOptions()
-    options.set_preference("intl.accept_languages", "en-us")
-    options.headless = headless
     driver = webdriver.Firefox(service=service, options=options)
 
     webSites = [
@@ -40,7 +34,7 @@ def get_fdc_data(dr, headless=False):
     records = []
 
     for page in webSites:
-        print(f"========================")
+        print("========================")
         driver.get(page["url"])
         driver.implicitly_wait(2)
 
@@ -224,7 +218,7 @@ def get_fdc_data(dr, headless=False):
                         address_dict = get_address_data(search_query)
                     except json.JSONDecodeError:
                         print(
-                            f"Rejecting record: error while parsing the national address API response"
+                            "Rejecting record: error while parsing the national address API response"
                         )
                         driver.back()
                         wait = WebDriverWait(driver, 10)
