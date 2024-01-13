@@ -1,7 +1,6 @@
 import pandas as pd
 
 from zoneinfo import ZoneInfo
-from datetime import datetime
 from utils.utils import get_config
 
 
