@@ -2,6 +2,7 @@ import re
 import json
 from datetime import datetime, timedelta
 
+from dateutil.parser import parse
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -179,75 +180,25 @@ def get_billetweb_data(service, options):
                     )
                 event_time = time_el.text.lower()
 
-                if " from " in event_time and " to " in event_time:
-                    """Thu Oct 19, 2023 from 01:00 PM to 02:00 PM"""
-                    try:
-                        date_and_times = event_time.split(" from ")
-                        start_date_string = date_and_times[0]
-                        time_range = date_and_times[1].split(" to ")
-                        start_time_string = time_range[0]
-                        end_time_string = time_range[1]
-                    except Exception:
-                        print(
-                            f"Rejecting record: invalid dates: start_date_string={start_date_string}, start_time_string={start_time_string}, end_time_string={end_time_string}"
-                        )
-                        continue
-
-                elif " to " in event_time:
-                    """Sat Apr 22, 2023 to Sat Sep 02, 2023"""
-                    try:
-                        dates = event_time.split(" to ")
-                        start_date_string = dates[0]
-                        end_date_string = dates[1]
-                        start_time_string = ""
-                        end_time_string = ""
-                    except Exception:
-                        print(
-                            f"Rejecting record: invalid dates: start_date_string={start_date_string}, end_date_string={end_date_string}"
-                        )
-                        continue
-
-                elif " at " in event_time:
-                    event_arr = event_time.split(" at ")
-                    try:
-                        start_date_string = event_arr[0]
-                        start_time_string = event_arr[1]
-                        end_time_string = ""
-                    except Exception:
-                        print(
-                            f"Rejecting record: invalid times: {start_time_string} (start_time) and {end_time_string} (end_time)"
-                        )
-                        continue
-
+                if match := re.match(r"(?P<date>.*)\sfrom\s(?P<start>.*)\sto\s(?P<end>.*)", event_time):
+                    # Thu Oct 19, 2023 from 01:00 PM to 02:00 PM
+                    event_start_datetime = parse(f"{match.group('date')} {match.group('start')}")
+                    event_end_datetime = parse(f"{match.group('date')} {match.group('end')}")
+                elif match := re.match(r"(?P<start_date>.*)\sat\s(?P<start_time>.*)\sto\s(?P<end_date>.*)\sat\s(?P<end_time>.*)", event_time):
+                    # Thu Oct 19, 2023 at 01:00 PM to Sat Feb 24, 2024 at 02:00 PM
+                    event_start_datetime = parse(f"{match.group('start_date')} {match.group('start_time')}")
+                    event_end_datetime = parse(f"{match.group('end_date')} {match.group('end_time')}")
+                elif match := re.match(r"(?P<date>.*)\sat\s(?P<time>.*)", event_time):
+                    # Thu Oct 19, 2023 at 01:00 PM
+                    event_start_datetime = parse(f"{match.group('date')} {match.group('time')}")
+                    event_end_datetime = event_start_datetime + timedelta(hours=3)
                 else:
-                    """Sat Sep 02, 2023"""
-                    start_date_string = event_time
-                    start_time_string = ""
-                    end_time_string = ""
-
-                if start_time_string == "":
-                    print(
-                        "The page should be more specific about the event start time."
-                    )
+                    print(f"Rejecting record: invalid dates: {event_time}")
                     continue
 
-                event_date = datetime.strptime(start_date_string, "%a %b %d, %Y")
-                event_start_time = datetime.strptime(
-                    start_time_string, "%I:%M %p"
-                ).time()
-                event_start_datetime = datetime.combine(event_date, event_start_time)
-
-                if not end_time_string == "":
-                    event_end_time = datetime.strptime(
-                        end_time_string, "%I:%M %p"
-                    ).time()
-                    event_end_datetime = datetime.combine(event_date, event_end_time)
-                    duration = event_end_datetime - event_start_datetime
-
-                    if duration > timedelta(hours=48):
-                        print(
-                            f"Rejecting record: event is too long duration={duration}"
-                        )
+                if event_end_datetime:
+                    if event_end_datetime - event_start_datetime > timedelta(days=1):
+                        print(f"Rejecting record: event is too long: {event_time}")
                         continue
 
                 ################################################################
