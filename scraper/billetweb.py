@@ -131,21 +131,7 @@ def get_billetweb_data(service, options):
             if 1:
                 print(f"\n-> Processing {link} ...")
                 driver.get(link)
-                try:
-                    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "description_block")))
-                except Exception:
-                    print("Rejecting record: no description")
-                    continue
-
-                new_ui = False
-                try:
-                    driver.find_element(
-                        By.CSS_SELECTOR,
-                        "#description_block > div.event_title > div.event_name",
-                    )
-                except NoSuchElementException:
-                    new_ui = True
-                    pass
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "description_block")))
 
                 try:
                     driver.find_element(By.ID, "more_info").click()
@@ -163,11 +149,11 @@ def get_billetweb_data(service, options):
                 ################################################################
                 # Parse event title
                 ################################################################
-                if new_ui:
+                try:
                     title_el = driver.find_element(
                         by=By.CSS_SELECTOR, value="#event_title > div.event_name"
                     )
-                else:
+                except NoSuchElementException:
                     title_el = driver.find_element(
                         by=By.CSS_SELECTOR,
                         value="#description_block > div.event_title > div.event_name",
@@ -181,18 +167,17 @@ def get_billetweb_data(service, options):
                 ################################################################
                 # Parse start and end dates
                 ################################################################
-                if new_ui:
+                try:
                     time_el = driver.find_element(
                         by=By.CSS_SELECTOR,
                         value="#event_title > div.event_start_time > span.text",
                     )
-                    event_time = time_el.text.lower()
-                else:
+                except NoSuchElementException:
                     time_el = driver.find_element(
                         by=By.CSS_SELECTOR,
                         value="#description_block > div.event_title > span > a > div.event_start_time",
                     )
-                    event_time = time_el.text.lower()
+                event_time = time_el.text.lower()
 
                 if " from " in event_time and " to " in event_time:
                     """Thu Oct 19, 2023 from 01:00 PM to 02:00 PM"""
@@ -236,10 +221,6 @@ def get_billetweb_data(service, options):
 
                 else:
                     """Sat Sep 02, 2023"""
-                    # title_el = driver.find_element(
-                    #    by=By.CSS_SELECTOR, value='#shop_block > #context_title')
-                    # title = title_el.text
-
                     start_date_string = event_time
                     start_time_string = ""
                     end_time_string = ""
@@ -290,11 +271,11 @@ def get_billetweb_data(service, options):
 
                 if not online:
                     try:
-                        if new_ui:
+                        try:
                             address_el = driver.find_element(
                                 by=By.CSS_SELECTOR, value="div.location_summary"
                             )
-                        else:
+                        except NoSuchElementException:
                             address_el = driver.find_element(
                                 by=By.CSS_SELECTOR,
                                 value="#page_block_location > div.location > div.location_info > div.address > a",
@@ -310,7 +291,7 @@ def get_billetweb_data(service, options):
                         loc_arr = full_location.split(",")
                         if len(loc_arr) >= 5:
                             print(
-                                f"Rejecting records: address is too long ({len(loc_arr)} parts)"
+                                f"Rejecting records: address is too long ({len(loc_arr)} parts): {full_location}"
                             )
                             continue
                         elif len(loc_arr) >= 3:
@@ -381,8 +362,7 @@ def get_billetweb_data(service, options):
                 # Is it full?
                 ################################################################
                 try:
-                    wait = WebDriverWait(driver, 10)
-                    _ = wait.until(
+                    WebDriverWait(driver, 10).until(
                         EC.frame_to_be_available_and_switch_to_it(
                             (By.CSS_SELECTOR, "#shop_block iframe")
                         )

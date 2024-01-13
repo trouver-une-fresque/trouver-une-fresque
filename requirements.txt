@@ -1,7 +1,6 @@
 numpy
 requests
 selenium
-geopy
 pandas
 python-dateutil
 psycopg
