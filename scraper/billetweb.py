@@ -17,6 +17,7 @@ def get_billetweb_data(service, options):
     print("Scraping data from www.billetweb.fr")
 
     driver = webdriver.Firefox(service=service, options=options)
+    wait = WebDriverWait(driver, 10)
 
     webSites = [
         {
@@ -124,250 +125,264 @@ def get_billetweb_data(service, options):
     for page in webSites:
         print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
-        WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-        WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.ID, page["iframe"])))
-        WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+        wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, page["iframe"])))
+        wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
         ele = driver.find_elements(By.CSS_SELECTOR, "a.naviguate")
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
-            print(f"\n-> Processing {link} ...")
+            print(f"------------------\nProcessing event {link}")
             driver.get(link)
-            WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
 
+            # Description
             try:
                 driver.find_element(By.ID, "more_info").click()
             except Exception:
-                pass
-
-            ################################################################
-            # Parse event id
-            ################################################################
-            uuids = re.search(r"/([^/]+?)&", link)
-            if not uuids:
-                print("Rejecting record: UUID not found")
-                continue
-
-            ################################################################
-            # Parse event title
-            ################################################################
-            try:
-                title_el = driver.find_element(
-                    by=By.CSS_SELECTOR, value="#event_title > div.event_name"
-                )
-            except NoSuchElementException:
-                title_el = driver.find_element(
-                    by=By.CSS_SELECTOR,
-                    value="#description_block > div.event_title > div.event_name",
-                )
-            title = title_el.text
-
-            if "cadeau" in title.lower() or "don" in title.lower():
-                print("Rejecting record: gift card")
-                continue
-
-            ################################################################
-            # Parse start and end dates
-            ################################################################
-            try:
-                time_el = driver.find_element(
-                    by=By.CSS_SELECTOR,
-                    value="#event_title > div.event_start_time > span.text",
-                )
-            except NoSuchElementException:
-                time_el = driver.find_element(
-                    by=By.CSS_SELECTOR,
-                    value="#description_block > div.event_title > span > a > div.event_start_time",
-                )
-            event_time = time_el.text.lower()
-
-            if match := re.match(r"(?P<date>.*)\sfrom\s(?P<start>.*)\sto\s(?P<end>.*)", event_time):
-                # Thu Oct 19, 2023 from 01:00 PM to 02:00 PM
-                event_start_datetime = parse(f"{match.group('date')} {match.group('start')}")
-                event_end_datetime = parse(f"{match.group('date')} {match.group('end')}")
-            elif match := re.match(r"(?P<start_date>.*)\sat\s(?P<start_time>.*)\sto\s(?P<end_date>.*)\sat\s(?P<end_time>.*)", event_time):
-                # Thu Oct 19, 2023 at 01:00 PM to Sat Feb 24, 2024 at 02:00 PM
-                event_start_datetime = parse(f"{match.group('start_date')} {match.group('start_time')}")
-                event_end_datetime = parse(f"{match.group('end_date')} {match.group('end_time')}")
-            elif match := re.match(r"(?P<date>.*)\sat\s(?P<time>.*)", event_time):
-                # Thu Oct 19, 2023 at 01:00 PM
-                event_start_datetime = parse(f"{match.group('date')} {match.group('time')}")
-                event_end_datetime = event_start_datetime + timedelta(hours=3)
-            else:
-                print(f"Rejecting record: invalid dates: {event_time}")
-                continue
-
-            if event_end_datetime - event_start_datetime > timedelta(days=1):
-                print(f"Rejecting record: event is too long: {event_time}")
-                continue
-
-            ################################################################
-            # Is it an online event?
-            ################################################################
-            online_list = ["online", "en ligne", "distanciel"]
-            online = any(w in title.lower() for w in online_list)
-            title = title.replace(" Online event", "")
-
-            ################################################################
-            # Location data
-            ################################################################
-            full_location = ""
-            location_name = ""
-            address = ""
-            city = ""
-            department = ""
-            longitude = ""
-            latitude = ""
-            zip_code = ""
-
-            if not online:
-                try:
-                    try:
-                        address_el = driver.find_element(
-                            by=By.CSS_SELECTOR, value="div.location_summary"
-                        )
-                    except NoSuchElementException:
-                        address_el = driver.find_element(
-                            by=By.CSS_SELECTOR,
-                            value="#page_block_location > div.location > div.location_info > div.address > a",
-                        )
-                except Exception:
-                    print("Rejecting record: empty address")
-                    continue
-
-                full_location = address_el.text
-
-                # Parse location fields
-                if "," in full_location:
-                    loc_arr = full_location.split(",")
-                    if len(loc_arr) >= 5:
-                        print(
-                            f"Rejecting records: address is too long ({len(loc_arr)} parts): {full_location}"
-                        )
-                        continue
-                    elif len(loc_arr) >= 3:
-                        if loc_arr[2].strip().lower() == "france":
-                            address = loc_arr[0]
-                            city = loc_arr[1]
-                        else:
-                            location_name = loc_arr[0]
-                            address = loc_arr[1]
-                            city = loc_arr[2]
-                    elif len(loc_arr) == 2:
-                        if loc_arr[1].strip().lower() == "france":
-                            city = loc_arr[0]
-                        else:
-                            address = loc_arr[0]
-                            city = loc_arr[1]
-
-                location_name = location_name.strip()
-                address = address.strip()
-                city = strip_zip_code(city)
-
-                if address == "":
-                    print("Rejecting record: empty address")
-                    continue
-
-                ############################################################
-                # Localisation sanitizer
-                ############################################################
-                try:
-                    search_query = f"{address}, {city}, France"
-                    address_dict = get_address_data(search_query)
-                except json.JSONDecodeError:
-                    print(
-                        "Rejecting record: error while parsing the national address API response"
-                    )
-                    continue
-
-                department = address_dict.get("cod_dep", "")
-                longitude = address_dict.get("longitude", "")
-                latitude = address_dict.get("latitude", "")
-                zip_code = address_dict.get("postcode", "")
-
-                if department == "":
-                    print(
-                        "Rejecting record: no result from the national address API"
-                    )
-                    continue
-
-            ################################################################
-            # Description
-            ################################################################
-            try:
-                even_el = driver.find_element(
-                    by=By.CSS_SELECTOR, value="#description"
-                )
-            except Exception:
-                print("Rejecting record: no description")
-                continue
+                pass  # normal case if description is small or old ui
+            even_el = driver.find_element(by=By.CSS_SELECTOR, value="#description")
             description = even_el.text
 
-            ################################################################
-            # Training?
-            ################################################################
-            training_list = ["formation", "briefing", "animateur"]
-            training = any(w in title.lower() for w in training_list)
+            # Parse event id
+            event_id = re.search(r"/([^/]+?)&", link).group(1)
 
-            ################################################################
-            # Is it full?
-            ################################################################
+            # Parse main title       
             try:
-                WebDriverWait(driver, 10).until(
-                    EC.frame_to_be_available_and_switch_to_it(
-                        (By.CSS_SELECTOR, "#shop_block iframe")
-                    )
-                )
-                WebDriverWait(driver, 10).until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-                # Attempt to find the div element by its id
-                remaining_slots_el = driver.find_element(
-                    By.CSS_SELECTOR,
-                    "div.block",
-                )
-                sold_out = (
-                    "aucune" in remaining_slots_el.text
-                    or "nombre maximal" in remaining_slots_el.text
-                    or "sold out" in remaining_slots_el.text
-                )
+                main_title = driver.find_element(
+                    by=By.CSS_SELECTOR, value="#event_title > div.event_name"
+                ).text
             except NoSuchElementException:
-                sold_out = "complet" in title.lower()
-            finally:
-                driver.switch_to.parent_frame()
+                main_title = driver.find_element(
+                    by=By.CSS_SELECTOR,
+                    value="#description_block > div.event_title > div.event_name",
+                ).text
+
+            # Location data
+            try:
+                try:
+                    main_full_location = driver.find_element(
+                        by=By.CSS_SELECTOR, value="div.location_summary"
+                    ).text
+                except NoSuchElementException:
+                    main_full_location = driver.find_element(
+                        by=By.CSS_SELECTOR,
+                        value="#page_block_location > div.location > div.location_info > div.address > a",
+                    ).text
+            except Exception:
+                main_full_location = ""
+
+            event_info = []
 
             ################################################################
-            # Is it suited for kids?
+            # Multi-time management
             ################################################################
-            kids_list = ["kids", "junior", "jeunes"]
-            kids = any(w in title.lower() for w in kids_list) and not training
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
+            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            sessions_ele = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
+            sessions_links = [e.get_attribute("href") for e in sessions_ele]
+            if not sessions_links and driver.find_element(By.CSS_SELECTOR, '#checkout_step_description').text == "Step 2 : Basket":
+                # Case of Multi-time with only one date, we arrive directly to Basket, so get the frame url
+                sessions_links = [driver.execute_script('return document.location.href')]
+            driver.switch_to.parent_frame()
+
+            for sessions_link in sessions_links:
+                driver.get(sessions_link)
+                wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+                context = driver.find_element(By.CSS_SELECTOR, "#context_title").text
+
+                # Parse title, dates, location
+                if match := re.match(r"\s*((?P<title>.*) : )?(?P<event_time>.*)(\n\s*(?P<full_location>.*))?", context):
+                    # [ATELIER - Villeurbanne (69100] La Fresque des Nouveaux Récits avec C. FABRE & L. MAY : Tue Jan 16, 2024 from 06:30 PM to 09:30 PM
+                    # Melting Coop, 229 Cr Emile Zola, 69100 Villeurbanne, France
+                    if not match.group('title'):
+                        sub_title = main_title
+                    elif "atelier" in match.group('title').lower():
+                        sub_title = match.group('title')
+                    else:
+                        sub_title = main_title + " - " + match.group('title')    
+
+                    event_time = match.group('event_time')
+                    sub_full_location = match.group('full_location') if match.group('full_location') else ""
+                else:
+                    raise
+
+                # Is it full?
+                try:
+                    empty = driver.find_element(By.CSS_SELECTOR, "div.block")
+                    sold_out = "Inscriptions uniquement" not in empty.text
+                except NoSuchElementException:
+                    sold_out = False
+
+                # Parse session id
+                session_id = re.search(r"&session=(\d+)", sessions_link).group(1)
+                uuid = f"{event_id}-{session_id}"
+                
+                event_info.append([sub_title, event_time, sub_full_location, sold_out, sessions_link, uuid])
 
             ################################################################
-            # Building final object
+            # Mono-time management
             ################################################################
-            record = get_record_dict(
-                f"{page['id']}-{uuids.group(1)}",
-                page["id"],
-                title,
-                event_start_datetime,
-                event_end_datetime,
-                full_location,
-                location_name,
-                address,
-                city,
-                department,
-                zip_code,
-                latitude,
-                longitude,
-                online,
-                training,
-                sold_out,
-                kids,
-                link,
-                link,
-                description,
-            )
+            if not sessions_links:
+                # Parse start and end dates
+                try:
+                    event_time = driver.find_element(
+                        by=By.CSS_SELECTOR,
+                        value="#event_title > div.event_start_time > span.text",
+                    ).text
+                except NoSuchElementException:
+                    event_time = driver.find_element(
+                        by=By.CSS_SELECTOR,
+                        value="#description_block > div.event_title > span > a > div.event_start_time",
+                    ).text
 
-            records.append(record)
-            print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
+                # Is it full?
+                try:
+                    wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
+                    wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+                    empty = driver.find_element(By.CSS_SELECTOR, "div.block")
+                    sold_out = "Inscriptions uniquement" not in empty.text
+                except NoSuchElementException:
+                    sold_out = False
+                finally:
+                    driver.switch_to.parent_frame()
+        
+                event_info.append([main_title, event_time, main_full_location, sold_out, link, event_id])
+
+            ################################################################
+            # Event loop
+            ################################################################
+            for title, event_time, full_location, sold_out, ticket_link, uuid in event_info:
+                print(f"\n-> Processing {title}, {event_time}, {full_location}, {sold_out}, {ticket_link}, {uuid} ...")
+                if "cadeau" in title.lower() or " don" in title.lower():
+                    print("Rejecting record: gift card")
+                    continue
+
+                if match := re.match(r"(?P<date>.*)\sfrom\s(?P<start>.*)\sto\s(?P<end>.*)", event_time):
+                    # Thu Oct 19, 2023 from 01:00 PM to 02:00 PM
+                    event_start_datetime = parse(f"{match.group('date')} {match.group('start')}")
+                    event_end_datetime = parse(f"{match.group('date')} {match.group('end')}")
+                elif match := re.match(r"(?P<start_date>.*)\sat\s(?P<start_time>.*)\sto\s(?P<end_date>.*)\sat\s(?P<end_time>.*)", event_time):
+                    # Thu Oct 19, 2023 at 01:00 PM to Sat Feb 24, 2024 at 02:00 PM
+                    event_start_datetime = parse(f"{match.group('start_date')} {match.group('start_time')}")
+                    event_end_datetime = parse(f"{match.group('end_date')} {match.group('end_time')}")
+                elif match := re.match(r"(?P<date>.*)\sat\s(?P<time>.*)", event_time):
+                    # Thu Oct 19, 2023 at 01:00 PM
+                    event_start_datetime = parse(f"{match.group('date')} {match.group('time')}")
+                    event_end_datetime = event_start_datetime + timedelta(hours=3)
+                else:
+                    print(f"Rejecting record: invalid dates: {event_time}")
+                    continue
+
+                if event_end_datetime - event_start_datetime > timedelta(days=1):
+                    print(f"Rejecting record: event is too long: {event_time}")
+                    continue
+
+                # Is it an online event?
+                online_list = ["online", "en ligne", "distanciel"]
+                online = any(w in title.lower() for w in online_list)
+                title = title.replace(" Online event", "")  # Button added by billetweb
+
+                location_name = ""
+                address = ""
+                city = ""
+                department = ""
+                longitude = ""
+                latitude = ""
+                zip_code = ""
+
+                if not online:
+                    if not full_location:
+                        print("Rejecting record: empty full_location")
+                        continue
+
+                    # Cases to manage:
+                    # Rejecting records: address is too long (5 parts): HOBA, Parc Martin Luther King, 44 Rue Bernard Buffet, 75017 Paris, France
+                    # Rejecting record: empty address: Ferme du parc du Héron - Villeneuve d'ascq
+                    # Rejecting record: empty address: Espace Multiburo - 1 Cr du Havre 75008 PARIS
+                    # Rejecting record: empty address: Online
+                    # Rejecting records: address is too long (5 parts): La Melting Coop, épicerie et café participatifs, Cours Emile Zola, Villeurbanne, Fr
+                    # Rejecting record: empty address: Salle des fêtes de Ramonville Rue Joliot Cur
+                    # Rejecting record: empty address: Le LAC de Sèvres 12 rue Lecointre 92310 Sèvres
+                    # Rejecting record: empty address: La BOM 2 rue Girard 93100 Montreuil
+                    # Rejecting record: empty address: Les Canaux 6 quai de la Seine - 75019 Paris
+                    # Rejecting records: address is too long (5 parts): Canopy, l'art de se réunir!, Rue Négrier, Lille, France
+                    # A FAIRE: supprimer les noms de villes non francaises
+                    # FEATURES TO ADD: manage outside france, timezones, number of remainings, price 
+
+                    # Parse location fields
+                    if "," in full_location:
+                        loc_arr = full_location.split(",")
+                        if len(loc_arr) >= 5:
+                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts): {full_location}")
+                            continue
+                        elif len(loc_arr) >= 3:
+                            if loc_arr[2].strip().lower() == "france":
+                                address = loc_arr[0]
+                                city = loc_arr[1]
+                            else:
+                                location_name = loc_arr[0]
+                                address = loc_arr[1]
+                                city = loc_arr[2]
+                        elif len(loc_arr) == 2:
+                            if loc_arr[1].strip().lower() == "france":
+                                city = loc_arr[0]
+                            else:
+                                address = loc_arr[0]
+                                city = loc_arr[1]
+
+                    location_name = location_name.strip()
+                    address = address.strip()
+                    city = strip_zip_code(city)
+
+                    if address == "":
+                        print("Rejecting record: empty address")
+                        continue
+
+                    # Localisation sanitizer
+                    search_query = f"{address}, {city}, France"
+                    address_dict = get_address_data(search_query)
+                    department = address_dict.get("cod_dep", "")
+                    longitude = address_dict.get("longitude", "")
+                    latitude = address_dict.get("latitude", "")
+                    zip_code = address_dict.get("postcode", "")
+
+                    if department == "":
+                        print("Rejecting record: no result from the national address API")
+                        continue
+
+                # Training?
+                training_list = ["formation", "briefing", "animateur", "permanence", "training"]
+                training = any(w in title.lower() for w in training_list)
+
+                # Is it suited for kids?
+                kids_list = ["kids", "junior", "jeunes"]
+                kids = any(w in title.lower() for w in kids_list) and not training  # Case of trainings for kids
+
+                # Building final object
+                record = get_record_dict(
+                    f"{page['id']}-{uuid}",
+                    page["id"],
+                    title,
+                    event_start_datetime,
+                    event_end_datetime,
+                    full_location,
+                    location_name,
+                    address,
+                    city,
+                    department,
+                    zip_code,
+                    latitude,
+                    longitude,
+                    online,
+                    training,
+                    sold_out,
+                    kids,
+                    link,
+                    ticket_link,
+                    description,
+                )
+                records.append(record)
+                print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
 
     driver.quit()
 
