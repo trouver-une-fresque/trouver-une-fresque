@@ -135,17 +135,30 @@ def get_billetweb_data(service, options):
             driver.get(link)
             wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
 
+            # Useful for different workshops sharing same event link
+            if "filter" in page:
+                if page["filter"] not in link:
+                    print("Rejecting filter: expected filter keyword not present in current link")
+                    continue
+
             # Description
             try:
                 driver.find_element(By.ID, "more_info").click()
             except Exception:
-                pass  # normal case if description is small or old ui
-            even_el = driver.find_element(by=By.CSS_SELECTOR, value="#description")
-            description = even_el.text
+                pass  # normal case if description is without more info
+
+            try:
+                description = driver.find_element(by=By.CSS_SELECTOR, value="#description").text
+            except Exception:
+                print("Rejecting record: no description")
+                continue
 
             # Parse event id
             event_id = re.search(r"/([^/]+?)&", link).group(1)
-
+            if not event_id:
+                print("Rejecting record: event_id not found")
+                continue
+            
             # Parse main title       
             try:
                 main_title = driver.find_element(
@@ -251,8 +264,8 @@ def get_billetweb_data(service, options):
             ################################################################
             # Event loop
             ################################################################
-            for title, event_time, full_location, sold_out, ticket_link, uuid in event_info:
-                print(f"\n-> Processing {title}, {event_time}, {full_location}, {sold_out}, {ticket_link}, {uuid} ...")
+            for index, (title, event_time, full_location, sold_out, ticket_link, uuid) in enumerate(event_info):
+                print(f"\n-> Processing {index+1}/{len(event_info)} {ticket_link} ...")
                 if "cadeau" in title.lower() or " don" in title.lower():
                     print("Rejecting record: gift card")
                     continue
@@ -295,20 +308,6 @@ def get_billetweb_data(service, options):
                         print("Rejecting record: empty full_location")
                         continue
 
-                    # Cases to manage:
-                    # Rejecting records: address is too long (5 parts): HOBA, Parc Martin Luther King, 44 Rue Bernard Buffet, 75017 Paris, France
-                    # Rejecting record: empty address: Ferme du parc du Héron - Villeneuve d'ascq
-                    # Rejecting record: empty address: Espace Multiburo - 1 Cr du Havre 75008 PARIS
-                    # Rejecting record: empty address: Online
-                    # Rejecting records: address is too long (5 parts): La Melting Coop, épicerie et café participatifs, Cours Emile Zola, Villeurbanne, Fr
-                    # Rejecting record: empty address: Salle des fêtes de Ramonville Rue Joliot Cur
-                    # Rejecting record: empty address: Le LAC de Sèvres 12 rue Lecointre 92310 Sèvres
-                    # Rejecting record: empty address: La BOM 2 rue Girard 93100 Montreuil
-                    # Rejecting record: empty address: Les Canaux 6 quai de la Seine - 75019 Paris
-                    # Rejecting records: address is too long (5 parts): Canopy, l'art de se réunir!, Rue Négrier, Lille, France
-                    # A FAIRE: supprimer les noms de villes non francaises
-                    # FEATURES TO ADD: manage outside france, timezones, number of remainings, price 
-
                     # Parse location fields
                     if "," in full_location:
                         loc_arr = full_location.split(",")
@@ -339,8 +338,13 @@ def get_billetweb_data(service, options):
                         continue
 
                     # Localisation sanitizer
-                    search_query = f"{address}, {city}, France"
-                    address_dict = get_address_data(search_query)
+                    try:
+                        search_query = f"{address}, {city}, France"
+                        address_dict = get_address_data(search_query)
+                    except json.JSONDecodeError:
+                        print("Rejecting record: error while parsing the national address API response")
+                        continue
+                    
                     department = address_dict.get("cod_dep", "")
                     longitude = address_dict.get("longitude", "")
                     latitude = address_dict.get("latitude", "")
@@ -382,7 +386,7 @@ def get_billetweb_data(service, options):
                     description,
                 )
                 records.append(record)
-                print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
+                print(f"Successfully scraped:\n{json.dumps(record, indent=4)}")
 
     driver.quit()
 
