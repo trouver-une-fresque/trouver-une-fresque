@@ -118,6 +118,12 @@ def get_billetweb_data(service, options):
             "filter": "dechet",
             "id": 15,
         },
+        {
+            # Puzzle Climat
+            "url": "https://www.billetweb.fr/multi_event.php?user=121600",
+            "iframe": "event21038",
+            "id": 16,
+        },
     ]
 
     records = []

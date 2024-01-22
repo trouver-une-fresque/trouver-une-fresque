@@ -4,7 +4,7 @@ Trouver une Fresque est un outil open source permettant de détecter les atelier
 
 ## Installation
 
-Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renseignez le chemin absolu vers `bin/geckodriver` dans le fichier de configuration `config.json`.
+Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renommer le fichier de configuration `config.json.dist` en `config.json`.
 
 ```console
 apt-get install firefox-esr libpq-dev python3-dev
@@ -61,7 +61,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | OK |
-| Puzzle Climat | https://www.puzzleclimat.org/ | Scraping Billetweb | Prévu, priorité 1 |
+| Puzzle Climat | https://www.puzzleclimat.org/ | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
 | Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
