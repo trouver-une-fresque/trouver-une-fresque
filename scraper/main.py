@@ -16,7 +16,8 @@ def main(headless=False):
     service = Service(executable_path=get_config("webdriver"))
     options = FirefoxOptions()
     options.set_preference("intl.accept_languages", "en-us")
-    options.headless = headless
+    if headless:
+        options.add_argument("-headless")
 
     records += get_glide_data(service=service, options=options)
     records += get_eventbrite_data(service=service, options=options)
