@@ -218,10 +218,10 @@ def get_billetweb_data(service, options):
                     elif "atelier" in match.group('title').lower():
                         sub_title = match.group('title')
                     else:
-                        sub_title = main_title + " - " + match.group('title')    
+                        sub_title = main_title + " - " + match.group('title')
 
                     event_time = match.group('event_time')
-                    sub_full_location = match.group('full_location') if match.group('full_location') else ""
+                    sub_full_location = match.group('full_location') if match.group('full_location') else main_full_location
                 else:
                     raise
 
