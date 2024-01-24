@@ -192,18 +192,22 @@ def get_billetweb_data(service, options):
 
             event_info = []
 
+            # Retrieve if this is a Mono-time or Multi-time event
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
+            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            step = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#checkout_step_description')))
+            if "Step 2 : Basket" in step.text:
+                # Case of Multi-time with only one date, we arrive directly to Basket, so get the frame url
+                sessions_links = [driver.execute_script('return document.location.href')]
+            else:
+                # Case of Mono_time or Multi-time with multiple dates, so get all sessions urls
+                sessions = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
+                sessions_links = [s.get_attribute("href") for s in sessions]
+            driver.switch_to.parent_frame()
+
             ################################################################
             # Multi-time management
             ################################################################
-            wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
-            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-            sessions_ele = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
-            sessions_links = [e.get_attribute("href") for e in sessions_ele]
-            if not sessions_links and driver.find_element(By.CSS_SELECTOR, '#checkout_step_description').text == "Step 2 : Basket":
-                # Case of Multi-time with only one date, we arrive directly to Basket, so get the frame url
-                sessions_links = [driver.execute_script('return document.location.href')]
-            driver.switch_to.parent_frame()
-
             for sessions_link in sessions_links:
                 driver.get(sessions_link)
                 wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
@@ -268,10 +272,10 @@ def get_billetweb_data(service, options):
                 event_info.append([main_title, event_time, main_full_location, sold_out, link, event_id])
 
             ################################################################
-            # Event loop
+            # Session loop
             ################################################################
             for index, (title, event_time, full_location, sold_out, ticket_link, uuid) in enumerate(event_info):
-                print(f"\n-> Processing {index+1}/{len(event_info)} {ticket_link} ...")
+                print(f"\n-> Processing session {index+1}/{len(event_info)} {ticket_link} ...")
                 if "cadeau" in title.lower() or " don" in title.lower():
                     print("Rejecting record: gift card")
                     continue
