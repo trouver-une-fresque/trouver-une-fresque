@@ -192,17 +192,16 @@ def get_billetweb_data(service, options):
 
             event_info = []
 
-            # Retrieve if this is a Mono-time or Multi-time event
+            # Retrieve sessions if exist
             wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
             wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-            step = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#checkout_step_description')))
-            if "Step 2 : Basket" in step.text:
-                # Case of Multi-time with only one date, we arrive directly to Basket, so get the frame url
-                sessions_links = [driver.execute_script('return document.location.href')]
-            else:
-                # Case of Mono_time or Multi-time with multiple dates, so get all sessions urls
-                sessions = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
-                sessions_links = [s.get_attribute("href") for s in sessions]
+            back_links = driver.find_elements(By.CSS_SELECTOR, ".back_header_link.summarizable")
+            if back_links:
+                # Case of Multi-time with only one date, we arrive directly to Basket, so get back to sessions
+                driver.get(back_links[0].get_attribute("href"))
+                wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            sessions = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
+            sessions_links = [s.get_attribute("href") for s in sessions]  # No sessions for Mono-time
             driver.switch_to.parent_frame()
 
             ################################################################
