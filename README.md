@@ -55,7 +55,7 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Fresque de l'Eau | https://www.billetweb.fr/multi_event.php?user=138110 | Scraping Billetweb | OK |
 | Atelier futurs proches | https://www.billetweb.fr/pro/futursproches | Scraping Billetweb | OK |
 | Fresque de la Diversité | https://www.billetweb.fr/multi_event.php?user=168799 | Scraping Billetweb | OK |
-| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping WIX | OK |
+| Fresque de l'Économie Circulaire | https://www.lafresquedeleconomiecirculaire.com | Scaping site custom | OK |
 | Fresque du Textile | https://www.billetweb.fr/multi_event.php?user=166793 | Scraping Billetweb | OK |
 | Fresque des Déchets | https://www.billetweb.fr/multi_event.php?user=166793 | Scraping Billetweb | OK |
 | Fresque des Frontières Planétaires | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
@@ -64,9 +64,15 @@ La plupart des IDEs et éditeurs de code moderne proposent des outils permettant
 | Puzzle Climat | https://www.puzzleclimat.org/ | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
+| Fresque de la Finance | https://www.helloasso.com/associations/la-fresque-de-la-finance | Scraping HelloAsso | Prévu, priorité 1 |
+| Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | Prévu, priorité 1 |
 | Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
-| Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
+| Atelier Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
+| Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 2 |
+| Atelier L'éco-naissance | https://www.eventbrite.fr/o/leco-naissance-62237583643 | Scraping HelloAsso | Prévu, priorité 2 |
+| Fresque de la RSE | https://www.billetweb.fr/multi_event.php?user=139214 | Scraping Billetweb | En réflexion |
+| Atelier Marche du Temps Profond | https://www.helloasso.com/associations/ecotopia | Scraping HelloAsso | En réflexion |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
 
 ## Initiatives locales
