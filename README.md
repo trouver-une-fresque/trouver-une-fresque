@@ -29,11 +29,9 @@ Ouvrez une [issue Github](https://github.com/thomas-bouvier/trouver-une-fresque/
 
 ## Comment Contribuer
 
-Pour proposer une modification, un ajout, ou décrire un bug sur l'outil de détection, vous pouvez ouvrir une [issue](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) ou une [Pull Request](https://github.com/thomas-bouvier/trouver-une-fresque/pulls) avec vos modifications. 
+Pour proposer une modification, un ajout, ou décrire un bug sur l'outil de détection, vous pouvez ouvrir une [issue](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) ou une [Pull Request](https://github.com/thomas-bouvier/trouver-une-fresque/pulls) avec vos modifications.
 
-Pour le code en Python, veillez à respecter le standard PEP8 avant de soumettre une Pull Request.
-
-La plupart des IDEs et éditeurs de code moderne proposent des outils permettant de mettre en page votre code en suivant ce standard automatiquement.
+Avant de développer, merci d'installer le hook git en suivant les instructions listées dans le fichier [CONTRIBUTING](https://github.com/trouver-une-fresque/trouver-une-fresque/blob/main/CONTRIBUTING.md). Pour le code en Python, veillez à respecter le standard PEP8 avant de soumettre une Pull Request. La plupart des IDEs et éditeurs de code modernes proposent des outils permettant de mettre en page votre code en suivant ce standard automatiquement.
 
 ## Ateliers supportés
 
@@ -106,16 +104,3 @@ python push_to_db.py --input results/output.json
 ```
 
 https://supabase.com/docs/guides/cli/local-development
-
-### Hoppscotch.io
-
-Follow these steps:
-
-- Install our Browser Extension.
-- Click on the Hoppscotch extension icon from Browser's toolbar to add your localhost origins to the Active Origins list. This corresponds to the `API URL` returned by Supabase on startup.
-- Refresh the Hoppscotch.io app.
-- Change interceptor to Browser Extension in the settings.
-
-```
-http://localhost:54321/rest/v1/events?start_date=gte.now
-```

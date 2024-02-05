@@ -2,7 +2,7 @@
 
 Ce projet vient récupérer les données de vos évènements publiés en ligne. Si un évènement n'apparaît pas sur la plateforme Trouver une Fresque, merci de vérifier les points ci-dessous. Si l'une des conditions n'est pas vérifiée, merci de mettre votre évènement à jour avant de nous contacter.
 
-Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement. Dans tous les cas, soyez patients : les évènements sont mis à jour une fois tous les 24h. Si vous postez un évènement, il n'apparaitra pas immédiatement sur Trouver une Fresque.
+Sautez à la section correspondante à la plateforme utilisée pour publier votre évènement. Dans tous les cas, soyez patients : les évènements sont mis à jour une fois tous les 4 jours en moyenne. Si vous postez un évènement, il n'apparaitra pas immédiatement sur Trouver une Fresque, patience !
 
 - [Billetweb.fr](#billetwebfr)
 - [Eventbrite.fr](#eventbritefr)
@@ -10,13 +10,12 @@ Sautez à la section correspondante à la plateforme utilisée pour publier votr
 - [Lafresquedeleconomiecirculaire.com](#lafresquedeleconomiecirculairecom)
 - [Glide.page](#glidepage)
 
-Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section [Ouvrir une issue](#ouvrir-une-issue) en bas de cette page.
+Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 4 jours, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de lire la section [Ouvrir une issue](#ouvrir-une-issue) en bas de cette page.
 
 ## Billetweb.fr
 
 ### Page d'évènement
 
-- UN SEUL évènement doit apparaître sur la page d'évènement. Le mode "Séances" de Billetweb n'est pas (encore) supporté.
 - Une page avec le module d'achat de ticket seul n'est pas valide. Ces pages sont facilement identifiables : `?shop=` apparait quelque part dans l'URL de la page. Pour régler ce problème, dans les paramètres des pages organisateur, il faut changer l'action du bouton de "Afficher le module de vente" à "Afficher la boutique de l'événement".
 
 ### Date
@@ -156,4 +155,4 @@ Souffle du Nord 34 rue de la Haute Loge 59700 Marcq-en-Barœul
 
 ## Ouvrir une issue
 
-Si 1) après vérification de tous les points énoncés dans la section correspondante à votre plateforme de publication, et 2) après avoir attendu 24h, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de nous contacter en remplissant [ce formulaire](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/new). Un compte [GitHub](https://github.com/signup) est nécessaire.
+Si 1) après vérification de tous les points énoncés dans la section correspondante à votre plateforme de publication, et 2) après avoir attendu 4 jours, votre évènement n'apparaît toujours pas sur la plateforme Trouver une Fresque, merci de nous contacter en remplissant [ce formulaire](https://github.com/trouver-une-fresque/trouver-une-fresque/issues/new). Un compte [GitHub](https://github.com/signup) est nécessaire.
