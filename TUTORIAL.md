@@ -14,10 +14,6 @@ Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 4 jo
 
 ## Billetweb.fr
 
-### Page d'évènement
-
-- Une page avec le module d'achat de ticket seul n'est pas valide. Ces pages sont facilement identifiables : `?shop=` apparait quelque part dans l'URL de la page. Pour régler ce problème, dans les paramètres des pages organisateur, il faut changer l'action du bouton de "Afficher le module de vente" à "Afficher la boutique de l'événement".
-
 ### Date
 
 - La date, comprenant au moins le jour et l'heure de début, apparaît-elle sous le titre de la page ?

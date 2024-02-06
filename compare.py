@@ -48,7 +48,7 @@ def count_workshop_types(data):
         if record["workshop_type"] in records:
             records[record["workshop_type"]] += 1
         else:
-            records[record["workshop_type"]] = 0
+            records[record["workshop_type"]] = 1
     return records
 
 
