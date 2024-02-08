@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data, strip_zip_code
+from utils.readJson import get_address
 
 
 def get_billetweb_data(service, options):
@@ -301,64 +301,18 @@ def get_billetweb_data(service, options):
 
                 # Is it an online event?
                 online_list = ["online", "en ligne", "distanciel"]
-                online = any(w in title.lower() for w in online_list)
+                online = any(w in title.lower() for w in online_list) or any(w in full_location.lower() for w in online_list)
                 title = title.replace(" Online event", "")  # Button added by billetweb
 
-                location_name = ""
-                address = ""
-                city = ""
-                department = ""
-                longitude = ""
-                latitude = ""
-                zip_code = ""
-
+                # Parse location fields
+                location_name = address = city = department = longitude = latitude = zip_code = ""
                 if not online:
-                    if not full_location:
-                        print("Rejecting record: empty full_location")
-                        continue
-
-                    # Parse location fields
-                    if "," in full_location:
-                        loc_arr = full_location.split(",")
-                        if len(loc_arr) >= 5:
-                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts): {full_location}")
-                            continue
-                        elif len(loc_arr) >= 3:
-                            if loc_arr[2].strip().lower() == "france":
-                                address = loc_arr[0]
-                                city = loc_arr[1]
-                            else:
-                                location_name = loc_arr[0]
-                                address = loc_arr[1]
-                                city = loc_arr[2]
-                        elif len(loc_arr) == 2:
-                            if loc_arr[1].strip().lower() == "france":
-                                city = loc_arr[0]
-                            else:
-                                address = loc_arr[0]
-                                city = loc_arr[1]
-
-                    location_name = location_name.strip()
-                    address = address.strip()
-                    city = strip_zip_code(city)
-
-                    if address == "":
-                        print("Rejecting record: empty address")
-                        continue
-
-                    # Localisation sanitizer
                     try:
-                        search_query = f"{address}, {city}, France"
-                        address_dict = get_address_data(search_query)
+                        address_dict = get_address(full_location)
+                        location_name, address, city, department, zip_code, latitude, longitude = address_dict.values()
                     except json.JSONDecodeError:
                         print("Rejecting record: error while parsing the national address API response")
                         continue
-                    
-                    department = address_dict.get("cod_dep", "")
-                    longitude = address_dict.get("longitude", "")
-                    latitude = address_dict.get("latitude", "")
-                    zip_code = address_dict.get("postcode", "")
-
                     if department == "":
                         print("Rejecting record: no result from the national address API")
                         continue
