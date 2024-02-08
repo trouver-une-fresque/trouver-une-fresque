@@ -32,18 +32,25 @@ def get_french_address(location, address, postcode, city):
 
 
 def get_default_address(full_address):
-    full_address = full_address.replace(",", " ").replace('  ', ' ').strip()  # for csv
+    # remove all commas in addresses to have only one column for API
+    full_address = full_address.replace(",", " ").replace('  ', ' ').strip()
     words = full_address.split()
 
-    # create a list of address removing one word for each line until three words minimum
+    # create a list of addresses removing the first word for each line until three words minimum
+    # by doing that we remove location_name little by little and isolate the best full address for API
     if lines := "\n".join(' '.join(words[i:]) for i in range(len(words)) if len(words[i:]) >= 3):
+        # call API with this list of addresses with decreased number of words
         url = "https://api-adresse.data.gouv.fr/search/csv/"
         files = {'data': StringIO("query\n" + lines)}
         response = requests.post(url, files=files)
         if data_list := list(csv.DictReader(StringIO(response.text))):
+            # compare the score as a float for all addresses and keep the highest one
             data_list = list(map(lambda x: {**x, 'result_score': float(x['result_score']) if x['result_score'] != '' else 0.0}, data_list))
             max_data = max(data_list, key=lambda x:x['result_score'])
-            if max_data["result_score"] > 0.5:  # keep only good results
+
+            # keep only if result is good unless it is probably a non-french or truncated address
+            if max_data["result_score"] > 0.5:
+                # location_name is deduced by removing the query
                 return {
                     "location_name": full_address.removesuffix(max_data["query"]).rstrip("- "),
                     "address": max_data["result_name"],
