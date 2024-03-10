@@ -67,9 +67,11 @@ def get_glide_data(service, options):
             print(f"Found {num_el} elements")
 
             for i in range(num_el):
+                time.sleep(5)
                 ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
                 el = ele[i]
                 el.click()
+
                 time.sleep(5)
                 link = driver.current_url
                 print(f"\n-> Processing {link} ...")
@@ -80,9 +82,7 @@ def get_glide_data(service, options):
                 ################################################################
                 try:
                     # Attempt to find the div element by its id
-                    large_title_el = driver.find_element(
-                        By.CSS_SELECTOR, "h2.headlineMedium"
-                    )
+                    large_title_el = driver.find_element(By.CSS_SELECTOR, "h2.headlineMedium")
                     large_title = large_title_el.text
                     if "annulé" in large_title:
                         print("Rejecting record: canceled")
@@ -103,9 +103,7 @@ def get_glide_data(service, options):
                 ################################################################
                 # Parse event title
                 ################################################################
-                title_el = driver.find_element(
-                    by=By.CSS_SELECTOR, value="h2.headlineSmall"
-                )
+                title_el = driver.find_element(by=By.CSS_SELECTOR, value="h2.headlineSmall")
                 title = title_el.text
 
                 ################################################################
@@ -113,7 +111,7 @@ def get_glide_data(service, options):
                 ################################################################
                 time_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'eXMJmv') and contains(text(), 'Date')]",
+                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Date')]",
                 )
                 parent_el = time_el.find_element(by=By.XPATH, value="..")
                 event_time_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -134,7 +132,7 @@ def get_glide_data(service, options):
                     "décembre": 12,
                 }
 
-                year = 2023
+                year = 2024
                 year_pattern = r"\b\d{4}\b"
                 year_match = re.search(year_pattern, event_time)
                 if year_match:
@@ -142,7 +140,7 @@ def get_glide_data(service, options):
                     event_time = re.sub(f" {year_pattern}", "", event_time)
 
                 date_and_times = event_time.split(" de ")
-                week_day, day, month_string = date_and_times[0].split(" ")
+                _, day, month_string = date_and_times[0].split(" ")
 
                 # Define a regular expression pattern to extract times
                 time_pattern = r"(\d{1,2}h\d{2}) à (\d{1,2}h\d{2})"
@@ -183,7 +181,7 @@ def get_glide_data(service, options):
 
                 time_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'eXMJmv') and contains(text(), 'Format')]",
+                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Format')]",
                 )
                 parent_el = time_label_el.find_element(by=By.XPATH, value="..")
                 online_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -205,11 +203,9 @@ def get_glide_data(service, options):
                     try:
                         address_label_el = driver.find_element(
                             by=By.XPATH,
-                            value="//div[contains(@class, 'eXMJmv') and contains(text(), 'Adresse')]",
+                            value="//div[contains(@class, 'dipeEx') and contains(text(), 'Adresse')]",
                         )
-                        parent_el = address_label_el.find_element(
-                            by=By.XPATH, value=".."
-                        )
+                        parent_el = address_label_el.find_element(by=By.XPATH, value="..")
                         address_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
                     except Exception:
                         print("Rejecting record: empty address")
@@ -222,12 +218,11 @@ def get_glide_data(service, options):
                     if "," in full_location:
                         loc_arr = full_location.split(",")
                         if len(loc_arr) >= 5:
-                            print(
-                                f"Rejecting records: address is too long ({len(loc_arr)} parts)"
-                            )
+                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts)")
                             driver.back()
                             continue
-                        elif len(loc_arr) >= 3:
+
+                        if len(loc_arr) >= 3:
                             if loc_arr[2].strip().lower() == "france":
                                 address = loc_arr[0]
                                 city = loc_arr[1]
@@ -239,16 +234,12 @@ def get_glide_data(service, options):
                             zip_code_pattern = r"\b\d{5}\b"
                             zip_code = re.findall(zip_code_pattern, loc_arr[1])
                             if not zip_code:
-                                print(
-                                    "rejecting record: bad address format (no zipcode)"
-                                )
+                                print("rejecting record: bad address format (no zipcode)")
                                 driver.back()
                                 continue
 
                             zip_code_split = loc_arr[1].strip().split(zip_code[0])
-                            zip_code_split = [
-                                item for item in zip_code_split if item != ""
-                            ]
+                            zip_code_split = [item for item in zip_code_split if item != ""]
                             if len(zip_code_split) > 1:
                                 print("Rejecting record: bad address format")
                                 driver.back()
@@ -285,9 +276,7 @@ def get_glide_data(service, options):
                     zip_code = address_dict.get("postcode", "")
 
                     if department == "":
-                        print(
-                            "Rejecting record: no result from the national address API"
-                        )
+                        print("Rejecting record: no result from the national address API")
                         driver.back()
                         continue
 
@@ -296,7 +285,7 @@ def get_glide_data(service, options):
                 ################################################################
                 description_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'eXMJmv') and contains(text(), 'Description')]",
+                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Description')]",
                 )
                 parent_el = description_label_el.find_element(by=By.XPATH, value="..")
                 description_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -313,7 +302,7 @@ def get_glide_data(service, options):
                 ################################################################
                 attendees_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'eXMJmv') and contains(text(), 'participant')]",
+                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'participant')]",
                 )
                 parent_el = attendees_label_el.find_element(by=By.XPATH, value="..")
                 attendees_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
