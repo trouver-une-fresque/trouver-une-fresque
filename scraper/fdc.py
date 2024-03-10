@@ -44,7 +44,7 @@ def get_fdc_data(service, options):
 
         while True:
             ele = driver.find_elements(By.CSS_SELECTOR, "a.link-dark")
-            links = [e.get_attribute("href") for e in ele if "Complet" not in e.text]
+            links = [e.get_attribute("href") for e in ele]
 
             for link in links:
                 print(f"\n-> Processing {link} ...")
@@ -55,15 +55,15 @@ def get_fdc_data(service, options):
                 # Parse event id
                 ################################################################
                 # Define the regex pattern for UUIDs
-                uuid_pattern = r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+                uuid_pattern = (
+                    r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+                )
                 uuids = re.findall(uuid_pattern, link)
                 if not uuids:
                     print("Rejecting record: UUID not found")
                     driver.back()
                     wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(
-                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                    )
+                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                     driver.switch_to.frame(iframe)
                     continue
 
@@ -113,9 +113,7 @@ def get_fdc_data(service, options):
                     print("Rejecting record: bad format in dates")
                     driver.back()
                     wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(
-                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                    )
+                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                     driver.switch_to.frame(iframe)
                     continue
 
@@ -168,9 +166,7 @@ def get_fdc_data(service, options):
                     if "," in full_location:
                         loc_arr = full_location.split(",")
                         if len(loc_arr) >= 5:
-                            print(
-                                f"Rejecting records: address is too long ({len(loc_arr)} parts)"
-                            )
+                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts)")
                             driver.back()
                             wait = WebDriverWait(driver, 10)
                             iframe = wait.until(
@@ -178,7 +174,8 @@ def get_fdc_data(service, options):
                             )
                             driver.switch_to.frame(iframe)
                             continue
-                        elif len(loc_arr) >= 3:
+
+                        if len(loc_arr) >= 3:
                             if loc_arr[2].strip().lower() == "france":
                                 address = loc_arr[0]
                                 city = loc_arr[1]
@@ -204,9 +201,7 @@ def get_fdc_data(service, options):
                         print("Rejecting record: empty address or city")
                         driver.back()
                         wait = WebDriverWait(driver, 10)
-                        iframe = wait.until(
-                            EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                        )
+                        iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                         driver.switch_to.frame(iframe)
                         continue
 
@@ -222,9 +217,7 @@ def get_fdc_data(service, options):
                         )
                         driver.back()
                         wait = WebDriverWait(driver, 10)
-                        iframe = wait.until(
-                            EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                        )
+                        iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                         driver.switch_to.frame(iframe)
                         continue
 
@@ -234,14 +227,10 @@ def get_fdc_data(service, options):
                     zip_code = address_dict.get("postcode", "")
 
                     if department == "":
-                        print(
-                            "Rejecting record: no result from the national address API"
-                        )
+                        print("Rejecting record: no result from the national address API")
                         driver.back()
                         wait = WebDriverWait(driver, 10)
-                        iframe = wait.until(
-                            EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                        )
+                        iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                         driver.switch_to.frame(iframe)
                         continue
 
@@ -251,9 +240,7 @@ def get_fdc_data(service, options):
                 description_title_el = driver.find_element(
                     By.XPATH, "//strong[text()='Description']"
                 )
-                parent_description_el = description_title_el.find_element(
-                    By.XPATH, ".."
-                )
+                parent_description_el = description_title_el.find_element(By.XPATH, "..")
                 description = parent_description_el.text
 
                 ################################################################
@@ -265,7 +252,9 @@ def get_fdc_data(service, options):
                 ################################################################
                 # Is it full?
                 ################################################################
-                sold_out = False
+                user_icon = driver.find_element(By.CLASS_NAME, "fa-user")
+                parent_container = user_icon.find_element(By.XPATH, "../..")
+                sold_out = "Complet" in parent_container.text
 
                 ################################################################
                 # Is it suited for kids?
@@ -311,9 +300,7 @@ def get_fdc_data(service, options):
 
                 driver.back()
                 wait = WebDriverWait(driver, 10)
-                iframe = wait.until(
-                    EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                )
+                iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                 driver.switch_to.frame(iframe)
 
             try:
