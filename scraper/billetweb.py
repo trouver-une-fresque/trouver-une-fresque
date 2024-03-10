@@ -132,14 +132,16 @@ def get_billetweb_data(service, options):
         print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
         wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, page["iframe"])))
-        wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+        wait.until(lambda driver: driver.execute_script("return document.readyState") == "complete")
         ele = driver.find_elements(By.CSS_SELECTOR, "a.naviguate")
         links = [e.get_attribute("href") for e in ele]
 
         for link in links:
             print(f"------------------\nProcessing event {link}")
             driver.get(link)
-            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            wait.until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
+            )
 
             # Useful for different workshops sharing same event link
             if "filter" in page:
@@ -164,8 +166,8 @@ def get_billetweb_data(service, options):
             if not event_id:
                 print("Rejecting record: event_id not found")
                 continue
-            
-            # Parse main title       
+
+            # Parse main title
             try:
                 main_title = driver.find_element(
                     by=By.CSS_SELECTOR, value="#event_title > div.event_name"
@@ -193,15 +195,23 @@ def get_billetweb_data(service, options):
             event_info = []
 
             # Retrieve sessions if exist
-            wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
-            wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            wait.until(
+                EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe"))
+            )
+            wait.until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
+            )
             back_links = driver.find_elements(By.CSS_SELECTOR, ".back_header_link.summarizable")
             if back_links:
                 # Case of Multi-time with only one date, we arrive directly to Basket, so get back to sessions
                 driver.get(back_links[0].get_attribute("href"))
-                wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
-            sessions = driver.find_elements(By.CSS_SELECTOR, 'a.sesssion_href')
-            sessions_links = [s.get_attribute("href") for s in sessions]  # No sessions for Mono-time
+                wait.until(
+                    lambda driver: driver.execute_script("return document.readyState") == "complete"
+                )
+            sessions = driver.find_elements(By.CSS_SELECTOR, "a.sesssion_href")
+            sessions_links = [
+                s.get_attribute("href") for s in sessions
+            ]  # No sessions for Mono-time
             driver.switch_to.parent_frame()
 
             ################################################################
@@ -209,27 +219,36 @@ def get_billetweb_data(service, options):
             ################################################################
             for sessions_link in sessions_links:
                 driver.get(sessions_link)
-                wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+                wait.until(
+                    lambda driver: driver.execute_script("return document.readyState") == "complete"
+                )
                 context = driver.find_element(By.CSS_SELECTOR, "#context_title").text
 
                 # Parse title, dates, location
-                if match := re.match(r"\s*((?P<title>.*) : )?(?P<event_time>.*)(\n\s*(?P<full_location>.*))?", context):
-                    # [ATELIER - Villeurbanne (69100] La Fresque des Nouveaux Récits avec C. FABRE & L. MAY : Tue Jan 16, 2024 from 06:30 PM to 09:30 PM
-                    # Melting Coop, 229 Cr Emile Zola, 69100 Villeurbanne, France
-                    if not match.group('title'):
+                if match := re.match(
+                    r"\s*((?P<title>.*) : )?(?P<event_time>.*)(\n\s*(?P<full_location>.*))?",
+                    context,
+                ):
+                    if not match.group("title"):
                         sub_title = main_title
-                    elif "atelier" in match.group('title').lower():
-                        sub_title = match.group('title')
+                    elif "atelier" in match.group("title").lower():
+                        sub_title = match.group("title")
                     else:
-                        sub_title = main_title + " - " + match.group('title')
+                        sub_title = main_title + " - " + match.group("title")
 
-                    event_time = match.group('event_time')
-                    sub_full_location = match.group('full_location') if match.group('full_location') else main_full_location
+                    event_time = match.group("event_time")
+                    sub_full_location = (
+                        match.group("full_location")
+                        if match.group("full_location")
+                        else main_full_location
+                    )
                 else:
                     raise
 
                 # Is it full?
                 try:
+                    # The presence of div.block indicates that the event is sold out,
+                    # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
                     sold_out = "Inscriptions uniquement" not in empty.text
                 except NoSuchElementException:
@@ -238,8 +257,10 @@ def get_billetweb_data(service, options):
                 # Parse session id
                 session_id = re.search(r"&session=(\d+)", sessions_link).group(1)
                 uuid = f"{event_id}-{session_id}"
-                
-                event_info.append([sub_title, event_time, sub_full_location, sold_out, sessions_link, uuid])
+
+                event_info.append(
+                    [sub_title, event_time, sub_full_location, sold_out, sessions_link, uuid]
+                )
 
             ################################################################
             # Mono-time management
@@ -259,34 +280,57 @@ def get_billetweb_data(service, options):
 
                 # Is it full?
                 try:
-                    wait.until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, "#shop_block iframe")))
-                    wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+                    wait.until(
+                        EC.frame_to_be_available_and_switch_to_it(
+                            (By.CSS_SELECTOR, "#shop_block iframe")
+                        )
+                    )
+                    wait.until(
+                        lambda driver: driver.execute_script("return document.readyState")
+                        == "complete"
+                    )
+
+                    # The presence of div.block indicates that the event is sold out,
+                    # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
                     sold_out = "Inscriptions uniquement" not in empty.text
                 except NoSuchElementException:
                     sold_out = False
                 finally:
                     driver.switch_to.parent_frame()
-        
-                event_info.append([main_title, event_time, main_full_location, sold_out, link, event_id])
+
+                event_info.append(
+                    [main_title, event_time, main_full_location, sold_out, link, event_id]
+                )
 
             ################################################################
             # Session loop
             ################################################################
-            for index, (title, event_time, full_location, sold_out, ticket_link, uuid) in enumerate(event_info):
+            for index, (title, event_time, full_location, sold_out, ticket_link, uuid) in enumerate(
+                event_info
+            ):
                 print(f"\n-> Processing session {index+1}/{len(event_info)} {ticket_link} ...")
                 if "cadeau" in title.lower() or " don" in title.lower():
                     print("Rejecting record: gift card")
                     continue
 
-                if match := re.match(r"(?P<date>.*)\sfrom\s(?P<start>.*)\sto\s(?P<end>.*)", event_time):
+                if match := re.match(
+                    r"(?P<date>.*)\sfrom\s(?P<start>.*)\sto\s(?P<end>.*)", event_time
+                ):
                     # Thu Oct 19, 2023 from 01:00 PM to 02:00 PM
                     event_start_datetime = parse(f"{match.group('date')} {match.group('start')}")
                     event_end_datetime = parse(f"{match.group('date')} {match.group('end')}")
-                elif match := re.match(r"(?P<start_date>.*)\sat\s(?P<start_time>.*)\sto\s(?P<end_date>.*)\sat\s(?P<end_time>.*)", event_time):
+                elif match := re.match(
+                    r"(?P<start_date>.*)\sat\s(?P<start_time>.*)\sto\s(?P<end_date>.*)\sat\s(?P<end_time>.*)",
+                    event_time,
+                ):
                     # Thu Oct 19, 2023 at 01:00 PM to Sat Feb 24, 2024 at 02:00 PM
-                    event_start_datetime = parse(f"{match.group('start_date')} {match.group('start_time')}")
-                    event_end_datetime = parse(f"{match.group('end_date')} {match.group('end_time')}")
+                    event_start_datetime = parse(
+                        f"{match.group('start_date')} {match.group('start_time')}"
+                    )
+                    event_end_datetime = parse(
+                        f"{match.group('end_date')} {match.group('end_time')}"
+                    )
                 elif match := re.match(r"(?P<date>.*)\sat\s(?P<time>.*)", event_time):
                     # Thu Oct 19, 2023 at 01:00 PM
                     event_start_datetime = parse(f"{match.group('date')} {match.group('time')}")
@@ -301,7 +345,9 @@ def get_billetweb_data(service, options):
 
                 # Is it an online event?
                 online_list = ["online", "en ligne", "distanciel"]
-                online = any(w in title.lower() for w in online_list) or any(w in full_location.lower() for w in online_list)
+                online = any(w in title.lower() for w in online_list) or any(
+                    w in full_location.lower() for w in online_list
+                )
                 title = title.replace(" Online event", "")  # Button added by billetweb
 
                 # Parse location fields
@@ -309,9 +355,19 @@ def get_billetweb_data(service, options):
                 if not online:
                     try:
                         address_dict = get_address(full_location)
-                        location_name, address, city, department, zip_code, latitude, longitude = address_dict.values()
+                        (
+                            location_name,
+                            address,
+                            city,
+                            department,
+                            zip_code,
+                            latitude,
+                            longitude,
+                        ) = address_dict.values()
                     except json.JSONDecodeError:
-                        print("Rejecting record: error while parsing the national address API response")
+                        print(
+                            "Rejecting record: error while parsing the national address API response"
+                        )
                         continue
                     if department == "":
                         print("Rejecting record: no result from the national address API")
@@ -323,7 +379,9 @@ def get_billetweb_data(service, options):
 
                 # Is it suited for kids?
                 kids_list = ["kids", "junior", "jeunes"]
-                kids = any(w in title.lower() for w in kids_list) and not training  # Case of trainings for kids
+                kids = (
+                    any(w in title.lower() for w in kids_list) and not training
+                )  # Case of trainings for kids
 
                 # Building final object
                 record = get_record_dict(

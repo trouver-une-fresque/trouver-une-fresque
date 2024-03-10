@@ -59,7 +59,11 @@ Jeu de Paume, Rue Saint-Louis, France
 la base marseille, 3 Rue Pierre Roche
 ```
 
-### Mon atelier s'adresse aux juniors mais il n'apparait pas comme tel !
+### Mon atelier utilise un moyen externe pour les inscriptions (mail, téléphone, etc) mais apparaît comme complet !
+
+Si vous n'utilisez pas le module d'achat de Billetweb mais un moyen externe pour gérer les inscriptions (mail, téléphone, etc), merci d'afficher la mention suivante dans le module d'achat : "Inscriptions uniquement par [...]", en complétant pour adapter à votre cas "Inscriptions uniquement par téléphone au 06xxxxxxxx".
+
+### Mon atelier s'adresse aux juniors mais il n'apparaît pas comme tel !
 
 Le mot-clé "junior" doit figurer dans le titre de l'atelier.
 
