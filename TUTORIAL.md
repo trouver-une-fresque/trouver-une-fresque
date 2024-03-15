@@ -75,10 +75,6 @@ Le mot-clé "junior" doit figurer dans le titre de l'atelier.
 
 ## Fresqueduclimat.org
 
-### Un évènement complet n'apparait pas
-
-C'est normal, il n'est malheureusement pas possible d'accéder à la page d'un évènement complet sur fresqueduclimat.org.
-
 ### Adresse
 
 Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
@@ -125,6 +121,25 @@ la base marseille, 3 Rue Pierre Roche
 Le mot-clé "junior" doit figurer dans la description de l'atelier.
 
 ## Lafresquedeleconomiecirculaire.com
+
+### Adresse
+
+Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
+
+```
+Palais du travail, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, FranceTrattino, 2 Rue Clément Marot, Lyon, France
+La Ruche, 19 Rue Louis Kerautret Botmel, Rennes, France
+```
+
+Des exemples incorrects :
+
+```
+# 5 parties, 4 parties sont autorisées au maximum
+Palais du travail, Villeurbanne, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne
+
+# Même chose !
+La Ruche, Rennes, 19 Rue Louis Kerautret Botmel, Rennes, France
+```
 
 ### Different timezone
 
