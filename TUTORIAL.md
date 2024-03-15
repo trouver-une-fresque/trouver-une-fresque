@@ -127,7 +127,7 @@ Le mot-clé "junior" doit figurer dans la description de l'atelier.
 Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
 
 ```
-Palais du travail, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, FranceTrattino, 2 Rue Clément Marot, Lyon, France
+Palais du travail, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, France
 La Ruche, 19 Rue Louis Kerautret Botmel, Rennes, France
 ```
 
@@ -135,7 +135,7 @@ Des exemples incorrects :
 
 ```
 # 5 parties, 4 parties sont autorisées au maximum
-Palais du travail, Villeurbanne, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne
+Palais du travail, Villeurbanne, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, France
 
 # Même chose !
 La Ruche, Rennes, 19 Rue Louis Kerautret Botmel, Rennes, France
