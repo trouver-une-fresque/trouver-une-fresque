@@ -19,11 +19,11 @@ def main(headless=False):
     if headless:
         options.add_argument("-headless")
 
+    records += get_billetweb_data(service=service, options=options)
     records += get_glide_data(service=service, options=options)
     records += get_eventbrite_data(service=service, options=options)
     records += get_fec_data(service=service, options=options)
     records += get_fdc_data(service=service, options=options)
-    records += get_billetweb_data(service=service, options=options)
 
     return pd.DataFrame(records)
 

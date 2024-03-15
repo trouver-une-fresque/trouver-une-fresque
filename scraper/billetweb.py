@@ -124,6 +124,12 @@ def get_billetweb_data(service, options):
             "iframe": "event21038",
             "id": 16,
         },
+        {
+            # Fresque de la Finance
+            "url": "https://www.billetweb.fr/pro/fresquedelafinance",
+            "iframe": "event34683",
+            "id": 17,
+        },
     ]
 
     records = []
