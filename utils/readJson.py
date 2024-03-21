@@ -7,15 +7,19 @@ from io import StringIO
 
 def get_french_address(location, address, postcode, city):
     full_address = f"{address} {postcode} {city}"
+    # remove double quotes if present, as they make the API confused
+    full_address = full_address.replace('"', "")
+
     url = "https://api-adresse.data.gouv.fr/search"
     params = {"q": full_address, "limit": 1}
     response = requests.get(url, params=params)
-    if data:= response.json():
+
+    if data := response.json():
         return {
             "location_name": location,
             "address": data["features"][0]["properties"]["name"],
             "city": data["features"][0]["properties"]["city"],
-            "departement": data["features"][0]["properties"]["context"].split(',')[0].strip(),
+            "departement": data["features"][0]["properties"]["context"].split(",")[0].strip(),
             "zip_code": data["features"][0]["properties"]["postcode"],
             "latitude": data["features"][0]["geometry"]["coordinates"][1],
             "longitude": data["features"][0]["geometry"]["coordinates"][0],
@@ -33,20 +37,30 @@ def get_french_address(location, address, postcode, city):
 
 def get_default_address(full_address):
     # remove all commas in addresses to have only one column for API
-    full_address = full_address.replace(",", " ").replace('  ', ' ').strip()
+    full_address = full_address.replace(",", " ").replace("  ", " ").strip()
     words = full_address.split()
 
     # create a list of addresses removing the first word for each line until three words minimum
     # by doing that we remove location_name little by little and isolate the best full address for API
-    if lines := "\n".join(' '.join(words[i:]) for i in range(len(words)) if len(words[i:]) >= 3):
+    if lines := "\n".join(" ".join(words[i:]) for i in range(len(words)) if len(words[i:]) >= 3):
         # call API with this list of addresses with decreased number of words
         url = "https://api-adresse.data.gouv.fr/search/csv/"
-        files = {'data': StringIO("query\n" + lines)}
+        files = {"data": StringIO("query\n" + lines)}
         response = requests.post(url, files=files)
         if data_list := list(csv.DictReader(StringIO(response.text))):
             # compare the score as a float for all addresses and keep the highest one
-            data_list = list(map(lambda x: {**x, 'result_score': float(x['result_score']) if x['result_score'] != '' else 0.0}, data_list))
-            max_data = max(data_list, key=lambda x:x['result_score'])
+            data_list = list(
+                map(
+                    lambda x: {
+                        **x,
+                        "result_score": float(x["result_score"])
+                        if x["result_score"] != ""
+                        else 0.0,
+                    },
+                    data_list,
+                )
+            )
+            max_data = max(data_list, key=lambda x: x["result_score"])
 
             # keep only if result is good unless it is probably a non-french or truncated address
             if max_data["result_score"] > 0.5:
@@ -55,7 +69,7 @@ def get_default_address(full_address):
                     "location_name": full_address.removesuffix(max_data["query"]).rstrip("- "),
                     "address": max_data["result_name"],
                     "city": max_data["result_city"],
-                    "department": max_data["result_context"].split(',')[0].strip(),
+                    "department": max_data["result_context"].split(",")[0].strip(),
                     "zip_code": max_data["result_postcode"],
                     "latitude": float(max_data["latitude"]),
                     "longitude": float(max_data["longitude"]),
@@ -70,17 +84,41 @@ def get_default_address(full_address):
         "longitude": "",
     }
 
+
 def get_address(full_location):
-    if match := re.match(r"(?P<location>.+), (?P<street>[^,]+), ((?P<postcode>\d{2} ?\d{3}) )?(?P<city>[^,]+), France$", full_location):
-        postcode = match.group('postcode') if match.group('postcode') else ''
-        return get_french_address(match.group("location"), match.group("street"), postcode, match.group("city"))
-    elif match := re.match(r"(?P<street>[^,]+), ((?P<postcode>\d{5}) )?(?P<city>[^,]+), France$", full_location):
-        postcode = match.group('postcode') if match.group('postcode') else ''
+    if match := re.match(
+        r"(?P<location>.+), (?P<street>[^,]+), ((?P<postcode>\d{2} ?\d{3}) )?(?P<city>[^,]+), France$",
+        full_location,
+    ):
+        postcode = match.group("postcode") if match.group("postcode") else ""
+        return get_french_address(
+            match.group("location"), match.group("street"), postcode, match.group("city")
+        )
+
+    if match := re.match(
+        r"(?P<street>[^,]+), ((?P<postcode>\d{5}) )?(?P<city>[^,]+), France$", full_location
+    ):
+        postcode = match.group("postcode") if match.group("postcode") else ""
         return get_french_address("", match.group("street"), postcode, match.group("city"))
-    elif match := re.match(r"(?P<location>.+), (?P<street>[^,]+),? (?P<postcode>\d{2} ?\d{3}) (?P<city>[^,]+)$", full_location):
-        return get_french_address(match.group("location"), match.group("street"), match.group('postcode'), match.group("city"))
-    elif match := re.match(r"(?P<street>[^,]+),? (?P<postcode>\d{5}) (?P<city>[^,]+)$", full_location):
-        return get_french_address("", match.group("street"), match.group('postcode'), match.group("city"))
+
+    if match := re.match(
+        r"(?P<location>.+), (?P<street>[^,]+),? (?P<postcode>\d{2} ?\d{3}) (?P<city>[^,]+)$",
+        full_location,
+    ):
+        return get_french_address(
+            match.group("location"),
+            match.group("street"),
+            match.group("postcode"),
+            match.group("city"),
+        )
+
+    if match := re.match(
+        r"(?P<street>[^,]+),? (?P<postcode>\d{5}) (?P<city>[^,]+)$", full_location
+    ):
+        return get_french_address(
+            "", match.group("street"), match.group("postcode"), match.group("city")
+        )
+
     return get_default_address(full_location)
 
 
@@ -107,7 +145,7 @@ def get_address_data(text_address):
     except Exception:
         latitude = ""
     try:
-        cod_dep = data["features"][0]["properties"]["context"].split(',')[0].strip()
+        cod_dep = data["features"][0]["properties"]["context"].split(",")[0].strip()
     except Exception:
         cod_dep = ""
 
