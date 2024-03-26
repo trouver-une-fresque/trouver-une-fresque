@@ -130,6 +130,12 @@ def get_billetweb_data(service, options):
             "iframe": "event34683",
             "id": 17,
         },
+        {
+            # Fresque de la RSE
+            "url": "https://www.billetweb.fr/pro/fresque",
+            "iframe": "event35904",
+            "id": 18,
+        },
     ]
 
     records = []

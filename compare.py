@@ -22,6 +22,7 @@ workshop_types = {
     15: "FresqueDesDechets",
     16: "PuzzleClimat",
     17: "FresqueDeLaFinance",
+    18: "FresqueDeLaRSE",
     100: "2tonnes",
     200: "FresqueClimat",
     300: "FresqueEcoCirculaire",
