@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data, strip_zip_code
+from utils.readJson import get_address_data
 
 
 def get_glorieuses_data():
@@ -44,9 +44,7 @@ def get_glorieuses_data():
 
         try:
             # Convert time strings to datetime objects
-            event_start_datetime = datetime.strptime(
-                event_start_time, "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
+            event_start_datetime = datetime.strptime(event_start_time, "%Y-%m-%dT%H:%M:%S.%fZ")
         except Exception as e:
             print(f"Rejecting record: bad date format {e}")
             continue
@@ -55,9 +53,7 @@ def get_glorieuses_data():
 
         try:
             # Convert time strings to datetime objects
-            event_end_datetime = datetime.strptime(
-                event_end_time, "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
+            event_end_datetime = datetime.strptime(event_end_time, "%Y-%m-%dT%H:%M:%S.%fZ")
         except Exception as e:
             print(f"Rejecting record: bad date format {e}")
             continue

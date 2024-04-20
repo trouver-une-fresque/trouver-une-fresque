@@ -82,9 +82,7 @@ def get_eventbrite_data(service, options):
         print(f"Found {len(event_card_divs)} events")
 
         for event_card_div in event_card_divs:
-            link_elements = event_card_div.find_elements(
-                By.CSS_SELECTOR, "a.event-card-link"
-            )
+            link_elements = event_card_div.find_elements(By.CSS_SELECTOR, "a.event-card-link")
             elements.extend(link_elements)
 
         links = []
@@ -200,9 +198,7 @@ def get_eventbrite_data(service, options):
             ################################################################
             online = False
             try:
-                online_el = driver.find_element(
-                    By.CSS_SELECTOR, "p.location-info__address-text"
-                )
+                online_el = driver.find_element(By.CSS_SELECTOR, "p.location-info__address-text")
                 online_list = ["online", "en ligne", "distanciel"]
                 online = any(w in online_el.text.lower() for w in online_list)
             except NoSuchElementException:
@@ -221,9 +217,7 @@ def get_eventbrite_data(service, options):
             zip_code = ""
 
             if not online:
-                location_el = driver.find_element(
-                    By.CSS_SELECTOR, "div.location-info__address"
-                )
+                location_el = driver.find_element(By.CSS_SELECTOR, "div.location-info__address")
                 full_location_text = location_el.text.split("\n")
                 location_name = full_location_text[0]
                 address_and_city = full_location_text[1]
@@ -246,9 +240,7 @@ def get_eventbrite_data(service, options):
                     search_query = f"{address}, {city}, France"
                     address_dict = get_address_data(search_query)
                 except json.JSONDecodeError:
-                    print(
-                        "Rejecting record: error while parsing the national address API response"
-                    )
+                    print("Rejecting record: error while parsing the national address API response")
                     continue
 
                 department = address_dict.get("cod_dep", "")
@@ -260,18 +252,14 @@ def get_eventbrite_data(service, options):
                     print("Rejecting record: no result from the national address API")
                     driver.back()
                     wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(
-                        EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                    )
+                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                     driver.switch_to.frame(iframe)
                     continue
 
             ################################################################
             # Description
             ################################################################
-            description_title_el = driver.find_element(
-                By.CSS_SELECTOR, "div.eds-text--left"
-            )
+            description_title_el = driver.find_element(By.CSS_SELECTOR, "div.eds-text--left")
             description = description_title_el.text
 
             ################################################################
@@ -283,9 +271,7 @@ def get_eventbrite_data(service, options):
             ################################################################
             # Is it full?
             ################################################################
-            tickets_link_el = driver.find_element(
-                By.CSS_SELECTOR, "div.conversion-bar__panel-info"
-            )
+            tickets_link_el = driver.find_element(By.CSS_SELECTOR, "div.conversion-bar__panel-info")
             sold_out = (
                 "complet" in tickets_link_el.text.lower()
                 or "ventes achevées" in tickets_link_el.text.lower()

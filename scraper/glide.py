@@ -140,7 +140,12 @@ def get_glide_data(service, options):
                     event_time = re.sub(f" {year_pattern}", "", event_time)
 
                 date_and_times = event_time.split(" de ")
-                _, day, month_string = date_and_times[0].split(" ")
+                try:
+                    _, day, month_string = date_and_times[0].split(" ")
+                except ValueError:
+                    print("Rejecting record: error while parsing the event date")
+                    driver.back()
+                    continue
 
                 # Define a regular expression pattern to extract times
                 time_pattern = r"(\d{1,2}h\d{2}) à (\d{1,2}h\d{2})"

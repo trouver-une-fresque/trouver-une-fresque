@@ -166,10 +166,7 @@ def get_fec_data(service, options):
                 online_el = driver.find_element(
                     By.CSS_SELECTOR, 'p[data-hook="event-full-location"]'
                 )
-                if (
-                    "en ligne" in online_el.text.lower()
-                    or "online" in online_el.text.lower()
-                ):
+                if "en ligne" in online_el.text.lower() or "online" in online_el.text.lower():
                     online = True
             except NoSuchElementException:
                 pass
@@ -195,11 +192,10 @@ def get_fec_data(service, options):
                 if "," in full_location:
                     loc_arr = full_location.split(",")
                     if len(loc_arr) >= 5:
-                        print(
-                            f"Rejecting records: address is too long ({len(loc_arr)} parts)"
-                        )
+                        print(f"Rejecting records: address is too long ({len(loc_arr)} parts)")
                         continue
-                    elif len(loc_arr) >= 4:
+
+                    if len(loc_arr) >= 4:
                         if loc_arr[3].strip().lower() != "france":
                             print("rejecting record: not in France")
                             continue
@@ -236,9 +232,7 @@ def get_fec_data(service, options):
                     search_query = f"{address}, {city}, France"
                     address_dict = get_address_data(search_query)
                 except json.JSONDecodeError:
-                    print(
-                        "Rejecting record: error while parsing the national address API response"
-                    )
+                    print("Rejecting record: error while parsing the national address API response")
                     continue
 
                 department = address_dict.get("cod_dep", "")

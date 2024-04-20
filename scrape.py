@@ -43,9 +43,7 @@ if __name__ == "__main__":
         database = credentials["database"]
 
         with psycopg.connect(
-            make_conninfo(
-                dbname=database, user=user, password=psw, host=host, port=port
-            )
+            make_conninfo(dbname=database, user=user, password=psw, host=host, port=port)
         ) as conn:
             etl(conn, df_merged)
 

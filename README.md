@@ -64,7 +64,6 @@ Avant de développer, merci d'installer le hook git en suivant les instructions 
 | Fresque de la RSE | https://www.billetweb.fr/multi_event.php?user=139214 | Scraping Billetweb | OK |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
-| Fresque de la Finance | https://www.helloasso.com/associations/la-fresque-de-la-finance | Scraping HelloAsso | Prévu, priorité 1 |
 | Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | Prévu, priorité 1 |
 | Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
 | Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
