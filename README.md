@@ -65,9 +65,10 @@ Avant de développer, merci d'installer le hook git en suivant les instructions 
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
 | Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | Prévu, priorité 1 |
-| Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
+| Fresque de l'Energie | https://www.helloasso.com/associations/la-fresque-de-l-energie | Scraping HelloAsso | Prévu, priorité 1 |
 | Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
+| Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
 | Atelier Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 2 |
 | Atelier L'éco-naissance | https://www.eventbrite.fr/o/leco-naissance-62237583643 | Scraping Eventbrite | Prévu, priorité 2 |
