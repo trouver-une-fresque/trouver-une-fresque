@@ -72,6 +72,7 @@ Avant de développer, merci d'installer le hook git en suivant les instructions 
 | Atelier Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 2 |
 | Atelier L'éco-naissance | https://www.eventbrite.fr/o/leco-naissance-62237583643 | Scraping Eventbrite | Prévu, priorité 2 |
+| Fresque de l'Emploi Durable | https://www.helloasso.com/associations/solidarites-nouvelles-face-au-chomage-snc | Scraping HelloAsso | En réflexion |
 | Atelier Marche du Temps Profond | https://www.helloasso.com/associations/ecotopia | Scraping HelloAsso | En réflexion |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
 
