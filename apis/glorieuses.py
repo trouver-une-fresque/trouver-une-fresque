@@ -77,6 +77,10 @@ def get_glorieuses_data():
 
         if not online:
             address = json_record["Adresse"]
+            if not address:
+                print("Rejecting record: no address provided")
+                continue
+
             city = json_record["Ville"]
 
             ############################################################
