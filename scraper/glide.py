@@ -62,13 +62,19 @@ def get_glide_data(service, options):
         while True:
             # Loading the page
             time.sleep(20)
-            ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
+            ele = driver.find_elements(
+                By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
+            )
             num_el = len(ele)
             print(f"Found {num_el} elements")
 
             for i in range(num_el):
-                time.sleep(5)
-                ele = driver.find_elements(By.XPATH, '//div[@role="button"]')
+                driver.refresh()
+                time.sleep(20)
+                ele = driver.find_elements(
+                    By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
+                )
+                print(f"Found {len(ele)} elements")
                 el = ele[i]
                 el.click()
 
