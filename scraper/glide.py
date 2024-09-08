@@ -10,7 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data, strip_zip_code
+from utils.errors import FreskError
+from utils.readJson import get_address
 
 
 def get_glide_data(service, options):
@@ -69,12 +70,9 @@ def get_glide_data(service, options):
             print(f"Found {num_el} elements")
 
             for i in range(num_el):
-                driver.refresh()
-                time.sleep(20)
                 ele = driver.find_elements(
                     By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
                 )
-                print(f"Found {len(ele)} elements")
                 el = ele[i]
                 el.click()
 
@@ -117,7 +115,7 @@ def get_glide_data(service, options):
                 ################################################################
                 time_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Date')]",
+                    value="//li/div[contains(text(), 'Date')]",
                 )
                 parent_el = time_el.find_element(by=By.XPATH, value="..")
                 event_time_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -192,7 +190,7 @@ def get_glide_data(service, options):
 
                 time_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Format')]",
+                    value="//li/div[contains(text(), 'Format')]",
                 )
                 parent_el = time_label_el.find_element(by=By.XPATH, value="..")
                 online_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -214,7 +212,7 @@ def get_glide_data(service, options):
                     try:
                         address_label_el = driver.find_element(
                             by=By.XPATH,
-                            value="//div[contains(@class, 'dipeEx') and contains(text(), 'Adresse')]",
+                            value="//li/div[contains(text(), 'Adresse')]",
                         )
                         parent_el = address_label_el.find_element(by=By.XPATH, value="..")
                         address_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -225,69 +223,25 @@ def get_glide_data(service, options):
 
                     full_location = address_el.text
 
-                    # Parse location fields
-                    if "," in full_location:
-                        loc_arr = full_location.split(",")
-                        if len(loc_arr) >= 5:
-                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts)")
-                            driver.back()
-                            continue
-
-                        if len(loc_arr) >= 3:
-                            if loc_arr[2].strip().lower() == "france":
-                                address = loc_arr[0]
-                                city = loc_arr[1]
-                            else:
-                                location_name = loc_arr[0]
-                                address = loc_arr[1]
-                                city = loc_arr[2]
-                        elif len(loc_arr) == 2:
-                            zip_code_pattern = r"\b\d{5}\b"
-                            zip_code = re.findall(zip_code_pattern, loc_arr[1])
-                            if not zip_code:
-                                print("rejecting record: bad address format (no zipcode)")
-                                driver.back()
-                                continue
-
-                            zip_code_split = loc_arr[1].strip().split(zip_code[0])
-                            zip_code_split = [item for item in zip_code_split if item != ""]
-                            if len(zip_code_split) > 1:
-                                print("Rejecting record: bad address format")
-                                driver.back()
-                                continue
-
-                            address = loc_arr[0]
-                            city = loc_arr[1]
-
-                    location_name = location_name.strip()
-                    address = address.strip()
-                    city = strip_zip_code(city)
-
-                    if address == "":
-                        print("Rejecting record: empty address")
-                        driver.back()
-                        continue
-
-                    ############################################################
-                    # Localisation sanitizer
-                    ############################################################
                     try:
-                        search_query = f"{address}, {city}, France"
-                        address_dict = get_address_data(search_query)
+                        address_dict = get_address(full_location)
+                        (
+                            location_name,
+                            address,
+                            city,
+                            department,
+                            zip_code,
+                            latitude,
+                            longitude,
+                        ) = address_dict.values()
                     except json.JSONDecodeError:
                         print(
                             "Rejecting record: error while parsing the national address API response"
                         )
                         driver.back()
                         continue
-
-                    department = address_dict.get("cod_dep", "")
-                    longitude = address_dict.get("longitude", "")
-                    latitude = address_dict.get("latitude", "")
-                    zip_code = address_dict.get("postcode", "")
-
-                    if department == "":
-                        print("Rejecting record: no result from the national address API")
+                    except FreskError as error:
+                        print(f"Rejecting record: {error}.")
                         driver.back()
                         continue
 
@@ -296,7 +250,7 @@ def get_glide_data(service, options):
                 ################################################################
                 description_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'Description')]",
+                    value="//li/div[contains(text(), 'Description')]",
                 )
                 parent_el = description_label_el.find_element(by=By.XPATH, value="..")
                 description_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
@@ -313,7 +267,7 @@ def get_glide_data(service, options):
                 ################################################################
                 attendees_label_el = driver.find_element(
                     by=By.XPATH,
-                    value="//div[contains(@class, 'dipeEx') and contains(text(), 'participant')]",
+                    value="//li/div[contains(text(), 'participant')]",
                 )
                 parent_el = attendees_label_el.find_element(by=By.XPATH, value="..")
                 attendees_el = parent_el.find_element(by=By.XPATH, value="./*[2]")

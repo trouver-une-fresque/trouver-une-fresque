@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
+from utils.errors import FreskError
 from utils.readJson import get_address
 
 
@@ -362,7 +363,9 @@ def get_billetweb_data(service, options):
                 )
                 title = title.replace(" Online event", "")  # Button added by billetweb
 
-                # Parse location fields
+                ################################################################
+                # Location data
+                ################################################################
                 location_name = address = city = department = longitude = latitude = zip_code = ""
                 if not online:
                     try:
@@ -381,8 +384,8 @@ def get_billetweb_data(service, options):
                             "Rejecting record: error while parsing the national address API response"
                         )
                         continue
-                    if department == "":
-                        print("Rejecting record: no result from the national address API")
+                    except FreskError as error:
+                        print(f"Rejecting record: {error}.")
                         continue
 
                 # Training?

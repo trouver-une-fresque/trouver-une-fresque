@@ -1,10 +1,12 @@
 import json
 import requests
+import time
 
 from datetime import datetime
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data
+from utils.errors import FreskError
+from utils.readJson import get_address
 
 
 def get_glorieuses_data():
@@ -27,6 +29,9 @@ def get_glorieuses_data():
         print(f"An error occurred: {e}")
 
     for json_record in json_records:
+        time.sleep(1.5)
+        print("")
+
         ################################################################
         # Get event id
         ################################################################
@@ -82,20 +87,24 @@ def get_glorieuses_data():
                 continue
 
             city = json_record["Ville"]
+            full_location = f"{address}, {city}"
 
-            ############################################################
-            # Localisation sanitizer
-            ############################################################
-            search_query = f"{address}, {city}, France"
-            address_dict = get_address_data(search_query)
-
-            department = address_dict.get("cod_dep", "")
-            longitude = address_dict.get("longitude", "")
-            latitude = address_dict.get("latitude", "")
-            zip_code = address_dict.get("postcode", "")
-
-            if department == "":
-                print("Rejecting record: no result from the national address API")
+            try:
+                address_dict = get_address(full_location)
+                (
+                    location_name,
+                    address,
+                    city,
+                    department,
+                    zip_code,
+                    latitude,
+                    longitude,
+                ) = address_dict.values()
+            except json.JSONDecodeError:
+                print("Rejecting record: error while parsing the national address API response")
+                continue
+            except FreskError as error:
+                print(f"Rejecting record: {error}.")
                 continue
 
         ################################################################

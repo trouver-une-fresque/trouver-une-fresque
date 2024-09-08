@@ -11,7 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data
+from utils.errors import FreskError
+from utils.readJson import get_address
 
 
 def get_eventbrite_data(service, options):
@@ -223,33 +224,26 @@ def get_eventbrite_data(service, options):
                 address_and_city = full_location_text[1]
                 full_location = f"{location_name}, {address_and_city}"
 
-                pattern = r"^(.*?)\s+(\d{5})\s+(.*?)$"
-                match = re.match(pattern, address_and_city)
-                if match:
-                    address = match.group(1)
-                    zip_code = match.group(2)
-                    city = match.group(3)
-                else:
-                    print("Rejecting record: bad address format")
-                    continue
-
-                ############################################################
-                # Localisation sanitizer
-                ############################################################
                 try:
-                    search_query = f"{address}, {city}, France"
-                    address_dict = get_address_data(search_query)
+                    address_dict = get_address(full_location)
+                    (
+                        location_name,
+                        address,
+                        city,
+                        department,
+                        zip_code,
+                        latitude,
+                        longitude,
+                    ) = address_dict.values()
                 except json.JSONDecodeError:
                     print("Rejecting record: error while parsing the national address API response")
+                    driver.back()
+                    wait = WebDriverWait(driver, 10)
+                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
+                    driver.switch_to.frame(iframe)
                     continue
-
-                department = address_dict.get("cod_dep", "")
-                longitude = address_dict.get("longitude", "")
-                latitude = address_dict.get("latitude", "")
-                zip_code = address_dict.get("postcode", "")
-
-                if department == "":
-                    print("Rejecting record: no result from the national address API")
+                except FreskError as error:
+                    print(f"Rejecting record: {error}.")
                     driver.back()
                     wait = WebDriverWait(driver, 10)
                     iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))

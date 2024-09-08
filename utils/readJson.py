@@ -2,165 +2,183 @@ import csv
 import re
 import requests
 
+from utils.errors import *
+
 from io import StringIO
+from geopy.geocoders import Nominatim
 
+geolocator = Nominatim(user_agent="trouver-une-fresque", timeout=10)
 
-def get_french_address(location, address, postcode, city):
-    full_address = f"{address} {postcode} {city}"
-    # remove double quotes if present, as they make the API confused
-    full_address = full_address.replace('"', "")
+departments = {
+    "01": "Ain",
+    "02": "Aisne",
+    "03": "Allier",
+    "04": "Alpes-de-Haute-Provence",
+    "05": "Hautes-Alpes",
+    "06": "Alpes-Maritimes",
+    "07": "Ardèche",
+    "08": "Ardennes",
+    "09": "Ariège",
+    "10": "Aube",
+    "11": "Aude",
+    "12": "Aveyron",
+    "13": "Bouches-du-Rhône",
+    "14": "Calvados",
+    "15": "Cantal",
+    "16": "Charente",
+    "17": "Charente-Maritime",
+    "18": "Cher",
+    "19": "Corrèze",
+    "2A": "Corse-du-Sud",
+    "2B": "Haute-Corse",
+    "21": "Côte-d'Or",
+    "22": "Côtes-d'Armor",
+    "23": "Creuse",
+    "24": "Dordogne",
+    "25": "Doubs",
+    "26": "Drôme",
+    "27": "Eure",
+    "28": "Eure-et-Loir",
+    "29": "Finistère",
+    "30": "Gard",
+    "31": "Haute-Garonne",
+    "32": "Gers",
+    "33": "Gironde",
+    "34": "Hérault",
+    "35": "Ille-et-Vilaine",
+    "36": "Indre",
+    "37": "Indre-et-Loire",
+    "38": "Isère",
+    "39": "Jura",
+    "40": "Landes",
+    "41": "Loir-et-Cher",
+    "42": "Loire",
+    "43": "Haute-Loire",
+    "44": "Loire-Atlantique",
+    "45": "Loiret",
+    "46": "Lot",
+    "47": "Lot-et-Garonne",
+    "48": "Lozère",
+    "49": "Maine-et-Loire",
+    "50": "Manche",
+    "51": "Marne",
+    "52": "Haute-Marne",
+    "53": "Mayenne",
+    "54": "Meurthe-et-Moselle",
+    "55": "Meuse",
+    "56": "Morbihan",
+    "57": "Moselle",
+    "58": "Nièvre",
+    "59": "Nord",
+    "60": "Oise",
+    "61": "Orne",
+    "62": "Pas-de-Calais",
+    "63": "Puy-de-Dôme",
+    "64": "Pyrénées-Atlantiques",
+    "65": "Hautes-Pyrénées",
+    "66": "Pyrénées-Orientales",
+    "67": "Bas-Rhin",
+    "68": "Haut-Rhin",
+    "69": "Rhône",
+    "70": "Haute-Saône",
+    "71": "Saône-et-Loire",
+    "72": "Sarthe",
+    "73": "Savoie",
+    "74": "Haute-Savoie",
+    "75": "Paris",
+    "76": "Seine-Maritime",
+    "77": "Seine-et-Marne",
+    "78": "Yvelines",
+    "79": "Deux-Sèvres",
+    "80": "Somme",
+    "81": "Tarn",
+    "82": "Tarn-et-Garonne",
+    "83": "Var",
+    "84": "Vaucluse",
+    "85": "Vendée",
+    "86": "Vienne",
+    "87": "Haute-Vienne",
+    "88": "Vosges",
+    "89": "Yonne",
+    "90": "Territoire de Belfort",
+    "91": "Essonne",
+    "92": "Hauts-de-Seine",
+    "93": "Seine-Saint-Denis",
+    "94": "Val-de-Marne",
+    "95": "Val-d'Oise",
+    "971": "Guadeloupe",
+    "972": "Martinique",
+    "973": "Guyane",
+    "974": "La Réunion",
+    "976": "Mayotte",
+}
 
-    url = "https://api-adresse.data.gouv.fr/search"
-    params = {"q": full_address, "limit": 1}
-    response = requests.get(url, params=params)
-
-    if data := response.json():
-        return {
-            "location_name": location,
-            "address": data["features"][0]["properties"]["name"],
-            "city": data["features"][0]["properties"]["city"],
-            "departement": data["features"][0]["properties"]["context"].split(",")[0].strip(),
-            "zip_code": data["features"][0]["properties"]["postcode"],
-            "latitude": data["features"][0]["geometry"]["coordinates"][1],
-            "longitude": data["features"][0]["geometry"]["coordinates"][0],
-        }
-    return {
-        "location_name": "",
-        "address": "",
-        "city": "",
-        "department": "",
-        "zip_code": "",
-        "latitude": "",
-        "longitude": "",
-    }
-
-
-def get_default_address(full_address):
-    # remove all commas in addresses to have only one column for API
-    full_address = full_address.replace(",", " ").replace("  ", " ").strip()
-    words = full_address.split()
-
-    # create a list of addresses removing the first word for each line until three words minimum
-    # by doing that we remove location_name little by little and isolate the best full address for API
-    if lines := "\n".join(" ".join(words[i:]) for i in range(len(words)) if len(words[i:]) >= 3):
-        # call API with this list of addresses with decreased number of words
-        url = "https://api-adresse.data.gouv.fr/search/csv/"
-        files = {"data": StringIO("query\n" + lines)}
-        response = requests.post(url, files=files)
-        if data_list := list(csv.DictReader(StringIO(response.text))):
-            # compare the score as a float for all addresses and keep the highest one
-            data_list = list(
-                map(
-                    lambda x: {
-                        **x,
-                        "result_score": float(x["result_score"])
-                        if x["result_score"] != ""
-                        else 0.0,
-                    },
-                    data_list,
-                )
-            )
-            max_data = max(data_list, key=lambda x: x["result_score"])
-
-            # keep only if result is good unless it is probably a non-french or truncated address
-            if max_data["result_score"] > 0.5:
-                # location_name is deduced by removing the query
-                return {
-                    "location_name": full_address.removesuffix(max_data["query"]).rstrip("- "),
-                    "address": max_data["result_name"],
-                    "city": max_data["result_city"],
-                    "department": max_data["result_context"].split(",")[0].strip(),
-                    "zip_code": max_data["result_postcode"],
-                    "latitude": float(max_data["latitude"]),
-                    "longitude": float(max_data["longitude"]),
-                }
-    return {
-        "location_name": "",
-        "address": "",
-        "city": "",
-        "department": "",
-        "zip_code": "",
-        "latitude": "",
-        "longitude": "",
-    }
+"""
+This function requests Nomatim to get structured location data from an
+input string.
+"""
 
 
 def get_address(full_location):
-    if match := re.match(
-        r"(?P<location>.+), (?P<street>[^,]+), ((?P<postcode>\d{2} ?\d{3}) )?(?P<city>[^,]+), France$",
-        full_location,
-    ):
-        postcode = match.group("postcode") if match.group("postcode") else ""
-        return get_french_address(
-            match.group("location"), match.group("street"), postcode, match.group("city")
-        )
+    location = geolocator.geocode(full_location, addressdetails=True)
 
-    if match := re.match(
-        r"(?P<street>[^,]+), ((?P<postcode>\d{5}) )?(?P<city>[^,]+), France$", full_location
-    ):
-        postcode = match.group("postcode") if match.group("postcode") else ""
-        return get_french_address("", match.group("street"), postcode, match.group("city"))
+    if location is None:
+        raise FreskAddressNotFound(full_location)
 
-    if match := re.match(
-        r"(?P<location>.+), (?P<street>[^,]+),? (?P<postcode>\d{2} ?\d{3}) (?P<city>[^,]+)$",
-        full_location,
-    ):
-        return get_french_address(
-            match.group("location"),
-            match.group("street"),
-            match.group("postcode"),
-            match.group("city"),
-        )
+    address = location.raw["address"]
 
-    if match := re.match(
-        r"(?P<street>[^,]+),? (?P<postcode>\d{5}) (?P<city>[^,]+)$", full_location
-    ):
-        return get_french_address(
-            "", match.group("street"), match.group("postcode"), match.group("city")
-        )
+    if address["country_code"] != "fr":
+        raise FreskCountryNotSupported(address, full_location)
 
-    return get_default_address(full_location)
+    house_number = ""
+    if "house_number" in address.keys():
+        house_number = f"{address['house_number']} "
 
+    road = ""
+    if "road" in address.keys():
+        road = address["road"]
+    elif "square" in address.keys():
+        road = address["square"]
+    else:
+        raise FreskAddressBadFormat(address, full_location, "road")
 
-def get_address_data(text_address):
-    url = "https://api-adresse.data.gouv.fr/search"
-    params = {"q": text_address, "limit": 1}
-    response = requests.request("GET", url, params=params)
-    data = response.json()
+    city = None
+    if "city" in address.keys():
+        city = address["city"]
+    elif "town" in address.keys():
+        city = address["town"]
+    elif "village" in address.keys():
+        city = address["village"]
+    else:
+        raise FreskAddressBadFormat(address, full_location, "city")
 
-    try:
-        housenumber = data["features"][0]["properties"]["housenumber"]
-    except Exception:
-        housenumber = ""
-    try:
-        postcode = data["features"][0]["properties"]["postcode"]
-    except Exception:
-        postcode = ""
-    try:
-        longitude = data["features"][0]["geometry"]["coordinates"][0]
-    except Exception:
-        longitude = ""
-    try:
-        latitude = data["features"][0]["geometry"]["coordinates"][1]
-    except Exception:
-        latitude = ""
-    try:
-        cod_dep = data["features"][0]["properties"]["context"].split(",")[0].strip()
-    except Exception:
-        cod_dep = ""
+    department = None
+    if "state_district" in address.keys():
+        department = address["state_district"]
+    elif "county" in address.keys():
+        department = address["county"]
+    elif "city_district" in address.keys():
+        department = address["city_district"]
+    elif "state" in address.keys():
+        department = address["state"]
+    else:
+        raise FreskAddressBadFormat(address, full_location, "department")
+
+    num_department = department_to_num(department)
 
     return {
-        "housenumber": housenumber,
-        "postcode": postcode,
-        "longitude": longitude,
-        "latitude": latitude,
-        "cod_dep": cod_dep,
+        "location_name": location.raw["name"],
+        "address": f"{house_number}{road}",
+        "city": city,
+        "department": num_department,
+        "zip_code": address["postcode"],
+        "latitude": location.raw["lat"],
+        "longitude": location.raw["lon"],
     }
 
 
-def strip_zip_code(text_address):
-    zip_re = r"\b((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B)) *([0-9]{3})?\b"
-    zip_code = re.search(zip_re, text_address)
-    if zip_code:
-        text_address = text_address.replace(zip_code.group(0), "")
-    return text_address.strip().title()
+def department_to_num(department):
+    for k, v in departments.items():
+        if v == department:
+            return k
+    raise Exception(f"Department number.")

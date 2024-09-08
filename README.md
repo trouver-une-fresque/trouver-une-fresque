@@ -2,6 +2,10 @@
 
 Trouver une Fresque est un outil open source permettant de détecter les ateliers disponibles dans votre département.
 
+Les données sont extraites des billetteries officielles via la technique du scraping. La validité des adresses est vérifiée en utilisant les données d'OpenStreetMap.
+
+Si vous utilisez ce code, merci de respecter la [charte de Nominatim](https://operations.osmfoundation.org/policies/nominatim/).
+
 ## Installation
 
 Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renommer le fichier de configuration `config.json.dist` en `config.json`.

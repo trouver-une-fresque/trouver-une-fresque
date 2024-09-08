@@ -10,7 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.readJson import get_address_data, strip_zip_code
+from utils.errors import FreskError
+from utils.readJson import get_address
 
 
 def get_fdc_data(service, options):
@@ -163,54 +164,17 @@ def get_fdc_data(service, options):
                     parent_div = pin_icon.find_element(By.XPATH, "..")
                     full_location = parent_div.text
 
-                    if "," in full_location:
-                        loc_arr = full_location.split(",")
-                        if len(loc_arr) >= 5:
-                            print(f"Rejecting records: address is too long ({len(loc_arr)} parts)")
-                            driver.back()
-                            wait = WebDriverWait(driver, 10)
-                            iframe = wait.until(
-                                EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                            )
-                            driver.switch_to.frame(iframe)
-                            continue
-
-                        if len(loc_arr) >= 3:
-                            if loc_arr[2].strip().lower() == "france":
-                                address = loc_arr[0]
-                                city = loc_arr[1]
-                            else:
-                                location_name = loc_arr[0]
-                                address = loc_arr[1]
-                                city = loc_arr[2]
-                        elif len(loc_arr) == 2:
-                            print("Rejecting record: unprecise address")
-                            driver.back()
-                            wait = WebDriverWait(driver, 10)
-                            iframe = wait.until(
-                                EC.presence_of_element_located((By.TAG_NAME, "iframe"))
-                            )
-                            driver.switch_to.frame(iframe)
-                            continue
-
-                    location_name = location_name.strip()
-                    address = address.strip()
-                    city = strip_zip_code(city)
-
-                    if address == "" or city == "":
-                        print("Rejecting record: empty address or city")
-                        driver.back()
-                        wait = WebDriverWait(driver, 10)
-                        iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
-                        driver.switch_to.frame(iframe)
-                        continue
-
-                    ############################################################
-                    # Localisation sanitizer
-                    ############################################################
                     try:
-                        search_query = f"{address}, {city}, France"
-                        address_dict = get_address_data(search_query)
+                        address_dict = get_address(full_location)
+                        (
+                            location_name,
+                            address,
+                            city,
+                            department,
+                            zip_code,
+                            latitude,
+                            longitude,
+                        ) = address_dict.values()
                     except json.JSONDecodeError:
                         print(
                             "Rejecting record: error while parsing the national address API response"
@@ -220,14 +184,8 @@ def get_fdc_data(service, options):
                         iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
                         driver.switch_to.frame(iframe)
                         continue
-
-                    department = address_dict.get("cod_dep", "")
-                    longitude = address_dict.get("longitude", "")
-                    latitude = address_dict.get("latitude", "")
-                    zip_code = address_dict.get("postcode", "")
-
-                    if department == "":
-                        print("Rejecting record: no result from the national address API")
+                    except FreskError as error:
+                        print(f"Rejecting record: {error}.")
                         driver.back()
                         wait = WebDriverWait(driver, 10)
                         iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))

@@ -5,3 +5,4 @@ tabulate
 pandas
 python-dateutil
 psycopg
+geopy
