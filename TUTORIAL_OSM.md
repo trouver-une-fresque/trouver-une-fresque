@@ -40,9 +40,9 @@ Peut-être que le nom du lieu n'est pas rattaché à l'adresse sur OSM. Pour le 
 
 - Si vous obtenez un résultat, deux cas de figure:
 
-    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé est bien répertorié. Dans ce cas, il faut rattacher une adresse à ce lieu.
+    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé est bien répertorié. Dans ce cas, il faut [rattacher une adresse à ce lieu](#rattacher-une-adresse-à-un-lieu-existant).
 
-    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé n'apparaît pas. Dans ce cas, il faut ajouter un nouveau lieu et lui rattacher son adresse.
+    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé n'apparaît pas. Dans ce cas, il faut ajouter un nouveau lieu et lui [rattacher son adresse](#créer-un-lieu).
 
 ### Rattacher une adresse à un lieu existant
 
