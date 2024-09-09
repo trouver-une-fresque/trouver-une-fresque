@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError
-from utils.readJson import get_address
+from utils.location import get_address
 
 
 def get_fdc_data(service, options):
