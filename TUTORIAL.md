@@ -16,48 +16,11 @@ Si après 1) avoir vérifié tous les points énoncés, et 2) avoir attendu 4 jo
 
 ### Date
 
-- La date, comprenant au moins le jour et l'heure de début, apparaît-elle sous le titre de la page ?
+La date, comprenant au moins le jour et l'heure de début, apparaît-elle sous le titre de la page ?
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entres 2 et 4 parties séparées par des virgules:
-
-```
-Trattino, 2 Rue Clément Marot, Lyon, France
-Trattino, Rue Clément Marot, 35000 Rennes, France
-Rue Clément Marot, 35000 Rennes
-ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
-Chez moi , 1560 Rue Maurice Jacob, Lyon, France
-```
-
-Des exemples incorrects :
-
-```
-# Les parties composant l'adresse ne sont pas séparées par des virgules
-Oasis Fontmarie - 1790 Route de Fontmarie à Castries
-
-# Le nom du lieu et son adresse ne sont pas séparés par une virgule
-Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
-
-# Une virgule en trop !
-la perestroika, , 2 Rue Thiergarten, Strasbourg, France
-```
-
-### Erreur de localisation
-
-Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
-
-```
-Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
-la base, 3 Rue Pierre Roche, Marseille
-```
-
-sont plus précises que
-
-```
-Jeu de Paume, Rue Saint-Louis, France
-la base marseille, 3 Rue Pierre Roche
-```
+Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ### Mon atelier utilise un moyen externe pour les inscriptions (mail, téléphone, etc) mais apparaît comme complet !
 
@@ -71,50 +34,17 @@ Le mot-clé "junior" doit figurer dans le titre de l'atelier.
 
 ### Page d'évènement
 
-- UN SEUL évènement doit apparaître sur la page d'évènement. Cela signifie que le bouton "Sélectionner une date" ou "Sélectionner une heure" ne doit pas apparaître sur la page. Un bouton "Obtenir des billets" sur la page de l'évènement est une condition pour être référencé.
+UN SEUL évènement doit apparaître sur la page d'évènement. Cela signifie que le bouton "Sélectionner une date" ou "Sélectionner une heure" ne doit pas apparaître sur la page. Un bouton "Obtenir des billets" sur la page de l'évènement est une condition pour être référencé.
+
+### Adresse
+
+Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ## Fresqueduclimat.org
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
-
-```
-Trattino, 2 Rue Clément Marot, Lyon, France
-Trattino, Rue Clément Marot, 35000 Rennes, France
-Super Café, Rue Clément Marot, 35000 Rennes
-ZEITGEIST café - vegan coffee & cake, Rue des Augustins, Lyon, France"
-Chez moi , 1560 Rue Maurice Jacob, Lyon, France
-```
-
-Des exemples incorrects :
-
-```
-# Les parties composant l'adresse ne sont pas séparées par des virgules
-Oasis Fontmarie - 1790 Route de Fontmarie à Castries
-
-# Le nom du lieu et son adresse ne sont pas séparés par une virgule
-Le Wagon Nantes - Passage de la Poule Noire, Nantes, France
-
-# Une virgule en trop !
-la perestroika, , 2 Rue Thiergarten, Strasbourg, France
-```
-
-### Erreur de localisation
-
-Si votre évènement n'est pas catégorisé dans le bon département, merci de préciser l'adresse. Par exemple,
-
-```
-Jeu de Paume, 12 Rue Saint-Louis, Rennes, France
-la base, 3 Rue Pierre Roche, Marseille
-```
-
-sont plus précises que
-
-```
-Jeu de Paume, Rue Saint-Louis, France
-la base marseille, 3 Rue Pierre Roche
-```
+Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ### Mon atelier s'adresse aux juniors mais il n'apparait pas comme tel !
 
@@ -124,22 +54,7 @@ Le mot-clé "junior" doit figurer dans la description de l'atelier.
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Une adresse valide est composée d'entre 3 et 4 parties séparées par des virgules:
-
-```
-Palais du travail, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, France
-La Ruche, 19 Rue Louis Kerautret Botmel, Rennes, France
-```
-
-Des exemples incorrects :
-
-```
-# 5 parties, 4 parties sont autorisées au maximum
-Palais du travail, Villeurbanne, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, France
-
-# Même chose !
-La Ruche, Rennes, 19 Rue Louis Kerautret Botmel, Rennes, France
-```
+Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ### Different timezone
 
@@ -149,24 +64,7 @@ Les évènements ne se tenant pas en France ne sont pas encore supportés.
 
 ### Adresse
 
-Si l'évènement se déroule en présentiel, l'adresse est-elle formatée comme suit ? La ville figure-t-elle dans l'adresse ? Est-elle accompagnée se son code postal ? Une adresse valide est composée d'entre 2 et 3 parties séparées par des virgules:
-
-```
-Trattino, 2 Rue Clément Marot, 69000 Lyon
-Trattino, Rue Clément Marot, 35000 Rennes
-Super Café, Rue Clément Marot, 35000 Rennes
-ZEITGEIST café - vegan coffee & cake, Rue des Augustins, 69008 Lyon"
-```
-
-Des exemples incorrects :
-
-```
-# Les parties composant l'adresse ne sont pas séparées par des virgules
-Oasis Fontmarie - 1790 Route de Fontmarie à Castries
-
-# Pas de virgules
-Souffle du Nord 34 rue de la Haute Loge 59700 Marcq-en-Barœul
-```
+Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ## Ouvrir une issue
 

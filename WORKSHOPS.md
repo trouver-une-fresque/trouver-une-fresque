@@ -1,4 +1,4 @@
-# Ateliers supportés et roadmap
+# Ateliers supportés et feuille de route
 
 Développer et maintenir Trouver une Fresque nous prend beaucoup de temps et d'énergie, et l'infrastructure n'est pas gratuite non plus. Il nous reste encore beaucoup d'ateliers à intégrer, en France et à l'international. N'hésitez pas à nous soutenir via un petit [don récurrent](https://fr.liberapay.com/trouver-une-fresque/), merci :)
 
