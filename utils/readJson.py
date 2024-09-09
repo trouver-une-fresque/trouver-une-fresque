@@ -1,10 +1,5 @@
-import csv
-import re
-import requests
-
 from utils.errors import *
 
-from io import StringIO
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="trouver-une-fresque", timeout=10)
