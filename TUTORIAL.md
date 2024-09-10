@@ -24,7 +24,7 @@ Voir le [tutoriel OpenStreetMap](TUTORIAL_OSM.md).
 
 ### Mon atelier utilise un moyen externe pour les inscriptions (mail, téléphone, etc) mais apparaît comme complet !
 
-Si vous n'utilisez pas le module d'achat de Billetweb mais un moyen externe pour gérer les inscriptions (mail, téléphone, etc), merci d'afficher la mention suivante dans le module d'achat : "Inscriptions uniquement par [...]", en complétant pour adapter à votre cas "Inscriptions uniquement par téléphone au 06xxxxxxxx".
+Si vous n'utilisez pas le module d'achat de Billetweb mais un moyen externe pour gérer les inscriptions (mail, téléphone, etc), merci d'afficher la mention suivante dans le module d'achat : "Inscriptions uniquement via [...]" ou "Inscriptions uniquement par [...]", en complétant pour adapter à votre cas "Inscriptions uniquement par téléphone au 06xxxxxxxx".
 
 ### Mon atelier s'adresse aux juniors mais il n'apparaît pas comme tel !
 

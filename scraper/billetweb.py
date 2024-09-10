@@ -263,7 +263,12 @@ def get_billetweb_data(service, options):
                     # The presence of div.block indicates that the event is sold out,
                     # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
-                    sold_out = "Inscriptions uniquement" not in empty.text
+                    sold_out = (
+                        "inscriptions uniquement" not in empty.text.lower()
+                        and "inscription uniquement" not in empty.text.lower()
+                        and "inscriptions via" not in empty.text.lower()
+                        and "inscription via" not in empty.text.lower()
+                    )
                 except NoSuchElementException:
                     sold_out = False
 
@@ -306,7 +311,12 @@ def get_billetweb_data(service, options):
                     # The presence of div.block indicates that the event is sold out,
                     # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
-                    sold_out = "Inscriptions uniquement" not in empty.text
+                    sold_out = (
+                        "inscriptions uniquement" not in empty.text.lower()
+                        and "inscription uniquement" not in empty.text.lower()
+                        and "inscriptions via" not in empty.text.lower()
+                        and "inscription via" not in empty.text.lower()
+                    )
                 except NoSuchElementException:
                     sold_out = False
                 finally:
