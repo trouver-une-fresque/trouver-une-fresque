@@ -25,7 +25,7 @@ La première chose à vérifier est que votre adresse utilise un format classiqu
 
 ## 2) bis/ter
 
-Si votre adresse contient une information bis ou ter, merci de formatter votre adresse comme suit :
+Si votre adresse contient une particule bis ou ter, merci de formatter votre adresse comme suit :
 
 | Mauvais format | Correction |
 |----------|----------|
@@ -49,9 +49,13 @@ Peut-être que le nom du lieu n'est pas rattaché à l'adresse sur OSM. Pour le 
 
 - Si vous obtenez un résultat, deux cas de figure:
 
-    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé est bien répertorié. Dans ce cas, il faut [rattacher une adresse à ce lieu](#rattacher-une-adresse-à-un-lieu-existant).
+    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé est bien répertorié. Dans ce cas, il faut:
 
-    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé n'apparaît pas. Dans ce cas, il faut ajouter un nouveau lieu et lui [rattacher son adresse](#créer-un-lieu).
+        - Si votre adresse n'a pas la bonne orthographe par rapport à la carte, ajustez votre adresse.
+
+        - Si l'orthographe du lieu est correcte dans votre addresse par rapport à la carte, il faut [rattacher une adresse à ce lieu](#rattacher-une-adresse-à-un-lieu-existant).
+
+    - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé n'apparaît pas. Dans ce cas, il faut [ajouter un nouveau lieu et lui rattacher son adresse](#créer-un-lieu).
 
 ### Rattacher une adresse à un lieu existant
 
