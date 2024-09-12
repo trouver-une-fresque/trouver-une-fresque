@@ -23,7 +23,16 @@ La première chose à vérifier est que votre adresse utilise un format classiqu
 | 84 Av. de Grammont, 84 Avenue de Grammont 37000 Tours | 84 Avenue de Grammont 37000 Tours |
 | La Galerie du Zéro Déchet, entrée Place Dulcie September, 5 Rue Fénelon, 44000 Nantes, France | La Galerie du Zéro Déchet, 5 Rue Fénelon, 44000 Nantes, France |
 
-## 2) Abbréviations
+## 2) bis/ter
+
+Si votre adresse contient une information bis ou ter, merci de formatter votre adresse comme suit :
+
+| Mauvais format | Correction |
+|----------|----------|
+| Mille club, 5T Rue Paul Serusier, Morlaix, France | Mille club, 5 ter Rue Paul Serusier, Morlaix, France |
+| Le Grand Bain, 20B Allée de la Maison Rouge, Nantes | Le Grand Bain, 20 bis Allée de la Maison Rouge, Nantes |
+
+## 3) Abbréviations
 
 Si votre adresse contient des abbrévations, essayez d'utiliser le(s) mot(s) complet(s).
 
@@ -32,7 +41,7 @@ Si votre adresse contient des abbrévations, essayez d'utiliser le(s) mot(s) com
 | Palais du travail, 9 Pl. du Dr Lazare Goujon, 69100 Villeurbanne, France | Palais du travail, 9 Place du Docteur Lazare Goujon, 69100 Villeurbanne, France |
 | Melting Coop, 229 Cr Emile Zola, 69100 Villeurbanne, France | Melting Coop, 229 Cours Emile Zola, 69100 Villeurbanne, France |
 
-## 3) Nom du lieu
+## 4) Nom du lieu
 
 Peut-être que le nom du lieu n'est pas rattaché à l'adresse sur OSM. Pour le vérifier, tapez votre adresse sans le nom. Par exemple, si votre adresse est `Melting Coop, 229 Cours Emile Zinzolin, 69100 Villeurbanne, France`, tapez plutôt `229 Cours Emile Zinzolin, 69100 Villeurbanne, France`.
 
