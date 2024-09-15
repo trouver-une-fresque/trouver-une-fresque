@@ -5,7 +5,11 @@ import re
 
 from datetime import datetime
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -85,6 +89,46 @@ def extract_dates(driver):
         raise FreskDateBadFormat(event_time)
 
 
+def scroll_to_bottom(driver):
+    more_content = True
+    while more_content:
+        print("Scrolling to the bottom...")
+        try:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)  # Give the page some time to load new content
+
+            # Function to safely click the next button
+            def click_next_button():
+                try:
+                    next_button = WebDriverWait(driver, 10).until(
+                        EC.element_to_be_clickable(
+                            (
+                                By.CSS_SELECTOR,
+                                "div.organizer-profile__section--content div.organizer-profile__show-more > button",
+                            )
+                        )
+                    )
+
+                    desired_y = (next_button.size["height"] / 2) + next_button.location["y"]
+                    window_h = driver.execute_script("return window.innerHeight")
+                    window_y = driver.execute_script("return window.pageYOffset")
+                    current_y = (window_h / 2) + window_y
+                    scroll_y_by = desired_y - current_y
+
+                    driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
+                    time.sleep(2)  # Give the page some time to stabilize
+
+                    next_button.click()
+
+                except StaleElementReferenceException:
+                    click_next_button()  # Retry if the element is stale
+
+            click_next_button()
+
+        except TimeoutException:
+            more_content = False
+
+
 def get_eventbrite_data(service, options):
     print("Scraping data from eventbrite.fr")
 
@@ -105,35 +149,8 @@ def get_eventbrite_data(service, options):
         driver.get(page["url"])
         driver.implicitly_wait(5)
 
-        more_content = True
-        while more_content:
-            print("Scrolling to the bottom...")
-            try:
-                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                driver.implicitly_wait(2)
-                time.sleep(2)
-                next_button = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable(
-                        (
-                            By.CSS_SELECTOR,
-                            "div.organizer-profile__section--content div.organizer-profile__show-more > button",
-                        )
-                    )
-                )
-                desired_y = (next_button.size["height"] / 2) + next_button.location["y"]
-                window_h = driver.execute_script("return window.innerHeight")
-                window_y = driver.execute_script("return window.pageYOffset")
-                current_y = (window_h / 2) + window_y
-                scroll_y_by = desired_y - current_y
-                driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
-                time.sleep(2)
-                next_button.click()
-            except TimeoutException:
-                more_content = False
-            except Exception as e:
-                print(f"Had to break: {type(e)}")
-                break
-
+        # Scroll to bottom to load all events
+        scroll_to_bottom(driver)
         driver.execute_script("window.scrollTo(0, 0);")
 
         elements = []
