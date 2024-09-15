@@ -2,6 +2,18 @@ class FreskError(Exception):
     pass
 
 
+class FreskDateNotFound(FreskError):
+    def __init__(self):
+        self.message = f"Date not found."
+        super().__init__(self.message)
+
+
+class FreskDateBadFormat(FreskError):
+    def __init__(self, input_str: str):
+        self.message = f"Date has a bad format, unhandled by TuF (input: {input_str})."
+        super().__init__(self.message)
+
+
 class FreskAddressNotFound(FreskError):
     def __init__(self, input_str: str):
         self.message = f"Address not found (input: {input_str})."

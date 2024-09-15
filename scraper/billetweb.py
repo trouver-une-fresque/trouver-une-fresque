@@ -389,11 +389,6 @@ def get_billetweb_data(service, options):
                             latitude,
                             longitude,
                         ) = address_dict.values()
-                    except json.JSONDecodeError:
-                        print(
-                            "Rejecting record: error while parsing the national address API response"
-                        )
-                        continue
                     except FreskError as error:
                         print(f"Rejecting record: {error}.")
                         continue

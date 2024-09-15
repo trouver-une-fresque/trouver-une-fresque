@@ -11,8 +11,78 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.errors import FreskError
+from utils.errors import FreskError, FreskDateBadFormat
 from utils.location import get_address
+
+
+def delete_cookies_overlay(driver):
+    try:
+        transcend_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "#transcend-consent-manager"))
+        )
+
+        # Use JavaScript to remove the transcend-consent-manager element
+        script = """
+        var element = arguments[0];
+        element.parentNode.removeChild(element);
+        """
+        driver.execute_script(script, transcend_element)
+    except Exception as e:
+        print(f"Transcend consent manager element couldn't be removed: {e}")
+
+
+def extract_dates(driver):
+    try:
+        date_info_el = driver.find_element(
+            by=By.CSS_SELECTOR,
+            value="span.date-info__full-datetime",
+        )
+        event_time = date_info_el.text
+    except NoSuchElementException:
+        raise FreskDateNotFound
+
+    months = {
+        "janv.": 1,
+        "févr.": 2,
+        "mars": 3,
+        "avr.": 4,
+        "mai": 5,
+        "juin": 6,
+        "juil.": 7,
+        "août": 8,
+        "sept.": 9,
+        "oct.": 10,
+        "nov.": 11,
+        "déc.": 12,
+    }
+
+    try:
+        parts = event_time.split()
+        day = int(parts[1])
+        month = months[parts[2]]
+        year = int(parts[3])
+        start_time = parts[4]
+        end_time = parts[6]
+
+        # Convert time strings to datetime objects
+        event_start_datetime = datetime(
+            year,
+            month,
+            day,
+            int(start_time.split(":")[0]),
+            int(start_time.split(":")[1]),
+        )
+        event_end_datetime = datetime(
+            year,
+            month,
+            day,
+            int(end_time.split(":")[0]),
+            int(end_time.split(":")[1]),
+        )
+
+        return event_start_datetime, event_end_datetime
+    except Exception:
+        raise FreskDateBadFormat(event_time)
 
 
 def get_eventbrite_data(service, options):
@@ -34,14 +104,6 @@ def get_eventbrite_data(service, options):
         print(f"==================\nProcessing page {page}")
         driver.get(page["url"])
         driver.implicitly_wait(5)
-
-        # Reject all cookies
-        try:
-            overlay = driver.find_element(By.CSS_SELECTOR, "#consentManagerMainDialog")
-            if overlay.is_displayed():
-                overlay.find_element(By.CSS_SELECTOR, "#_evidon-decline-button").click()
-        except NoSuchElementException:
-            pass
 
         more_content = True
         while more_content:
@@ -97,6 +159,7 @@ def get_eventbrite_data(service, options):
             print(f"\n-> Processing {link} ...")
             driver.get(link)
             driver.implicitly_wait(3)
+            delete_cookies_overlay(driver)
 
             ################################################################
             # Has it expired?
@@ -109,24 +172,6 @@ def get_eventbrite_data(service, options):
                 pass
 
             ################################################################
-            # Is there only one event
-            ################################################################
-            if driver.find_elements(
-                By.XPATH,
-                "//button[contains(text(), 'Sélectionnez') or contains(text(), 'Sélectionner') or contains(text(), 'Select')]",
-            ):
-                print("Rejecting record: multiple events")
-                continue
-
-            ################################################################
-            # Parse event id
-            ################################################################
-            uuids = re.search(r"/e/([^/?]+)", link)
-            if not uuids:
-                print("Rejecting record: UUID not found")
-                continue
-
-            ################################################################
             # Parse event title
             ################################################################
             title_el = driver.find_element(
@@ -137,61 +182,6 @@ def get_eventbrite_data(service, options):
 
             if "plénière" in title.lower():
                 print("Rejecting record: plénière")
-                continue
-
-            ################################################################
-            # Parse start and end dates
-            ################################################################
-            try:
-                date_info_el = driver.find_element(
-                    by=By.CSS_SELECTOR,
-                    value="div.date-info",
-                )
-                event_time = date_info_el.text
-            except NoSuchElementException:
-                print("Rejecting record: no dates")
-                continue
-
-            months = {
-                "janv.": 1,
-                "févr.": 2,
-                "mars": 3,
-                "avr.": 4,
-                "mai": 5,
-                "juin": 6,
-                "juil.": 7,
-                "août": 8,
-                "sept.": 9,
-                "oct.": 10,
-                "nov.": 11,
-                "déc.": 12,
-            }
-
-            try:
-                parts = event_time.split()
-                day = int(parts[1])
-                month = months[parts[2]]
-                year = int(parts[3])
-                start_time = parts[4]
-                end_time = parts[6]
-
-                # Convert time strings to datetime objects
-                event_start_datetime = datetime(
-                    year,
-                    month,
-                    day,
-                    int(start_time.split(":")[0]),
-                    int(start_time.split(":")[1]),
-                )
-                event_end_datetime = datetime(
-                    year,
-                    month,
-                    day,
-                    int(end_time.split(":")[0]),
-                    int(end_time.split(":")[1]),
-                )
-            except Exception:
-                print("Rejecting record: bad date format")
                 continue
 
             ###########################################################
@@ -235,13 +225,6 @@ def get_eventbrite_data(service, options):
                         latitude,
                         longitude,
                     ) = address_dict.values()
-                except json.JSONDecodeError:
-                    print("Rejecting record: error while parsing the national address API response")
-                    driver.back()
-                    wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
-                    driver.switch_to.frame(iframe)
-                    continue
                 except FreskError as error:
                     print(f"Rejecting record: {error}.")
                     driver.back()
@@ -277,38 +260,111 @@ def get_eventbrite_data(service, options):
             kids = False
 
             ################################################################
-            # Parse tickets link
+            # Multiple events
             ################################################################
-            tickets_link = link
+            event_info = []
+
+            try:
+                date_time_div = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.select-date-and-time"))
+                )
+                if date_time_div:
+                    li_elements = date_time_div.find_elements(
+                        By.CSS_SELECTOR, "li:not([data-heap-id])"
+                    )
+                    for li in li_elements:
+                        clickable_li = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable(li)
+                        )
+                        clickable_li.click()
+                        time.sleep(3)
+
+                        ################################################################
+                        # Dates
+                        ################################################################
+                        try:
+                            event_start_datetime, event_end_datetime = extract_dates(driver)
+                        except FreskDateBadFormat as error:
+                            print(f"Reject record: {error}")
+                            continue
+
+                        ################################################################
+                        # Parse tickets link
+                        ################################################################
+                        tickets_link = driver.current_url
+
+                        ################################################################
+                        # Parse event id
+                        ################################################################
+                        uuid = re.search(r"/e/([^/?]+)", tickets_link).group(1)
+
+                        # Selenium clicks on "sold out" cards (li elements), but this
+                        # has no effect. Worse, this adds the previous non-sold out
+                        # event another time. One can detect such cases by scanning
+                        # through previous event ids.
+                        already_scanned = False
+                        for event in event_info:
+                            if uuid in event[0]:
+                                already_scanned = True
+
+                        if not already_scanned:
+                            event_info.append(
+                                [uuid, event_start_datetime, event_end_datetime, tickets_link]
+                            )
+
+            # There is only one event on this page.
+            except TimeoutException:
+                ################################################################
+                # Dates
+                ################################################################
+                try:
+                    event_start_datetime, event_end_datetime = extract_dates(driver)
+                except FreskDateBadFormat as error:
+                    print(f"Reject record: {error}")
+                    continue
+
+                ################################################################
+                # Parse tickets link
+                ################################################################
+                tickets_link = driver.current_url
+
+                ################################################################
+                # Parse event id
+                ################################################################
+                uuid = re.search(r"/e/([^/?]+)", tickets_link).group(1)
+
+                event_info.append([uuid, event_start_datetime, event_end_datetime, tickets_link])
 
             ################################################################
-            # Building final object
+            # Session loop
             ################################################################
-            record = get_record_dict(
-                f"{page['id']}-{uuids.group(1)}",
-                page["id"],
-                title,
-                event_start_datetime,
-                event_end_datetime,
-                full_location,
-                location_name,
-                address,
-                city,
-                department,
-                zip_code,
-                latitude,
-                longitude,
-                online,
-                training,
-                sold_out,
-                kids,
-                link,
-                tickets_link,
-                description,
-            )
-
-            records.append(record)
-            print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
+            for index, (uuid, event_start_datetime, event_end_datetime, tickets_link) in enumerate(
+                event_info
+            ):
+                record = get_record_dict(
+                    f"{page['id']}-{uuid}",
+                    page["id"],
+                    title,
+                    event_start_datetime,
+                    event_end_datetime,
+                    full_location,
+                    location_name,
+                    address,
+                    city,
+                    department,
+                    zip_code,
+                    latitude,
+                    longitude,
+                    online,
+                    training,
+                    sold_out,
+                    kids,
+                    link,
+                    tickets_link,
+                    description,
+                )
+                records.append(record)
+                print(f"Successfully scraped {link}\n{json.dumps(record, indent=4)}")
 
     driver.quit()
 
