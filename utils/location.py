@@ -115,6 +115,9 @@ input string.
 
 
 def get_address(full_location):
+    if not full_location:
+        raise FreskAddressNotFound("")
+
     location = geolocator.geocode(full_location, addressdetails=True)
 
     if location is None:
