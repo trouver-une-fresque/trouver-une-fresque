@@ -95,7 +95,7 @@ def scroll_to_bottom(driver):
         print("Scrolling to the bottom...")
         try:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)  # Give the page some time to load new content
+            time.sleep(5)  # Give the page some time to load new content
 
             # Function to safely click the next button
             def click_next_button():
@@ -116,8 +116,6 @@ def scroll_to_bottom(driver):
                     scroll_y_by = desired_y - current_y
 
                     driver.execute_script("window.scrollBy(0, arguments[0]);", scroll_y_by)
-                    time.sleep(2)  # Give the page some time to stabilize
-
                     next_button.click()
 
                 except StaleElementReferenceException:
@@ -175,18 +173,36 @@ def get_eventbrite_data(service, options):
         for link in links:
             print(f"\n-> Processing {link} ...")
             driver.get(link)
-            driver.implicitly_wait(3)
             delete_cookies_overlay(driver)
+            driver.implicitly_wait(3)
+            time.sleep(3)  # Pages are quite long to load
 
             ################################################################
             # Has it expired?
             ################################################################
             try:
-                if driver.find_elements(By.CSS_SELECTOR, "div.expired-event"):
+                badge = driver.find_element(
+                    By.XPATH, '//div[@data-testid="enhancedExpiredEventsBadge"]'
+                )
+                # If the element has children elements, it is enabled
+                if badge.find_elements(By.XPATH, "./*"):
                     print("Rejecting record: event expired")
                     continue
             except Exception:
                 pass
+
+            ################################################################
+            # Is it full?
+            ################################################################
+            badge = driver.find_element(By.XPATH, '//div[@data-testid="salesEndedMessage"]')
+            # If the element has children elements, it is enabled
+            sold_out = bool(badge.find_elements(By.XPATH, "./*"))
+
+            if sold_out:
+                # We reject sold out events as the Eventbrite UX hides
+                # relevant info in this case (which looks like an awful practice)
+                print("Rejecting record: sold out")
+                continue
 
             ################################################################
             # Parse event title
@@ -244,32 +260,23 @@ def get_eventbrite_data(service, options):
                     ) = address_dict.values()
                 except FreskError as error:
                     print(f"Rejecting record: {error}.")
-                    driver.back()
-                    wait = WebDriverWait(driver, 10)
-                    iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
-                    driver.switch_to.frame(iframe)
                     continue
 
             ################################################################
             # Description
             ################################################################
-            description_title_el = driver.find_element(By.CSS_SELECTOR, "div.eds-text--left")
-            description = description_title_el.text
+            try:
+                description_title_el = driver.find_element(By.CSS_SELECTOR, "div.eds-text--left")
+                description = description_title_el.text
+            except NoSuchElementException:
+                print("Rejecting record: Description not found.")
+                continue
 
             ################################################################
             # Training?
             ################################################################
             training_list = ["formation", "briefing", "animateur"]
             training = any(w in title.lower() for w in training_list)
-
-            ################################################################
-            # Is it full?
-            ################################################################
-            tickets_link_el = driver.find_element(By.CSS_SELECTOR, "div.conversion-bar__panel-info")
-            sold_out = (
-                "complet" in tickets_link_el.text.lower()
-                or "ventes achevées" in tickets_link_el.text.lower()
-            )
 
             ################################################################
             # Is it suited for kids?
@@ -286,6 +293,8 @@ def get_eventbrite_data(service, options):
                     EC.presence_of_element_located((By.CSS_SELECTOR, "div.select-date-and-time"))
                 )
                 if date_time_div:
+                    driver.execute_script("window.scrollBy(0, arguments[0]);", 800)
+
                     li_elements = date_time_div.find_elements(
                         By.CSS_SELECTOR, "li:not([data-heap-id])"
                     )
@@ -294,7 +303,6 @@ def get_eventbrite_data(service, options):
                             EC.element_to_be_clickable(li)
                         )
                         clickable_li.click()
-                        time.sleep(3)
 
                         ################################################################
                         # Dates
