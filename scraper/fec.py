@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError
+from utils.keywords import *
 from utils.location import get_address
 
 
@@ -119,7 +120,7 @@ def get_fec_data(service, options):
             if len(day_string) == 2:
                 day = day_string[0]
                 month_string = day_string[1]
-                year = 2023
+                year = 2024
             elif len(day_string) == 3:
                 day = day_string[0]
                 month_string = day_string[1]
@@ -167,7 +168,7 @@ def get_fec_data(service, options):
                 online_el = driver.find_element(
                     By.CSS_SELECTOR, 'p[data-hook="event-full-location"]'
                 )
-                if "en ligne" in online_el.text.lower() or "online" in online_el.text.lower():
+                if is_online(online_el.text):
                     online = True
             except NoSuchElementException:
                 pass
@@ -201,9 +202,6 @@ def get_fec_data(service, options):
                         latitude,
                         longitude,
                     ) = address_dict.values()
-                except json.JSONDecodeError:
-                    print("Rejecting record: error while parsing the national address API response")
-                    continue
                 except FreskError as error:
                     print(f"Rejecting record: {error}.")
                     continue
@@ -219,8 +217,7 @@ def get_fec_data(service, options):
             ################################################################
             # Training?
             ################################################################
-            training_list = ["formation", "briefing", "animateur"]
-            training = any(w in title.lower() for w in training_list)
+            training = is_training(title)
 
             ################################################################
             # Is it full?
@@ -237,7 +234,7 @@ def get_fec_data(service, options):
             ################################################################
             # Is it suited for kids?
             ################################################################
-            kids = "junior" in title.lower()
+            kids = is_for_kids(title)
 
             ################################################################
             # Parse tickets link

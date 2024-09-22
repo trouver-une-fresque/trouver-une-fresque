@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError
+from utils.keywords import *
 from utils.location import get_address
 
 
@@ -263,12 +264,7 @@ def get_billetweb_data(service, options):
                     # The presence of div.block indicates that the event is sold out,
                     # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
-                    sold_out = (
-                        "inscriptions uniquement" not in empty.text.lower()
-                        and "inscription uniquement" not in empty.text.lower()
-                        and "inscriptions via" not in empty.text.lower()
-                        and "inscription via" not in empty.text.lower()
-                    )
+                    sold_out = is_sold_out(empty.text)
                 except NoSuchElementException:
                     sold_out = False
 
@@ -311,12 +307,7 @@ def get_billetweb_data(service, options):
                     # The presence of div.block indicates that the event is sold out,
                     # except if the text below is displayed.
                     empty = driver.find_element(By.CSS_SELECTOR, "div.block")
-                    sold_out = (
-                        "inscriptions uniquement" not in empty.text.lower()
-                        and "inscription uniquement" not in empty.text.lower()
-                        and "inscriptions via" not in empty.text.lower()
-                        and "inscription via" not in empty.text.lower()
-                    )
+                    sold_out = is_sold_out(empty.text)
                 except NoSuchElementException:
                     sold_out = False
                 finally:
@@ -333,7 +324,7 @@ def get_billetweb_data(service, options):
                 event_info
             ):
                 print(f"\n-> Processing session {index+1}/{len(event_info)} {ticket_link} ...")
-                if "cadeau" in title.lower() or " don" in title.lower():
+                if is_gift_card(title):
                     print("Rejecting record: gift card")
                     continue
 
@@ -367,10 +358,7 @@ def get_billetweb_data(service, options):
                     continue
 
                 # Is it an online event?
-                online_list = ["online", "en ligne", "distanciel"]
-                online = any(w in title.lower() for w in online_list) or any(
-                    w in full_location.lower() for w in online_list
-                )
+                online = is_online(title) or is_online(full_location)
                 title = title.replace(" Online event", "")  # Button added by billetweb
 
                 ################################################################
@@ -394,14 +382,10 @@ def get_billetweb_data(service, options):
                         continue
 
                 # Training?
-                training_list = ["formation", "briefing", "animateur", "permanence", "training"]
-                training = any(w in title.lower() for w in training_list)
+                training = is_training(title)
 
                 # Is it suited for kids?
-                kids_list = ["kids", "junior", "jeunes"]
-                kids = (
-                    any(w in title.lower() for w in kids_list) and not training
-                )  # Case of trainings for kids
+                kids = is_for_kids(title) and not training  # no trainings for kids
 
                 # Building final object
                 record = get_record_dict(

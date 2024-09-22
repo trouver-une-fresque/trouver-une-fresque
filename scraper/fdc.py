@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError
+from utils.keywords import *
 from utils.location import get_address
 
 
@@ -175,15 +176,6 @@ def get_fdc_data(service, options):
                             latitude,
                             longitude,
                         ) = address_dict.values()
-                    except json.JSONDecodeError:
-                        print(
-                            "Rejecting record: error while parsing the national address API response"
-                        )
-                        driver.back()
-                        wait = WebDriverWait(driver, 10)
-                        iframe = wait.until(EC.presence_of_element_located((By.TAG_NAME, "iframe")))
-                        driver.switch_to.frame(iframe)
-                        continue
                     except FreskError as error:
                         print(f"Rejecting record: {error}.")
                         driver.back()
@@ -204,21 +196,19 @@ def get_fdc_data(service, options):
                 ################################################################
                 # Training?
                 ################################################################
-                training_list = ["formation", "briefing", "animateur"]
-                training = any(w in title.lower() for w in training_list)
+                training = is_training(title)
 
                 ################################################################
                 # Is it full?
                 ################################################################
                 user_icon = driver.find_element(By.CLASS_NAME, "fa-user")
                 parent_container = user_icon.find_element(By.XPATH, "../..")
-                sold_out = "Complet" in parent_container.text
+                sold_out = is_sold_out(parent_container.text)
 
                 ################################################################
                 # Is it suited for kids?
                 ################################################################
-                kids_list = ["junior"]
-                kids = any(w in description.lower() for w in kids_list) and not training
+                kids = is_for_kids(description) and not training
 
                 ################################################################
                 # Parse tickets link

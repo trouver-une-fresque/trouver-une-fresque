@@ -16,6 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError, FreskDateBadFormat
+from utils.keywords import *
 from utils.location import get_address
 
 
@@ -213,7 +214,7 @@ def get_eventbrite_data(service, options):
             )
             title = title_el.text
 
-            if "plénière" in title.lower():
+            if is_plenary(title):
                 print("Rejecting record: plénière")
                 continue
 
@@ -223,8 +224,7 @@ def get_eventbrite_data(service, options):
             online = False
             try:
                 online_el = driver.find_element(By.CSS_SELECTOR, "p.location-info__address-text")
-                online_list = ["online", "en ligne", "distanciel"]
-                online = any(w in online_el.text.lower() for w in online_list)
+                online = is_online(online_el.text)
             except NoSuchElementException:
                 pass
 
@@ -275,8 +275,7 @@ def get_eventbrite_data(service, options):
             ################################################################
             # Training?
             ################################################################
-            training_list = ["formation", "briefing", "animateur"]
-            training = any(w in title.lower() for w in training_list)
+            training = is_training(title)
 
             ################################################################
             # Is it suited for kids?
@@ -363,7 +362,7 @@ def get_eventbrite_data(service, options):
             ################################################################
             # Session loop
             ################################################################
-            for index, (uuid, event_start_datetime, event_end_datetime, tickets_link) in enumerate(
+            for index, (uuid, event_start_datetime, event_end_datetime, link) in enumerate(
                 event_info
             ):
                 record = get_record_dict(
@@ -385,7 +384,7 @@ def get_eventbrite_data(service, options):
                     sold_out,
                     kids,
                     link,
-                    tickets_link,
+                    link,
                     description,
                 )
                 records.append(record)

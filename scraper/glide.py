@@ -11,6 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
 from utils.errors import FreskError
+from utils.keywords import *
 from utils.location import get_address
 
 
@@ -88,7 +89,7 @@ def get_glide_data(service, options):
                     # Attempt to find the div element by its id
                     large_title_el = driver.find_element(By.CSS_SELECTOR, "h2.headlineMedium")
                     large_title = large_title_el.text
-                    if "annulé" in large_title:
+                    if is_canceled(large_title):
                         print("Rejecting record: canceled")
                         driver.back()
                         continue
@@ -186,15 +187,13 @@ def get_glide_data(service, options):
                 ################################################################
                 # Is it an online event?
                 ################################################################
-                online_list = ["online", "en ligne", "distanciel"]
-
                 time_label_el = driver.find_element(
                     by=By.XPATH,
                     value="//li/div[contains(text(), 'Format')]",
                 )
                 parent_el = time_label_el.find_element(by=By.XPATH, value="..")
                 online_el = parent_el.find_element(by=By.XPATH, value="./*[2]")
-                online = any(w in online_el.text.lower() for w in online_list)
+                online = is_online(online_el.text)
 
                 ################################################################
                 # Location data
@@ -234,12 +233,6 @@ def get_glide_data(service, options):
                             latitude,
                             longitude,
                         ) = address_dict.values()
-                    except json.JSONDecodeError:
-                        print(
-                            "Rejecting record: error while parsing the national address API response"
-                        )
-                        driver.back()
-                        continue
                     except FreskError as error:
                         print(f"Rejecting record: {error}.")
                         driver.back()
@@ -259,8 +252,7 @@ def get_glide_data(service, options):
                 ################################################################
                 # Training?
                 ################################################################
-                training_list = ["formation", "briefing", "animateur", "animation"]
-                training = any(w in title.lower() for w in training_list)
+                training = is_training(title)
 
                 ################################################################
                 # Is it full?
