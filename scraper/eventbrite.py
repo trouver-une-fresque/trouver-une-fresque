@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from db.records import get_record_dict
-from utils.errors import FreskError, FreskDateBadFormat
+from utils.errors import FreskError, FreskDateBadFormat, FreskDateNotFound
 from utils.keywords import *
 from utils.location import get_address
 
@@ -308,7 +308,7 @@ def get_eventbrite_data(service, options):
                         ################################################################
                         try:
                             event_start_datetime, event_end_datetime = extract_dates(driver)
-                        except FreskDateBadFormat as error:
+                        except FreskError as error:
                             print(f"Reject record: {error}")
                             continue
 

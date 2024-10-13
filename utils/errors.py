@@ -14,6 +14,12 @@ class FreskDateBadFormat(FreskError):
         super().__init__(self.message)
 
 
+class FreskDateDifferentTimezone(FreskError):
+    def __init__(self, input_str: str):
+        self.message = f"Date has a different timezone, unhandled by TuF (input: {input_str})."
+        super().__init__(self.message)
+
+
 class FreskAddressNotFound(FreskError):
     def __init__(self, input_str: str):
         self.message = f"Address not found (input: {input_str})."
