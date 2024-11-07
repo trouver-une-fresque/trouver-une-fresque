@@ -12,7 +12,7 @@ Merci de parcourir les sections suivantes dans l'ordre pour comprendre comment c
 
 ## 1) Format de l'adresse
 
-La première chose à vérifier est que votre adresse utilise un format classique, sans informations additionnelles qui devraient figurer ailleurs.
+La première chose à vérifier est que votre adresse utilise un format classique, sans informations additionnelles qui devraient figurer ailleurs. Le nom du lieu est une information utile.
 
 | Mauvais format | Correction |
 |----------|----------|
@@ -51,7 +51,7 @@ Peut-être que le nom du lieu n'est pas rattaché à l'adresse sur OSM. Pour le 
 
     - Soit, en naviguant manuellement sur la carte, le lieu où l'atelier est organisé est bien répertorié. Dans ce cas, il faut:
 
-        - Si votre adresse n'a pas la bonne orthographe par rapport à la carte, ajustez votre adresse.
+        - Si le nom du lieu n'a pas la bonne orthographe par rapport à la carte, ajustez le nom du lieu pour le faire correspondre à l'information de la carte.
 
         - Si l'orthographe du lieu est correcte dans votre addresse par rapport à la carte, il faut [rattacher une adresse à ce lieu](#rattacher-une-adresse-à-un-lieu-existant).
 
