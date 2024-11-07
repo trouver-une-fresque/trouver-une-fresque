@@ -189,15 +189,26 @@ def get_eventbrite_data(service, options):
                 if badge.find_elements(By.XPATH, "./*"):
                     print("Rejecting record: event expired")
                     continue
-            except Exception:
+            except NoSuchElementException:
+                pass
+
+            try:
+                badge = driver.find_element(By.CSS_SELECTOR, "div.enhanced-expired-badge")
+                print("Rejecting record: event expired")
+                continue
+            except NoSuchElementException:
                 pass
 
             ################################################################
             # Is it full?
             ################################################################
-            badge = driver.find_element(By.XPATH, '//div[@data-testid="salesEndedMessage"]')
-            # If the element has children elements, it is enabled
-            sold_out = bool(badge.find_elements(By.XPATH, "./*"))
+            sold_out = False
+            try:
+                badge = driver.find_element(By.XPATH, '//div[@data-testid="salesEndedMessage"]')
+                # If the element has children elements, it is enabled
+                sold_out = bool(badge.find_elements(By.XPATH, "./*"))
+            except NoSuchElementException:
+                pass
 
             if sold_out:
                 # We reject sold out events as the Eventbrite UX hides
