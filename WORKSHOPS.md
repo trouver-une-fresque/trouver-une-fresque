@@ -31,18 +31,19 @@ Développer et maintenir Trouver une Fresque nous prend beaucoup de temps et d'�
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | OK |
 | Fresque de la RSE | https://www.billetweb.fr/multi_event.php?user=139214 | Scraping Billetweb | OK |
-| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 1 |
-| Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 1 |
 | Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | Prévu, priorité 1 |
 | Fresque de l'Energie | https://www.helloasso.com/associations/la-fresque-de-l-energie | Scraping HelloAsso | Prévu, priorité 1 |
-| Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Prévu, priorité 2 |
-| Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 2 |
+| Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 1 |
+| Fresque de la Communication | https://www.helloasso.com/associations/la-fresque-de-la-communication | Scraping HelloAsso | Prévu, priorité 1 |
+| Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 1 |
 | Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
+| Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 2 |
+| Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 2 |
 | Atelier Éco-challenge Little Big Impact | https://www.billetweb.fr/pro/lbi-quiz-sedd | Scraping Billetweb | Prévu, priorité 2 |
 | Fresque de l'Attention | https://www.billetweb.fr/pro/fresquedelattention | Scraping Billetweb | Prévu, priorité 2 |
-| Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 2 |
 | Atelier L'éco-naissance | https://www.eventbrite.fr/o/leco-naissance-62237583643 | Scraping Eventbrite | Prévu, priorité 2 |
 | Fresque des Écrans | https://colori.fr/la-fresque-des-ecrans | Scraping custom | Prévu, priorité 2 |
+| Fresque de l'Éco-conception | https://www.lafresquedelecoconception.fr/infos-pratiques | Scraping site custom | Prévu, priorité 2 |
 | Fresque de l'Emploi Durable | https://www.helloasso.com/associations/solidarites-nouvelles-face-au-chomage-snc | Scraping HelloAsso | En réflexion |
 | Atelier Marche du Temps Profond | https://www.helloasso.com/associations/ecotopia | Scraping HelloAsso | En réflexion |
 | Fresque des Entreprises Inclusives | https://www.helloasso.com/associations/tous-tes-possibles/evenements/fresque-des-entreprises-inclusives| Scraping HelloAsso | En réflexion |
@@ -53,6 +54,7 @@ Nous avons pris connaissance d'initiatives locales organisée au niveau du dépa
 
 | Département       | Lien           | Source | Supporté  |
 | ------------- |:-------------:| :-----:| :-----:|
+| Atelier Déclics | https://www.helloasso.com/associations/objective-zero | Scraping HelloAsso | Non |
 | Isère | https://enjeuxcommuns.fr/les-prochains-ateliers-en-isere/ | Airtable | Non |
 | Bas-Rhin/Haut-Rhin | https://hoplatransition.org/index.php/nos-evenements/ | Custom | Non |
 | Réunion | https://fresques.re/event-directory/ | Custom | Non |
