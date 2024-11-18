@@ -1,5 +1,5 @@
 {
-    "webdriver": "bin/geckodriver",
+    "webdriver": "",
     "host" : "",
     "port" : "",
     "user" : "",
