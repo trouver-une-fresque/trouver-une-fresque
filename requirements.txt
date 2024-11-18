@@ -1,8 +1,0 @@
-numpy
-requests
-selenium
-tabulate
-pandas
-python-dateutil
-psycopg
-geopy

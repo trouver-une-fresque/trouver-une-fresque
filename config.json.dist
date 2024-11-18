@@ -4,6 +4,6 @@
     "port" : "",
     "user" : "",
     "psw"  : "",
-    "database":"",
+    "database": "",
     "timezone": "Europe/Paris"
 }
