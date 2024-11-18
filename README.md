@@ -18,7 +18,7 @@ Les ateliers actuellement supportés sont listés sur la [feuille de route](WORK
 
 Le scraping est effectué en utilisant Selenium, qui s'appuie sur geckodriver pour afficher les données à récupérer. Notre outil peut être installé sur un Raspberry Pi sans problème.
 
-### Avec `nix` (méthode reccommandée)
+### Avec `nix` (méthode recommandée)
 
 Nix est un gestionnaire de paquets multiplateforme qui vise à permettre la reproducibilité, la robustesse, la portabilité et la stabilité des systèmes d'information.
 
@@ -90,7 +90,7 @@ Renommez le fichier de configuration `config.json.dist` en `config.json` et rens
 }
 ```
 
-Le champ `webdriver` est à renseigner avec le chemin vers le binaire `geckodriver` dans le cas d'une installation sans `nix` uniquement.
+Le champ `webdriver` est à renseigner avec le chemin vers le binaire `geckodriver` dans le cas d'une installation sans Nix (manuelle) uniquement.
 
 
 ### Lancer le scraping
