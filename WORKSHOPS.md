@@ -31,11 +31,11 @@ Développer et maintenir Trouver une Fresque nous prend beaucoup de temps et d'�
 | Atelier Horizons Décarbonés | https://1erdegre.glide.page/dl/6471c6 | Scraping Glide Pages | OK |
 | 2030 Glorieuses | https://www.2030glorieuses.org/event | API | OK |
 | Fresque de la RSE | https://www.billetweb.fr/multi_event.php?user=139214 | Scraping Billetweb | OK |
-| Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | Prévu, priorité 1 |
-| Fresque de l'Energie | https://www.helloasso.com/associations/la-fresque-de-l-energie | Scraping HelloAsso | Prévu, priorité 1 |
-| Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | Prévu, priorité 1 |
-| Fresque de la Communication | https://www.helloasso.com/associations/la-fresque-de-la-communication | Scraping HelloAsso | Prévu, priorité 1 |
-| Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | Prévu, priorité 1 |
+| Fresque de la Rénovation | https://www.helloasso.com/associations/fresque-de-la-renovation/ | Scraping HelloAsso | OK |
+| Fresque de l'Energie | https://www.helloasso.com/associations/la-fresque-de-l-energie | Scraping HelloAsso | OK |
+| Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | OK |
+| Fresque de la Communication | https://www.helloasso.com/associations/la-fresque-de-la-communication | Scraping HelloAsso | OK |
+| Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | OK |
 | Atelier Compte-Gouttes | https://www.eventbrite.com/o/atelier-compte-gouttes-73003088333 | Scraping Eventbrite | Prévu, priorité 1 |
 | Fresque du Bénévolat | https://www.eventbrite.fr/o/jeveuxaidergouvfr-77010082313 | Scraping site Eventbrite | Prévu, priorité 1 |
 | Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
