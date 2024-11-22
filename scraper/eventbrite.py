@@ -139,6 +139,16 @@ def get_eventbrite_data(service, options):
             "url": "https://www.eventbrite.fr/o/2-tonnes-29470123869",
             "id": 100,
         },
+        {
+            # Atelier Compte-Gouttes
+            "url": "https://www.eventbrite.com/o/atelier-compte-gouttes-73003088333",
+            "id": 101,
+        },
+        {
+            # Fresque du Bénévolat
+            "url": "https://www.eventbrite.fr/o/jeveuxaidergouvfr-77010082313",
+            "id": 102,
+        },
     ]
 
     records = []
