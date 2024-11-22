@@ -36,8 +36,10 @@ Développer et maintenir Trouver une Fresque nous prend beaucoup de temps et d'�
 | Fresque des Possibles | https://www.helloasso.com/associations/le-lieu-dit | Scraping HelloAsso | OK |
 | Fresque de la Communication | https://www.helloasso.com/associations/la-fresque-de-la-communication | Scraping HelloAsso | OK |
 | Fresque Zoofresque | https://www.helloasso.com/associations/ajas-association-justice-animaux-savoie | Scraping HelloAsso | OK |
-| Atelier Compte-Gouttes | https://www.eventbrite.com/o/atelier-compte-gouttes-73003088333 | Scraping Eventbrite | Prévu, priorité 1 |
-| Fresque du Bénévolat | https://www.eventbrite.fr/o/jeveuxaidergouvfr-77010082313 | Scraping site Eventbrite | Prévu, priorité 1 |
+| Atelier Compte-Gouttes | https://www.eventbrite.com/o/atelier-compte-gouttes-73003088333 | Scraping Eventbrite | OK |
+| Fresque du Bénévolat | https://www.eventbrite.fr/o/jeveuxaidergouvfr-77010082313 | Scraping Eventbrite | OK |
+| Pitch Climat | https://www.billetweb.fr/multi_event.php?user=186116 | Scraping Billetweb | Prévu, priorité 1 |
+| Fresque de l'Environnement | | API | Prévu, priorité 1 |
 | Fresque du Sol | https://fresquedusol.com/comment-participer/dates-a-venir/ | Calendrier ICS | Prévu, priorité 2 |
 | Fresque de la Forêt | https://all4trees.org/agir/fresque-foret/evenements | Scraping site custom | Prévu, priorité 2 |
 | Atelier Découverte de la Renaissance Écologique | https://renaissanceecologique.org/ | Scraping site custom | Prévu, priorité 2 |
