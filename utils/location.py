@@ -162,7 +162,10 @@ def get_address(full_location):
     else:
         raise FreskAddressBadFormat(address, full_location, "department")
 
-    num_department = department_to_num(department)
+    try:
+        num_department = department_to_num(department)
+    except FreskError:
+        raise
 
     return {
         "location_name": location.raw["name"],
@@ -179,4 +182,4 @@ def department_to_num(department):
     for k, v in departments.items():
         if v == department:
             return k
-    raise Exception(f"Department number.")
+    raise FreskDepartmentNotFound(f"Department number.")

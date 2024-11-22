@@ -32,6 +32,12 @@ class FreskAddressBadFormat(FreskError):
         super().__init__(self.message)
 
 
+class FreskDepartmentNotFound(FreskError):
+    def __init__(self, department: str):
+        self.message = f"Department {department} not recognized."
+        super().__init__(self.message)
+
+
 class FreskCountryNotSupported(FreskError):
     def __init__(self, address: str, input_str: str):
         self.message = (
