@@ -164,7 +164,7 @@ def get_helloasso_data(service, options):
         time.sleep(3)
 
         # Scroll to bottom to load all events
-        desired_y = 2200
+        desired_y = 2300
         window_h = driver.execute_script("return window.innerHeight")
         window_y = driver.execute_script("return window.pageYOffset")
         current_y = (window_h / 2) + window_y
