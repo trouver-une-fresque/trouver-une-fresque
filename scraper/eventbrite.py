@@ -186,9 +186,17 @@ def get_eventbrite_data(service, options):
                     By.XPATH, '//div[@data-testid="enhancedExpiredEventsBadge"]'
                 )
                 # If the element has children elements, it is enabled
-                if badge.find_elements(By.XPATH, "./*"):
-                    print("Rejecting record: event expired")
-                    continue
+                try:
+                    if badge.find_elements(By.XPATH, "./*"):
+                        print("Rejecting record: event expired")
+                        continue
+                except StaleElementReferenceException:
+                    if driver.find_element(
+                        By.XPATH, '//div[@data-testid="enhancedExpiredEventsBadge"]'
+                    ).find_elements(By.XPATH, "./*"):
+                        print("Rejecting record: event expired")
+                        continue
+
             except NoSuchElementException:
                 pass
 
