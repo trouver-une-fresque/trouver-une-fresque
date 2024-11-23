@@ -24,11 +24,18 @@ workshop_types = {
     17: "FresqueDeLaFinance",
     18: "FresqueDeLaRSE",
     100: "2tonnes",
+    101: "CompteGouttes",
+    102: "FresqueDuBénévolat",
     200: "FresqueClimat",
     300: "FresqueEcoCirculaire",
     500: "FresqueFrontieresPlanetaires",
     501: "HorizonsDecarbones",
     600: "2030Glorieuses",
+    700: "FresqueDeLaRénovation",
+    701: "FresqueDeLEnergie",
+    702: "FresqueDesPossibles",
+    703: "FresqueDeLaCommunication",
+    704: "Zoofresque",
 }
 
 
