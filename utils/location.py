@@ -108,17 +108,22 @@ departments = {
     "976": "Mayotte",
 }
 
-"""
-This function requests Nomatim to get structured location data from an
-input string.
-"""
+cache = {}
 
 
 def get_address(full_location):
+    """
+    This function requests Nomatim to get structured location data from an
+    input string.
+    """
     if not full_location:
         raise FreskAddressNotFound("")
 
-    location = geolocator.geocode(full_location, addressdetails=True)
+    if full_location in cache:
+        location = cache[full_location]
+    else:
+        location = geolocator.geocode(full_location, addressdetails=True)
+        cache[full_location] = location
 
     if location is None:
         raise FreskAddressNotFound(full_location)
