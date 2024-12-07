@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 from scraper.fdc import get_fdc_data
@@ -11,10 +12,19 @@ from selenium.webdriver.firefox.service import Service
 from utils.utils import get_config
 
 
+def get_webdriver_executable():
+    webdriver = get_config("webdriver")
+
+    if not webdriver:
+        webdriver = os.environ["WEBDRIVER_PATH"]
+
+    return webdriver
+
+
 def main(headless=False):
     records = []
 
-    service = Service(executable_path=get_config("webdriver"))
+    service = Service(executable_path=get_webdriver_executable())
     options = FirefoxOptions()
     options.set_preference("intl.accept_languages", "en-us")
     if headless:

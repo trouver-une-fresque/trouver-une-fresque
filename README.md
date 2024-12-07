@@ -10,30 +10,99 @@ Si vous utilisez ce code, merci de respecter la [charte de Nominatim](https://op
 
 Si vous êtes l'organisateur d'un atelier Fresque et que votre évènement n'apparaît pas sur la plateforme Trouver une Fresque, merci de lire le [tutoriel à destination des organisateurs de fresques](https://github.com/trouver-une-fresque/trouver-une-fresque/blob/main/TUTORIAL.md).
 
-Ouvrez une [issue Github](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) si vous souhaitez signaler un problème non couvert dans le tutoriel.
+Ouvrez une [issue Github](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) si vous souhaitez signaler un problème non couvert dans le tutoriel, ou suggérer l'intégration d'un nouvel atelier.
 
 Les ateliers actuellement supportés sont listés sur la [feuille de route](WORKSHOPS.md).
 
-## Installation
+## 🤖 Développeurs: installation
 
-Le scrapping est effectué en utilisant Selenium, qui s'appuie sur [geckodriver](https://github.com/mozilla/geckodriver/releases) pour afficher les données à récupérer. Téléchargez la version la plus récente, puis extrayez le binaire `geckodriver` dans un dossier `bin/`. Renommer le fichier de configuration `config.json.dist` en `config.json`.
+Le scraping est effectué en utilisant Selenium, qui s'appuie sur geckodriver pour afficher les données à récupérer. Notre outil peut être installé sur un Raspberry Pi sans problème.
+
+### Avec `nix` (méthode recommandée)
+
+Nix est un gestionnaire de paquets multiplateforme qui vise à permettre la reproducibilité, la robustesse, la portabilité et la stabilité des systèmes d'information.
+
+#### Installer `nix`
+
+```bash
+### Via https://zero-to-nix.com/start/install (recommandé)
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+### Via https://devenv.sh/getting-started/
+## Linux
+sh <(curl -L https://nixos.org/nix/install) --daemon
+
+## macOS
+sh <(curl -L https://nixos.org/nix/install)
+
+## Windows (WSL2)
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+```
+
+#### Installer `devenv`
+
+```bash
+## General
+nix-env -iA devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
+
+## NixOS
+# Add the following to your configuration.nix somewhere
+environment.systemPackages = [ 
+  pkgs.devenv
+];
+```
+
+Tout est prêt ! Utilisez la commande `devenv shell` pour commencer à développer.
+
+### Manuellement
+
+Cette méthode d'installation n'est pas recommandée. Préférez l'utilisation de Nix, qui vous facilitera la tâche et garantira d'avoir toutes les dépendances nécessaires pour lancer le scraper.
+
+Téléchargez la version la plus récente de [geckodriver](https://github.com/mozilla/geckodriver/releases), puis extrayez le binaire `geckodriver` dans un dossier `bin/` (ou n'importe où sur votre système).
+
+Les librairies suivantes doivent être installées sur votre système:
 
 ```console
 apt-get install firefox-esr libpq-dev python3-dev
+```
+
+Enfin, téléchargez les dépendances du scraper :
+
+```console
 make install
 ```
 
-Le scraper peut être installé sur un Raspberry Pi sans problème.
+## 🤖 Développeurs: utilisation
+
+### Configuration
+
+Renommez le fichier de configuration `config.json.dist` en `config.json` et renseignez les champs.
+
+```json
+{
+    "webdriver": "",
+    "host" : "",
+    "port" : "",
+    "user" : "",
+    "psw"  : "",
+    "database": "",
+    "timezone": "Europe/Paris"
+}
+```
+
+Le champ `webdriver` est à renseigner avec le chemin vers le binaire `geckodriver` dans le cas d'une installation sans Nix (manuelle) uniquement.
+
 
 ### Lancer le scraping
 
-À la fin du scraping, un fichier JSON nommé avec le format `events_20230814_153752.json` est créé dans le dossier `results/`.
 
 ```console
 python scrape.py
 ```
 
-Option `--headless` runs the scraping in headless mode, and `--push-to-db` pushes the results of the output json file into the database using the credentials defined in `config.json`.
+À la fin du scraping, un fichier JSON nommé avec le format `events_20230814_153752.json` est créé dans le dossier `results/`.
+
+L'option `--headless` exécute le scraping en mode headless, et `--push-to-db` pousse les résultats du fichier json de sortie dans la base de données en utilisant les identifiants définis dans `config.json`.
 
 ### Base de données
 
@@ -64,7 +133,7 @@ This command will perform the following actions:
     - For these rows, it finds the most recent `scrape_date` for each `id` and `workshop_type`.
     - It then updates the `most_recent` column to `TRUE` for these rows, but only if the `start_date` of the event is in the past.
 
-## Comment Contribuer
+## Comment contribuer
 
 Pour proposer une modification, un ajout, ou décrire un bug sur l'outil de détection, vous pouvez ouvrir une [issue](https://github.com/thomas-bouvier/trouver-une-fresque/issues/new) ou une [Pull Request](https://github.com/thomas-bouvier/trouver-une-fresque/pulls) avec vos modifications.
 
