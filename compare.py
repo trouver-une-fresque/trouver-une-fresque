@@ -26,6 +26,7 @@ workshop_types = {
     100: "2tonnes",
     101: "CompteGouttes",
     102: "FresqueDuBénévolat",
+    103: "FresqueDuPlastique",
     200: "FresqueClimat",
     300: "FresqueEcoCirculaire",
     500: "FresqueFrontieresPlanetaires",

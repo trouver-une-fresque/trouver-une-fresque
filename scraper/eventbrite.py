@@ -149,6 +149,11 @@ def get_eventbrite_data(service, options):
             "url": "https://www.eventbrite.fr/o/jeveuxaidergouvfr-77010082313",
             "id": 102,
         },
+        {
+            # Fresque du Plastique
+            "url": "https://www.eventbrite.fr/o/la-fresque-du-plastique-45763194553",
+            "id": 103,
+        },
     ]
 
     records = []
