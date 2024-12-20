@@ -4,6 +4,7 @@
   # https://github.com/cachix/devenv/issues/1264#issuecomment-2368362686
   packages = (with pkgs; [
     postgresql
+    firefox
     geckodriver
     gcc-unwrapped # fix: libstdc++.so.6: cannot open shared object file
     libz # fix: for numpy/pandas import
