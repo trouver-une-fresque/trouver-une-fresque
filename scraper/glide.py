@@ -61,9 +61,9 @@ def get_glide_data(service, options):
         )
         tab_button_element.click()
 
+        # Maybe there are multiple pages, so we loop.
         while True:
-            # Loading the page
-            time.sleep(20)
+            time.sleep(5)
             ele = driver.find_elements(
                 By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
             )
@@ -71,9 +71,28 @@ def get_glide_data(service, options):
             print(f"Found {num_el} elements")
 
             for i in range(num_el):
+                time.sleep(5)
                 ele = driver.find_elements(
                     By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
                 )
+
+                # The following is ugly, but necessary as elements are loaded dynamically in JS.
+                # We have to make sure that all elements are loaded before proceeding.
+                max_tries = 10
+                count = 0
+                while len(ele) != num_el:
+                    driver.refresh()
+                    time.sleep(5)
+                    ele = driver.find_elements(
+                        By.XPATH, "//div[contains(@class, 'collection-item') and @role='button']"
+                    )
+
+                    count += 1
+                    if count == max_tries:
+                        raise RuntimeError(
+                            f"Cannot load the {num_el} JS elements after {count} tries."
+                        )
+
                 el = ele[i]
                 el.click()
 
